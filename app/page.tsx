@@ -1,3 +1,6 @@
+'use client'
+
+
 import {Box, Flex, Grid, IconButton, Separator, Text} from "@radix-ui/themes";
 import {
     CubeIcon,
@@ -9,6 +12,7 @@ import {
     GridIcon
 } from "@radix-ui/react-icons"
 import Link from "next/link";
+import {useState} from "react";
 
 
 const TextConfig = {
@@ -19,19 +23,28 @@ const TextConfig = {
 }
 
 export default function Home() {
+
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+
     return (
         <Grid
             as="div"
-            columns="260px 1fr"
+            columns={isSidebarOpen ? "260px 1fr" : "0px 1fr"}
             rows="72px 1fr"
-            className="min-h-screen"
+            className="min-h-screen overflow-hidden"
         >
-            <aside className="row-start-1 row-end-3 col-start-1 border-r border-white/10">
-                <Flex className="h-18 border-b border-white/10 px-4" justify="between" align="center">
+            <aside
+                className={`row-start-1 row-end-3 col-start-1 border-r border-white/10 transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-[260px]" : "w-0 overflow-hidden border-none"}`}>
+                <Flex className="h-[72px] border-b border-white/10 px-4" justify="between" align="center">
                     <Box className="">
                         <Text weight="bold" size="4">ODONTONEXUS</Text>
                     </Box>
-                    <IconButton variant="ghost" color="gray">
+                    <IconButton
+                        variant="ghost"
+                        color="gray"
+                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                        className={!isSidebarOpen ? "fixed left-4 top-[18px] z-50" : ""}
+                    >
                         <DoubleArrowLeftIcon/>
                     </IconButton>
                 </Flex>
