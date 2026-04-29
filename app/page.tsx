@@ -1,17 +1,13 @@
+import {Box, Flex, Grid, IconButton, Separator, Text} from "@radix-ui/themes";
 import {
-    Grid,
-    Box,
-    Flex,
-    DropdownMenu,
-    Button,
-    DataList,
-    Code,
-    IconButton,
-    Badge,
-    Text,
-    Separator
-} from "@radix-ui/themes";
-import {CopyIcon, DoubleArrowLeftIcon, DashboardIcon, CubeIcon, ExclamationTriangleIcon, InfoCircledIcon, GearIcon, GridIcon, ExitIcon} from "@radix-ui/react-icons"
+    CubeIcon,
+    DashboardIcon,
+    DoubleArrowLeftIcon,
+    ExclamationTriangleIcon,
+    ExitIcon,
+    GearIcon,
+    GridIcon
+} from "@radix-ui/react-icons"
 import Link from "next/link";
 
 
@@ -35,52 +31,54 @@ export default function Home() {
                     <Box className="">
                         <Text weight="bold" size="4">ODONTONEXUS</Text>
                     </Box>
-                    <DoubleArrowLeftIcon/>
+                    <IconButton variant="ghost" color="gray">
+                        <DoubleArrowLeftIcon/>
+                    </IconButton>
                 </Flex>
 
-                <Flex direction="column"  justify="start" align="start" className="px-5 py-5" gap="4">
+                <Flex direction="column" justify="start" align="start" className="px-5 py-5" gap="4">
                     <Link href="/" className="w-full">
-                        <Flex align="center" gapX="3">
-                            <DashboardIcon   />
-                            <Text {...TextConfig} >Dashboard</Text>
+                        <Flex align="center" gapX="3" className="bg-white/5 py-2 px-3 rounded-lg">
+                            <DashboardIcon className="text-white"/>
+                            <Text {...TextConfig}>Dashboard</Text>
                         </Flex>
                     </Link>
                     <Link href="/unit" className="w-full">
-                        <Flex align="center" gapX="3">
-                            <CubeIcon   />
+                        <Flex align="center" gapX="3" className="px-3">
+                            <CubeIcon/>
                             <Text {...TextConfig}>Units</Text>
                         </Flex>
                     </Link>
                     <Link href="/report" className="w-full">
-                        <Flex align="center" gapX="3">
-                            <ExclamationTriangleIcon  />
+                        <Flex align="center" gapX="3" className="px-3">
+                            <ExclamationTriangleIcon/>
                             <Text {...TextConfig}>Reports</Text>
                         </Flex>
                     </Link>
                     <Link href="/maintenance" className="w-full">
-                        <Flex align="center" gapX="3">
-                            <GearIcon   />
+                        <Flex align="center" gapX="3" className="px-3">
+                            <GearIcon/>
                             <Text {...TextConfig}>Maintenance</Text>
                         </Flex>
                     </Link>
                     <Link href="/areas" className="w-full">
-                       <Flex align="center" gapX="3">
-                        <GridIcon   />
-                        <Text {...TextConfig}>Areas</Text>
-                    </Flex>
+                        <Flex align="center" gapX="3" className="px-3">
+                            <GridIcon/>
+                            <Text {...TextConfig}>Areas</Text>
+                        </Flex>
                     </Link>
                 </Flex>
-                <Separator orientation="horizontal" size="4"   />
-                 <Flex direction="column"  justify="start" align="start" className="px-5 py-5" gap="4">
+                <Separator orientation="horizontal" size="4"/>
+                <Flex direction="column" justify="start" align="start" className="px-5 py-5" gap="4">
                     <Link href="/settings" className="w-full">
-                        <Flex align="center" gapX="3">
-                            <GearIcon   />
+                        <Flex align="center" gapX="3" className="px-3">
+                            <GearIcon/>
                             <Text {...TextConfig} >Settings</Text>
                         </Flex>
                     </Link>
                     <Link href="/logout" className="w-full">
-                        <Flex align="center" gapX="3">
-                            <ExitIcon   />
+                        <Flex align="center" gapX="3" className="px-3">
+                            <ExitIcon/>
                             <Text {...TextConfig}>Logout</Text>
                         </Flex>
                     </Link>
