@@ -39,37 +39,51 @@ export default function Home() {
                 </Flex>
 
                 <Flex direction="column"  justify="start" align="start" className="px-5 py-5" gap="4">
-                    <Flex align="center" gapX="3">
-                        <DashboardIcon   />
-                        <Text {...TextConfig} >Dashboard</Text>
-                    </Flex>
-                    <Flex align="center" gapX="3">
-                        <CubeIcon   />
-                        <Text {...TextConfig}>Unit</Text>
-                    </Flex>
-                    <Flex align="center" gapX="3">
-                        <ExclamationTriangleIcon  />
-                        <Text {...TextConfig}>Report</Text>
-                    </Flex>
-                    <Flex align="center" gapX="3">
-                        <GearIcon   />
-                        <Text {...TextConfig}>Maintenance</Text>
-                    </Flex>
+                    <Link href="/" className="w-full">
+                        <Flex align="center" gapX="3">
+                            <DashboardIcon   />
+                            <Text {...TextConfig} >Dashboard</Text>
+                        </Flex>
+                    </Link>
+                    <Link href="/unit" className="w-full">
+                        <Flex align="center" gapX="3">
+                            <CubeIcon   />
+                            <Text {...TextConfig}>Units</Text>
+                        </Flex>
+                    </Link>
+                    <Link href="/report" className="w-full">
+                        <Flex align="center" gapX="3">
+                            <ExclamationTriangleIcon  />
+                            <Text {...TextConfig}>Reports</Text>
+                        </Flex>
+                    </Link>
+                    <Link href="/maintenance" className="w-full">
+                        <Flex align="center" gapX="3">
+                            <GearIcon   />
+                            <Text {...TextConfig}>Maintenance</Text>
+                        </Flex>
+                    </Link>
+                    <Link href="/areas" className="w-full">
                        <Flex align="center" gapX="3">
                         <GridIcon   />
                         <Text {...TextConfig}>Areas</Text>
                     </Flex>
+                    </Link>
                 </Flex>
                 <Separator orientation="horizontal" size="4"   />
                  <Flex direction="column"  justify="start" align="start" className="px-5 py-5" gap="4">
-                    <Flex align="center" gapX="3">
-                        <GearIcon   />
-                        <Text {...TextConfig} >Settings</Text>
-                    </Flex>
-                    <Flex align="center" gapX="3">
-                        <ExitIcon   />
-                        <Text {...TextConfig}>Logout</Text>
-                    </Flex>
+                    <Link href="/settings" className="w-full">
+                        <Flex align="center" gapX="3">
+                            <GearIcon   />
+                            <Text {...TextConfig} >Settings</Text>
+                        </Flex>
+                    </Link>
+                    <Link href="/logout" className="w-full">
+                        <Flex align="center" gapX="3">
+                            <ExitIcon   />
+                            <Text {...TextConfig}>Logout</Text>
+                        </Flex>
+                    </Link>
                 </Flex>
 
             </aside>
