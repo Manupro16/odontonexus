@@ -4,6 +4,7 @@ import "./globals.css";
 import "@radix-ui/themes/styles.css";
 import {Theme} from "@radix-ui/themes";
 import React from "react";
+import TopBar from "@/app/components/layouts/TopBar";
 
 
 const geistSans = Geist({
@@ -30,7 +31,7 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
       <Theme appearance="dark">
-          {children}
+              {children}
       </Theme>
       </body>
     </html>
