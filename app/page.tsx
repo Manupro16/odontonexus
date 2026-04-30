@@ -1,7 +1,7 @@
 'use client'
 
 
-import {Box, Button, DropdownMenu, Flex, Grid, Heading, IconButton, Separator, Text} from "@radix-ui/themes";
+import {Box, Button, Flex, Grid, Heading, IconButton, Separator, Text} from "@radix-ui/themes";
 import {
     CubeIcon,
     DashboardIcon,
