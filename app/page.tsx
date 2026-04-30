@@ -35,8 +35,8 @@ export default function Home() {
             className="min-h-screen overflow-hidden"
         >
             <aside
-                className={`row-start-1 row-end-3 col-start-1 border-r border-white/10 transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-[260px]" : "w-[72px]"}`}>
-                <Flex className="h-[72px] border-b border-white/10 px-4" justify={isSidebarOpen ? "between" : "center"}
+                className={`row-start-1 row-end-3 col-start-1 border-r border-border-strong transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-[260px]" : "w-[72px]"}`}>
+                <Flex className="h-[72px] border-b border-border-strong px-4" justify={isSidebarOpen ? "between" : "center"}
                       align="center">
                     {isSidebarOpen && (
                         <Box className="">
@@ -86,7 +86,7 @@ export default function Home() {
                         </Flex>
                     </Link>
                 </Flex>
-                <Separator orientation="horizontal" size="4"/>
+                <Separator orientation="horizontal" size="4" className="bg-border-strong opacity-100"/>
                 <Flex direction="column" justify="start" align={isSidebarOpen ? "start" : "center"}
                       className="px-5 py-5" gap="4">
                     <Link href="/settings" className="w-full">
@@ -104,7 +104,7 @@ export default function Home() {
                 </Flex>
 
             </aside>
-            <header className="row-start-1 col-start-2 border-b border-white/10 px-6">
+            <header className="row-start-1 col-start-2 border-b border-border-strong px-6">
                 <Flex justify="between" align="center" className="h-full">
                     <Flex direction="column" justify="center" align="start">
                         <Heading>Dashboard</Heading>

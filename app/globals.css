@@ -7,6 +7,7 @@
   --color-accent-mid: #0f4c5c;
   --color-accent-soft: #123b5a;
   --color-border-dark: #233044;
+  --color-border-strong: rgba(255, 255, 255, 0.2);
 }
 
 .nav-footer-background {
