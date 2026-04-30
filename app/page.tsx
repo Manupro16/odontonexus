@@ -18,7 +18,6 @@ import {
     Avatar, ScrollArea, Strong
 } from "@radix-ui/themes";
 import {
-    ActivityLogIcon,
     CheckCircledIcon,
     CubeIcon,
     DashboardIcon,
@@ -40,26 +39,6 @@ const TextConfig = {
     color: "gray" as const,
     highContrast: true,
 }
-
-const dashboardData = {
-    totalUnits: 42,
-    functionalUnits: 28,
-    partiallyFunctionalUnits: 9,
-    nonFunctionalUnits: 5,
-    openReports: 7,
-    unitsInMaintenance: 4,
-    unitsByArea: [
-        {name: "Adultos", total: 18},
-        {name: "Endodoncia", total: 10},
-        {name: "Cirugía", total: 6},
-        {name: "Odontopediatría", total: 8},
-    ],
-    recentReports: [
-        {unit: "Unit 12", issue: "Lamp failure", area: "Adultos"},
-        {unit: "Unit 03", issue: "Pedal issue", area: "Endodoncia"},
-        {unit: "Unit 08", issue: "Micromotor not working", area: "Cirugía"},
-    ],
-};
 
 const mockComments = [
     {
@@ -91,6 +70,54 @@ const mockComments = [
         user: "Tech Support",
         text: "Bulb arrived, scheduled for installation at 4 PM.",
         time: "Just now"
+    },
+];
+
+const mockTableData = [
+    {
+        id: 1,
+        unit: "Unit 12",
+        issue: "Lamp failure",
+        area: "Adultos",
+        status: "Open",
+        priority: "Medium",
+        priorityColor: "orange" as const,
+    },
+    {
+        id: 2,
+        unit: "Unit 03",
+        issue: "Pedal issue",
+        area: "Endodoncia",
+        status: "In Progress",
+        priority: "High",
+        priorityColor: "red" as const,
+    },
+    {
+        id: 3,
+        unit: "Unit 08",
+        issue: "Micromotor not working",
+        area: "Cirugía",
+        status: "Open",
+        priority: "Low",
+        priorityColor: "green" as const,
+    },
+    {
+        id: 4,
+        unit: "Unit 15",
+        issue: "Water leak",
+        area: "Odontopediatría",
+        status: "Closed",
+        priority: "Medium",
+        priorityColor: "orange" as const,
+    },
+    {
+        id: 5,
+        unit: "Unit 22",
+        issue: "Suction power low",
+        area: "Adultos",
+        status: "Open",
+        priority: "High",
+        priorityColor: "red" as const,
     },
 ];
 
@@ -255,58 +282,62 @@ export default function Home() {
                     </Table.Header>
 
                     <Table.Body>
-                        <Table.Row>
-                            <Table.RowHeaderCell>
-                                <Flex gap="2">
-                                    <Checkbox defaultChecked/>
-                                    Unit 12
-                                </Flex>
-                            </Table.RowHeaderCell>
-                            <Table.Cell>Lamp failure</Table.Cell>
-                            <Table.Cell>Adultos</Table.Cell>
-                            <Table.Cell>Open</Table.Cell>
-                            <Table.Cell> <Badge color="orange">Medium</Badge></Table.Cell>
-                            <Table.Cell>
-                                <Text>Current{" "}
-                                    <HoverCard.Root>
-                                        <HoverCard.Trigger>
-                                            <Text color="blue">
-                                                <Strong>Comments</Strong>
-                                            </Text>
-                                        </HoverCard.Trigger>
-                                        <HoverCard.Content maxWidth="400px">
-                                            <ScrollArea type="always" scrollbars="vertical" style={{ height: 200 }}>
-                                                <Box pr="4">
-                                                    <Heading size="3" mb="3">Unit Comments</Heading>
-                                                    <Flex direction="column" gap="4">
-                                                        {mockComments.map((comment) => (
-                                                            <Flex key={comment.id} gap="3" align="start">
-                                                                <Avatar
-                                                                    size="2"
-                                                                    fallback={comment.user[0]}
-                                                                    radius="full"
-                                                                    variant="soft"
-                                                                    color="blue"
-                                                                />
-                                                                <Box flexGrow="1">
-                                                                    <Flex justify="between" align="center" gap="4" mb="1">
-                                                                        <Text size="2" weight="bold">{comment.user}</Text>
-                                                                        <Text size="1" color="gray">{comment.time}</Text>
-                                                                    </Flex>
-                                                                    <Text as="p" size="2" color="gray" highContrast>
-                                                                        {comment.text}
-                                                                    </Text>
-                                                                </Box>
-                                                            </Flex>
-                                                        ))}
-                                                    </Flex>
-                                                </Box>
-                                            </ScrollArea>
-                                        </HoverCard.Content>
-                                    </HoverCard.Root>
-                                </Text>
-                            </Table.Cell>
-                        </Table.Row>
+                        {mockTableData.map((row) => (
+                            <Table.Row key={row.id}>
+                                <Table.RowHeaderCell>
+                                    <Flex gap="2">
+                                        <Checkbox defaultChecked={row.status === "Closed"}/>
+                                        {row.unit}
+                                    </Flex>
+                                </Table.RowHeaderCell>
+                                <Table.Cell>{row.issue}</Table.Cell>
+                                <Table.Cell>{row.area}</Table.Cell>
+                                <Table.Cell>{row.status}</Table.Cell>
+                                <Table.Cell>
+                                    <Badge color={row.priorityColor}>{row.priority}</Badge>
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <Text>Current{" "}
+                                        <HoverCard.Root>
+                                            <HoverCard.Trigger>
+                                                <Text color="blue">
+                                                    <Strong>Comments</Strong>
+                                                </Text>
+                                            </HoverCard.Trigger>
+                                            <HoverCard.Content maxWidth="400px">
+                                                <ScrollArea type="always" scrollbars="vertical" style={{ height: 200 }}>
+                                                    <Box pr="4">
+                                                        <Heading size="3" mb="3">Unit Comments</Heading>
+                                                        <Flex direction="column" gap="4">
+                                                            {mockComments.map((comment) => (
+                                                                <Flex key={comment.id} gap="3" align="start">
+                                                                    <Avatar
+                                                                        size="2"
+                                                                        fallback={comment.user[0]}
+                                                                        radius="full"
+                                                                        variant="soft"
+                                                                        color="blue"
+                                                                    />
+                                                                    <Box flexGrow="1">
+                                                                        <Flex justify="between" align="center" gap="4" mb="1">
+                                                                            <Text size="2" weight="bold">{comment.user}</Text>
+                                                                            <Text size="1" color="gray">{comment.time}</Text>
+                                                                        </Flex>
+                                                                        <Text as="p" size="2" color="gray" highContrast>
+                                                                            {comment.text}
+                                                                        </Text>
+                                                                    </Box>
+                                                                </Flex>
+                                                            ))}
+                                                        </Flex>
+                                                    </Box>
+                                                </ScrollArea>
+                                            </HoverCard.Content>
+                                        </HoverCard.Root>
+                                    </Text>
+                                </Table.Cell>
+                            </Table.Row>
+                        ))}
                     </Table.Body>
                 </Table.Root>
 
