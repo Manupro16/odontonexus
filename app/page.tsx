@@ -61,6 +61,39 @@ const dashboardData = {
     ],
 };
 
+const mockComments = [
+    {
+        id: 1,
+        user: "Dr. Smith",
+        text: "The lamp flickering is getting worse. Needs immediate attention.",
+        time: "2h ago"
+    },
+    {
+        id: 2,
+        user: "Tech Support",
+        text: "Ordered replacement bulb. Should arrive by tomorrow.",
+        time: "1h ago"
+    },
+    {
+        id: 3,
+        user: "Dr. Smith",
+        text: "Thanks, please update when installed.",
+        time: "30m ago"
+    },
+    {
+        id: 4,
+        user: "Assistant",
+        text: "Cleaned the unit area while waiting.",
+        time: "10m ago"
+    },
+    {
+        id: 5,
+        user: "Tech Support",
+        text: "Bulb arrived, scheduled for installation at 4 PM.",
+        time: "Just now"
+    },
+];
+
 export default function Home() {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -241,27 +274,34 @@ export default function Home() {
                                                 <Strong>Comments</Strong>
                                             </Text>
                                         </HoverCard.Trigger>
-                                        <HoverCard.Content maxWidth="300px">
-                                            <Flex gap="4">
-                                                <Avatar
-                                                    size="3"
-                                                    fallback="R"
-                                                    radius="full"
-                                                    src="https://pbs.twimg.com/profile_images/1337055608613253126/r_eiMp2H_400x400.png"
-                                                />
-                                                <Box>
-                                                    <Heading size="3" as="h3">
-                                                        Radix
-                                                    </Heading>
-                                                    <Text as="div" size="2" color="gray" mb="2">
-                                                        @radix_ui
-                                                    </Text>
-                                                    <Text as="div" size="2">
-                                                        React components, icons, and colors for building high-quality,
-                                                        accessible UI.
-                                                    </Text>
+                                        <HoverCard.Content maxWidth="400px">
+                                            <ScrollArea type="always" scrollbars="vertical" style={{ height: 200 }}>
+                                                <Box pr="4">
+                                                    <Heading size="3" mb="3">Unit Comments</Heading>
+                                                    <Flex direction="column" gap="4">
+                                                        {mockComments.map((comment) => (
+                                                            <Flex key={comment.id} gap="3" align="start">
+                                                                <Avatar
+                                                                    size="2"
+                                                                    fallback={comment.user[0]}
+                                                                    radius="full"
+                                                                    variant="soft"
+                                                                    color="blue"
+                                                                />
+                                                                <Box flexGrow="1">
+                                                                    <Flex justify="between" align="center" gap="4" mb="1">
+                                                                        <Text size="2" weight="bold">{comment.user}</Text>
+                                                                        <Text size="1" color="gray">{comment.time}</Text>
+                                                                    </Flex>
+                                                                    <Text as="p" size="2" color="gray" highContrast>
+                                                                        {comment.text}
+                                                                    </Text>
+                                                                </Box>
+                                                            </Flex>
+                                                        ))}
+                                                    </Flex>
                                                 </Box>
-                                            </Flex>
+                                            </ScrollArea>
                                         </HoverCard.Content>
                                     </HoverCard.Root>
                                 </Text>
