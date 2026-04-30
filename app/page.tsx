@@ -148,6 +148,14 @@ export default function Home() {
         ))
     }
 
+    const handleUpdateStatus = (id: number, newStatus: string) => {
+        setTableData(prev => prev.map(item =>
+            item.id === id
+                ? { ...item, status: newStatus }
+                : item
+        ))
+    }
+
     const handleSelectAll = (checked: boolean) => {
         const filteredIds = filteredData.map(item => item.id);
         setTableData(prev => prev.map(item =>
@@ -454,12 +462,36 @@ export default function Home() {
                                 <Table.Cell>{row.issue}</Table.Cell>
                                 <Table.Cell>{row.area}</Table.Cell>
                                 <Table.Cell>
-                                    <Badge variant="soft" color={
-                                        row.status === "Open" ? "red" :
-                                            row.status === "In Progress" ? "blue" : "green"
-                                    }>
-                                        {row.status}
-                                    </Badge>
+                                    <DropdownMenu.Root>
+                                        <DropdownMenu.Trigger>
+                                            <Box className="cursor-pointer hover:opacity-80 transition-opacity">
+                                                <Badge variant="soft" color={
+                                                    row.status === "Open" ? "red" :
+                                                        row.status === "In Progress" ? "blue" : "green"
+                                                } className="gap-1">
+                                                    {row.status}
+                                                    <ChevronDownIcon width="12" height="12"/>
+                                                </Badge>
+                                            </Box>
+                                        </DropdownMenu.Trigger>
+                                        <DropdownMenu.Content>
+                                            <DropdownMenu.Item onClick={() => handleUpdateStatus(row.id, "Open")}>
+                                                <Flex gap="2" align="center">
+                                                    <Badge color="red" variant="soft" size="1">Open</Badge>
+                                                </Flex>
+                                            </DropdownMenu.Item>
+                                            <DropdownMenu.Item onClick={() => handleUpdateStatus(row.id, "In Progress")}>
+                                                <Flex gap="2" align="center">
+                                                    <Badge color="blue" variant="soft" size="1">In Progress</Badge>
+                                                </Flex>
+                                            </DropdownMenu.Item>
+                                            <DropdownMenu.Item onClick={() => handleUpdateStatus(row.id, "Closed")}>
+                                                <Flex gap="2" align="center">
+                                                    <Badge color="green" variant="soft" size="1">Closed</Badge>
+                                                </Flex>
+                                            </DropdownMenu.Item>
+                                        </DropdownMenu.Content>
+                                    </DropdownMenu.Root>
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Badge color={row.priorityColor}>{row.priority}</Badge>
