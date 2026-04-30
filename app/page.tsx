@@ -35,7 +35,7 @@ import {
     Half2Icon, MagnifyingGlassIcon, MixerVerticalIcon, ResetIcon
 } from "@radix-ui/react-icons"
 import Link from "next/link";
-import {useState} from "react";
+import {useMemo, useState} from "react";
 
 
 const TextConfig = {
@@ -134,6 +134,11 @@ export default function Home() {
     const [priorityFilter, setPriorityFilter] = useState<string | null>(null)
     const [areaFilter, setAreaFilter] = useState<string | null>(null)
     const [tableData, setTableData] = useState(mockTableData)
+    const [originalData, setOriginalData] = useState(mockTableData)
+
+    const hasChanges = useMemo(() => {
+        return JSON.stringify(tableData) !== JSON.stringify(originalData);
+    }, [tableData, originalData]);
 
     const handleToggleStatus = (id: number, checked: boolean) => {
         setTableData(prev => prev.map(item =>
@@ -141,6 +146,23 @@ export default function Home() {
                 ? { ...item, status: checked ? "Closed" : "Open" }
                 : item
         ))
+    }
+
+    const handleSelectAll = (checked: boolean) => {
+        const filteredIds = filteredData.map(item => item.id);
+        setTableData(prev => prev.map(item =>
+            filteredIds.includes(item.id)
+                ? { ...item, status: checked ? "Closed" : "Open" }
+                : item
+        ));
+    }
+
+    const handleConfirmChanges = () => {
+        setOriginalData(tableData);
+    }
+
+    const handleResetChanges = () => {
+        setTableData(originalData);
     }
 
     const filteredData = tableData.filter(item => {
@@ -369,19 +391,42 @@ export default function Home() {
                         {(searchQuery || statusFilter || priorityFilter || areaFilter) && (
                             <Flex align="center">
                                 <Button variant="ghost" color="red" onClick={resetFilters}>
-                                    <ResetIcon/> Reset
+                                    <ResetIcon/> Clear Filters
                                 </Button>
                             </Flex>
                         )}
                     </Flex>
+
+                    {hasChanges && (
+                        <Flex gap="3" align="center" className="ml-auto bg-blue-500/10 py-1 px-3 rounded-full border border-blue-500/20">
+                            <Text size="2" color="blue" weight="medium">
+                                Unsaved status changes
+                            </Text>
+                            <Button variant="ghost" size="1" color="gray" onClick={handleResetChanges}>
+                                <ResetIcon /> Reset
+                            </Button>
+                            <Button variant="soft" size="1" color="blue" onClick={handleConfirmChanges}>
+                                <CheckCircledIcon /> Confirm
+                            </Button>
+                        </Flex>
+                    )}
                 </Flex>
 
                 <Table.Root variant="surface">
                     <Table.Header>
                         <Table.Row>
                             <Table.ColumnHeaderCell>
-                                <Flex gap="2">
-                                    <Checkbox/>
+                                <Flex gap="2" align="center">
+                                    <Checkbox
+                                        checked={
+                                            filteredData.length > 0 && filteredData.every(item => item.status === "Closed")
+                                                ? true
+                                                : filteredData.some(item => item.status === "Closed")
+                                                    ? "indeterminate"
+                                                    : false
+                                        }
+                                        onCheckedChange={(checked) => handleSelectAll(checked === true)}
+                                    />
                                     Unit #
                                 </Flex>
                             </Table.ColumnHeaderCell>
