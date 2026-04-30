@@ -1,7 +1,7 @@
 'use client'
 
 
-import {Box, Flex, Grid, IconButton, Separator, Text} from "@radix-ui/themes";
+import {Box, Button, DropdownMenu, Flex, Grid, Heading, IconButton, Separator, Text} from "@radix-ui/themes";
 import {
     CubeIcon,
     DashboardIcon,
@@ -36,7 +36,8 @@ export default function Home() {
         >
             <aside
                 className={`row-start-1 row-end-3 col-start-1 border-r border-white/10 transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-[260px]" : "w-[72px]"}`}>
-                <Flex className="h-[72px] border-b border-white/10 px-4" justify={isSidebarOpen ? "between" : "center"} align="center">
+                <Flex className="h-[72px] border-b border-white/10 px-4" justify={isSidebarOpen ? "between" : "center"}
+                      align="center">
                     {isSidebarOpen && (
                         <Box className="">
                             <Text weight="bold" size="4">ODONTONEXUS</Text>
@@ -51,9 +52,11 @@ export default function Home() {
                     </IconButton>
                 </Flex>
 
-                <Flex direction="column" justify="start" align={isSidebarOpen ? "start" : "center"} className="px-5 py-5" gap="4">
+                <Flex direction="column" justify="start" align={isSidebarOpen ? "start" : "center"}
+                      className="px-5 py-5" gap="4">
                     <Link href="/" className="w-full">
-                        <Flex align="center" gapX="3" className={`${isSidebarOpen ? "bg-white/5 py-2 px-3 rounded-lg" : "justify-center py-2"}`}>
+                        <Flex align="center" gapX="3"
+                              className={`${isSidebarOpen ? "bg-white/5 py-2 px-3 rounded-lg" : "justify-center py-2"}`}>
                             <DashboardIcon className="text-white"/>
                             {isSidebarOpen && <Text {...TextConfig}>Dashboard</Text>}
                         </Flex>
@@ -84,7 +87,8 @@ export default function Home() {
                     </Link>
                 </Flex>
                 <Separator orientation="horizontal" size="4"/>
-                <Flex direction="column" justify="start" align={isSidebarOpen ? "start" : "center"} className="px-5 py-5" gap="4">
+                <Flex direction="column" justify="start" align={isSidebarOpen ? "start" : "center"}
+                      className="px-5 py-5" gap="4">
                     <Link href="/settings" className="w-full">
                         <Flex align="center" gapX="3" className={`${isSidebarOpen ? "px-3" : "justify-center"}`}>
                             <GearIcon/>
@@ -100,9 +104,18 @@ export default function Home() {
                 </Flex>
 
             </aside>
-
-            <header className="row-start-1 col-start-2 border-b border-white/10 px-6 ">
-                TopBar
+            <header className="row-start-1 col-start-2 border-b border-white/10 px-6">
+                <Flex justify="between" align="center" className="h-full">
+                    <Flex direction="column" justify="center" align="start">
+                        <Heading>Dashboard</Heading>
+                        <Text color="gray">
+                            Overview of dental unit status and operational activity
+                        </Text>
+                    </Flex>
+                    <Flex align="center" gap="3">
+                        <Button color="blue">Report Failure</Button>
+                    </Flex>
+                </Flex>
             </header>
 
             <main className="row-start-2 col-start-2 p-6">
