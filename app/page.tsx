@@ -20,7 +20,6 @@ import {
     TextField
 } from "@radix-ui/themes";
 import {
-    BookmarkIcon,
     CheckCircledIcon,
     ChevronDownIcon,
     CubeIcon,
@@ -32,7 +31,7 @@ import {
     ExitIcon,
     GearIcon,
     GridIcon,
-    Half2Icon, MagnifyingGlassIcon, MixerVerticalIcon, ResetIcon
+    Half2Icon, MagnifyingGlassIcon, ResetIcon
 } from "@radix-ui/react-icons"
 import Link from "next/link";
 import {useMemo, useState} from "react";
