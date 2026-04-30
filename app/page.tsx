@@ -1,8 +1,25 @@
 'use client'
 
 
-import {Box, Button, Flex, Grid, Heading, IconButton, Separator, Text} from "@radix-ui/themes";
 import {
+    Box,
+    Button,
+    Card,
+    Flex,
+    Grid,
+    Heading,
+    IconButton,
+    Separator,
+    Table,
+    Text,
+    Checkbox,
+    Badge,
+    HoverCard,
+    Avatar, ScrollArea, Strong
+} from "@radix-ui/themes";
+import {
+    ActivityLogIcon,
+    CheckCircledIcon,
     CubeIcon,
     DashboardIcon,
     DoubleArrowLeftIcon,
@@ -10,7 +27,8 @@ import {
     ExclamationTriangleIcon,
     ExitIcon,
     GearIcon,
-    GridIcon
+    GridIcon,
+    Half2Icon
 } from "@radix-ui/react-icons"
 import Link from "next/link";
 import {useState} from "react";
@@ -22,6 +40,26 @@ const TextConfig = {
     color: "gray" as const,
     highContrast: true,
 }
+
+const dashboardData = {
+    totalUnits: 42,
+    functionalUnits: 28,
+    partiallyFunctionalUnits: 9,
+    nonFunctionalUnits: 5,
+    openReports: 7,
+    unitsInMaintenance: 4,
+    unitsByArea: [
+        {name: "Adultos", total: 18},
+        {name: "Endodoncia", total: 10},
+        {name: "Cirugía", total: 6},
+        {name: "Odontopediatría", total: 8},
+    ],
+    recentReports: [
+        {unit: "Unit 12", issue: "Lamp failure", area: "Adultos"},
+        {unit: "Unit 03", issue: "Pedal issue", area: "Endodoncia"},
+        {unit: "Unit 08", issue: "Micromotor not working", area: "Cirugía"},
+    ],
+};
 
 export default function Home() {
 
@@ -36,7 +74,8 @@ export default function Home() {
         >
             <aside
                 className={`row-start-1 row-end-3 col-start-1 border-r border-border-strong transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-[260px]" : "w-[72px]"}`}>
-                <Flex className="h-[72px] border-b border-border-strong px-4" justify={isSidebarOpen ? "between" : "center"}
+                <Flex className="h-[72px] border-b border-border-strong px-4"
+                      justify={isSidebarOpen ? "between" : "center"}
                       align="center">
                     {isSidebarOpen && (
                         <Box className="">
@@ -118,8 +157,119 @@ export default function Home() {
                 </Flex>
             </header>
 
-            <main className="row-start-2 col-start-2 p-6">
-                Dashboard
+            <main className="row-start-2 col-start-2 p-6 overflow-y-auto">
+                <Grid columns="4" gap="4">
+                    <Card size="1" className="bg-white/5 border-border-strong">
+                        <Flex direction="column" gap="1">
+                            <Flex justify="between" align="center">
+                                <Text size="1" color="gray" weight="medium" className="uppercase tracking-wider">Total
+                                    Units</Text>
+                                <CubeIcon className="text-blue-400"/>
+                            </Flex>
+                            <Heading size="5">42</Heading>
+                        </Flex>
+                    </Card>
+
+                    <Card size="1" className="bg-white/5 border-border-strong">
+                        <Flex direction="column" gap="1">
+                            <Flex justify="between" align="center">
+                                <Text size="1" color="gray" weight="medium"
+                                      className="uppercase tracking-wider">Functional</Text>
+                                <CheckCircledIcon className="text-green-400"/>
+                            </Flex>
+                            <Heading size="5">28</Heading>
+                        </Flex>
+                    </Card>
+
+                    <Card size="1" className="bg-white/5 border-border-strong">
+                        <Flex direction="column" gap="1">
+                            <Flex justify="between" align="center">
+                                <Text size="1" color="gray" weight="medium"
+                                      className="uppercase tracking-wider">Partial</Text>
+                                <Half2Icon className="text-yellow-400"/>
+                            </Flex>
+                            <Heading size="5">9</Heading>
+                        </Flex>
+                    </Card>
+
+                    <Card size="1" className="bg-white/5 border-border-strong">
+                        <Flex direction="column" gap="1">
+                            <Flex justify="between" align="center">
+                                <Text size="1" color="gray" weight="medium"
+                                      className="uppercase tracking-wider">Non-Functional</Text>
+                                <ExclamationTriangleIcon className="text-red-400"/>
+                            </Flex>
+                            <Heading size="5">5</Heading>
+                        </Flex>
+                    </Card>
+                </Grid>
+                <Separator className="my-4" size="4" color="blue"/>
+                <Table.Root variant="surface">
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.ColumnHeaderCell>
+                                <Flex gap="2">
+                                    <Checkbox defaultChecked/>
+                                    Unit #
+                                </Flex>
+                            </Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell>Component / Issue</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell>Area</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell>Priority</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell>Comments</Table.ColumnHeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                        <Table.Row>
+                            <Table.RowHeaderCell>
+                                <Flex gap="2">
+                                    <Checkbox defaultChecked/>
+                                    Unit 12
+                                </Flex>
+                            </Table.RowHeaderCell>
+                            <Table.Cell>Lamp failure</Table.Cell>
+                            <Table.Cell>Adultos</Table.Cell>
+                            <Table.Cell>Open</Table.Cell>
+                            <Table.Cell> <Badge color="orange">Medium</Badge></Table.Cell>
+                            <Table.Cell>
+                                <Text>Current{" "}
+                                    <HoverCard.Root>
+                                        <HoverCard.Trigger>
+                                            <Text color="blue">
+                                                <Strong>Comments</Strong>
+                                            </Text>
+                                        </HoverCard.Trigger>
+                                        <HoverCard.Content maxWidth="300px">
+                                            <Flex gap="4">
+                                                <Avatar
+                                                    size="3"
+                                                    fallback="R"
+                                                    radius="full"
+                                                    src="https://pbs.twimg.com/profile_images/1337055608613253126/r_eiMp2H_400x400.png"
+                                                />
+                                                <Box>
+                                                    <Heading size="3" as="h3">
+                                                        Radix
+                                                    </Heading>
+                                                    <Text as="div" size="2" color="gray" mb="2">
+                                                        @radix_ui
+                                                    </Text>
+                                                    <Text as="div" size="2">
+                                                        React components, icons, and colors for building high-quality,
+                                                        accessible UI.
+                                                    </Text>
+                                                </Box>
+                                            </Flex>
+                                        </HoverCard.Content>
+                                    </HoverCard.Root>
+                                </Text>
+                            </Table.Cell>
+                        </Table.Row>
+                    </Table.Body>
+                </Table.Root>
+
             </main>
         </Grid>
     );
