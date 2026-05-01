@@ -51,7 +51,7 @@ export function SideBar({ isOpen, onToggleAction }: SideBarProps) {
 
             <Flex direction="column" justify="start" align={isOpen ? "start" : "center"}
                   className="px-5 py-5" gap="4">
-                <Link href="/" className="w-full">
+                <Link href="/dashboard" className="w-full">
                     <Flex align="center" gapX="3"
                           className={`${isOpen ? "bg-white/5 py-2 px-3 rounded-lg" : "justify-center py-2"}`}>
                         <DashboardIcon className="text-white"/>
@@ -86,13 +86,13 @@ export function SideBar({ isOpen, onToggleAction }: SideBarProps) {
             <Separator orientation="horizontal" size="4" className="bg-border-strong opacity-100"/>
             <Flex direction="column" justify="start" align={isOpen ? "start" : "center"}
                   className="px-5 py-5" gap="4">
-                <Link href="/settings" className="w-full">
+                <Link href="/dashboard/settings" className="w-full">
                     <Flex align="center" gapX="3" className={`${isOpen ? "px-3" : "justify-center"}`}>
                         <GearIcon/>
                         {isOpen && <Text {...TextConfig} >Settings</Text>}
                     </Flex>
                 </Link>
-                <Link href="/logout" className="w-full">
+                <Link href="/dashboard/logout" className="w-full">
                     <Flex align="center" gapX="3" className={`${isOpen ? "px-3" : "justify-center"}`}>
                         <ExitIcon/>
                         {isOpen && <Text {...TextConfig}>Logout</Text>}
