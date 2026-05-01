@@ -1,13 +1,14 @@
 import {Box, Button, DropdownMenu, Flex, Text, TextField} from "@radix-ui/themes";
 import {CheckCircledIcon, ChevronDownIcon, MagnifyingGlassIcon, ResetIcon} from "@radix-ui/react-icons";
+import {ReportPriority, ReportStatus} from "@/lib/types";
 
 interface ReportsToolbarProps {
     searchQuery: string;
     setSearchQuery: (query: string) => void;
-    statusFilter: string | null;
-    setStatusFilter: (status: string | null) => void;
-    priorityFilter: string | null;
-    setPriorityFilter: (priority: string | null) => void;
+    statusFilter: ReportStatus | null;
+    setStatusFilter: (status: ReportStatus | null) => void;
+    priorityFilter: ReportPriority | null;
+    setPriorityFilter: (priority: ReportPriority | null) => void;
     areaFilter: string | null;
     setAreaFilter: (area: string | null) => void;
     resetFilters: () => void;

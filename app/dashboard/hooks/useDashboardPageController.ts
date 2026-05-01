@@ -1,13 +1,14 @@
 import {useMemo, useState} from "react";
 import {mockTableData} from "@/lib/mock/dashboard-stats";
+import {Report, ReportPriority, ReportStatus} from "@/lib/types";
 
 export function useDashboardPageController() {
     const [searchQuery, setSearchQuery] = useState("")
-    const [statusFilter, setStatusFilter] = useState<string | null>(null)
-    const [priorityFilter, setPriorityFilter] = useState<string | null>(null)
+    const [statusFilter, setStatusFilter] = useState<ReportStatus | null>(null)
+    const [priorityFilter, setPriorityFilter] = useState<ReportPriority | null>(null)
     const [areaFilter, setAreaFilter] = useState<string | null>(null)
-    const [tableData, setTableData] = useState(mockTableData)
-    const [originalData, setOriginalData] = useState(mockTableData)
+    const [tableData, setTableData] = useState<Report[]>(mockTableData)
+    const [originalData, setOriginalData] = useState<Report[]>(mockTableData)
 
     const hasChanges = useMemo(() => {
         return JSON.stringify(tableData) !== JSON.stringify(originalData);
@@ -21,7 +22,7 @@ export function useDashboardPageController() {
         ))
     }
 
-    const handleUpdateStatus = (id: number, newStatus: string) => {
+    const handleUpdateStatus = (id: number, newStatus: ReportStatus) => {
         setTableData(prev => prev.map(item =>
             item.id === id
                 ? {...item, status: newStatus}

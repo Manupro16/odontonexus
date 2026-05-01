@@ -1,4 +1,6 @@
-export const mockTableData = [
+import { Report } from "../types";
+
+export const mockTableData: Report[] = [
     {
         id: 1,
         unit: "Unit 12",

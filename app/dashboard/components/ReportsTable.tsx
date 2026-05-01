@@ -1,12 +1,13 @@
 import {Badge, Box, Checkbox, DropdownMenu, Flex, HoverCard, IconButton, Strong, Table, Text} from "@radix-ui/themes";
 import {ChevronDownIcon, DotsVerticalIcon} from "@radix-ui/react-icons";
 import {CommentsHoverCard} from "./CommentsHoverCard";
+import {Report, ReportStatus} from "@/lib/types";
 
 interface ReportsTableProps {
-    filteredData: any[];
+    filteredData: Report[];
     handleSelectAll: (checked: boolean) => void;
     handleToggleStatus: (id: number, checked: boolean) => void;
-    handleUpdateStatus: (id: number, newStatus: string) => void;
+    handleUpdateStatus: (id: number, newStatus: ReportStatus) => void;
 }
 
 export function ReportsTable({
