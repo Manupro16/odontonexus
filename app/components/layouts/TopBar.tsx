@@ -1,20 +1,53 @@
-import { Flex, Text, Button } from "@radix-ui/themes";
+import {
+    Box,
+    Button,
+    Card,
+    Flex,
+    Grid,
+    Heading,
+    IconButton,
+    Separator,
+    Table,
+    Text,
+    Checkbox,
+    Badge,
+    HoverCard,
+    Avatar, ScrollArea, Strong,
+    DropdownMenu,
+    TextField
+} from "@radix-ui/themes";
+
+import {
+    CheckCircledIcon,
+    ChevronDownIcon,
+    CubeIcon,
+    DashboardIcon,
+    DotsVerticalIcon,
+    DoubleArrowLeftIcon,
+    DoubleArrowRightIcon,
+    ExclamationTriangleIcon,
+    ExitIcon,
+    GearIcon,
+    GridIcon,
+    Half2Icon, MagnifyingGlassIcon, ResetIcon
+} from "@radix-ui/react-icons"
 
 export default function TopBar() {
-  return (
-    <header className="border-b border-white/10 px-6 py-4">
-      <Flex justify="between" align="center">
-        <div>
-          <Text as="p" weight="bold" size="5" className="text-white">
-            Dashboard
-          </Text>
-          <Text as="p" size="2" className="text-white/60">
-            Overview of dental unit status and operational activity
-          </Text>
-        </div>
+    return (
+        <header className="row-start-1 col-start-2 border-b border-border-strong px-6">
+            <Flex justify="between" align="center" className="h-full">
+                <Flex direction="column" justify="center" align="start">
+                    <Heading>Dashboard</Heading>
+                    <Text color="gray">
+                        Overview of dental unit status and operational activity
+                    </Text>
+                </Flex>
+                <Flex align="center" gap="3">
+                    <Button color="blue">Report Failure</Button>
+                </Flex>
+            </Flex>
+        </header>
 
-        <Button>Report Failure</Button>
-      </Flex>
-    </header>
-  );
+
+    );
 }
