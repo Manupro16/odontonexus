@@ -58,13 +58,13 @@ export function SideBar({ isOpen, onToggleAction }: SideBarProps) {
                         {isOpen && <Text {...TextConfig}>Dashboard</Text>}
                     </Flex>
                 </Link>
-                <Link href="/unit" className="w-full">
+                <Link href="/units" className="w-full">
                     <Flex align="center" gapX="3" className={`${isOpen ? "px-3" : "justify-center"}`}>
                         <CubeIcon/>
                         {isOpen && <Text {...TextConfig}>Units</Text>}
                     </Flex>
                 </Link>
-                <Link href="/report" className="w-full">
+                <Link href="/reports" className="w-full">
                     <Flex align="center" gapX="3" className={`${isOpen ? "px-3" : "justify-center"}`}>
                         <ExclamationTriangleIcon/>
                         {isOpen && <Text {...TextConfig}>Reports</Text>}
