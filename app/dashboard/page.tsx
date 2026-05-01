@@ -36,7 +36,6 @@ import {useMemo, useState} from "react";
 export default function DashBoard() {
 
 
-
     const [searchQuery, setSearchQuery] = useState("")
     const [statusFilter, setStatusFilter] = useState<string | null>(null)
     const [priorityFilter, setPriorityFilter] = useState<string | null>(null)
@@ -51,7 +50,7 @@ export default function DashBoard() {
     const handleToggleStatus = (id: number, checked: boolean) => {
         setTableData(prev => prev.map(item =>
             item.id === id
-                ? { ...item, status: checked ? "Closed" : "Open" }
+                ? {...item, status: checked ? "Closed" : "Open"}
                 : item
         ))
     }
@@ -59,7 +58,7 @@ export default function DashBoard() {
     const handleUpdateStatus = (id: number, newStatus: string) => {
         setTableData(prev => prev.map(item =>
             item.id === id
-                ? { ...item, status: newStatus }
+                ? {...item, status: newStatus}
                 : item
         ))
     }
@@ -68,7 +67,7 @@ export default function DashBoard() {
         const filteredIds = filteredData.map(item => item.id);
         setTableData(prev => prev.map(item =>
             filteredIds.includes(item.id)
-                ? { ...item, status: checked ? "Closed" : "Open" }
+                ? {...item, status: checked ? "Closed" : "Open"}
                 : item
         ));
     }
@@ -99,290 +98,292 @@ export default function DashBoard() {
 
 
     return (
-                    <main className="row-start-2 col-start-2 p-6 overflow-y-auto">
-                <Grid columns="4" gap="4">
-                    <Card size="1" className="bg-white/5 border-border-strong">
-                        <Flex direction="column" gap="1">
-                            <Flex justify="between" align="center">
-                                <Text size="1" color="gray" weight="medium" className="uppercase tracking-wider">Total
-                                    Units</Text>
-                                <CubeIcon className="text-blue-400"/>
-                            </Flex>
-                            <Heading size="5">42</Heading>
+
+        <>
+            <Grid columns="4" gap="4">
+                <Card size="1" className="bg-white/5 border-border-strong">
+                    <Flex direction="column" gap="1">
+                        <Flex justify="between" align="center">
+                            <Text size="1" color="gray" weight="medium" className="uppercase tracking-wider">Total
+                                Units</Text>
+                            <CubeIcon className="text-blue-400"/>
                         </Flex>
-                    </Card>
-
-                    <Card size="1" className="bg-white/5 border-border-strong">
-                        <Flex direction="column" gap="1">
-                            <Flex justify="between" align="center">
-                                <Text size="1" color="gray" weight="medium"
-                                      className="uppercase tracking-wider">Functional</Text>
-                                <CheckCircledIcon className="text-green-400"/>
-                            </Flex>
-                            <Heading size="5">28</Heading>
-                        </Flex>
-                    </Card>
-
-                    <Card size="1" className="bg-white/5 border-border-strong">
-                        <Flex direction="column" gap="1">
-                            <Flex justify="between" align="center">
-                                <Text size="1" color="gray" weight="medium"
-                                      className="uppercase tracking-wider">Partial</Text>
-                                <Half2Icon className="text-yellow-400"/>
-                            </Flex>
-                            <Heading size="5">9</Heading>
-                        </Flex>
-                    </Card>
-
-                    <Card size="1" className="bg-white/5 border-border-strong">
-                        <Flex direction="column" gap="1">
-                            <Flex justify="between" align="center">
-                                <Text size="1" color="gray" weight="medium"
-                                      className="uppercase tracking-wider">Non-Functional</Text>
-                                <ExclamationTriangleIcon className="text-red-400"/>
-                            </Flex>
-                            <Heading size="5">5</Heading>
-                        </Flex>
-                    </Card>
-                </Grid>
-                <Separator className="my-4" size="4" color="blue"/>
-                <Flex gap="4" align="center" mb="4">
-                    <Box flexGrow="1">
-                        <TextField.Root
-                            placeholder="Search unit or issue..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        >
-                            <TextField.Slot>
-                                <MagnifyingGlassIcon height="16" width="16"/>
-                            </TextField.Slot>
-                        </TextField.Root>
-                    </Box>
-                    <Flex gap="3">
-                        <DropdownMenu.Root>
-                            <DropdownMenu.Trigger>
-                                <Button variant="soft" color="gray">
-                                    Status: {statusFilter || "All"}
-                                    <ChevronDownIcon/>
-                                </Button>
-                            </DropdownMenu.Trigger>
-                            <DropdownMenu.Content>
-                                <DropdownMenu.Item onClick={() => setStatusFilter(null)}>All
-                                    Statuses</DropdownMenu.Item>
-                                <DropdownMenu.Separator/>
-                                <DropdownMenu.Item onClick={() => setStatusFilter("Open")}>Open</DropdownMenu.Item>
-                                <DropdownMenu.Item onClick={() => setStatusFilter("In Progress")}>In
-                                    Progress</DropdownMenu.Item>
-                                <DropdownMenu.Item onClick={() => setStatusFilter("Closed")}>Closed</DropdownMenu.Item>
-                            </DropdownMenu.Content>
-                        </DropdownMenu.Root>
-
-                        <DropdownMenu.Root>
-                            <DropdownMenu.Trigger>
-                                <Button variant="soft" color="gray">
-                                    Priority: {priorityFilter || "All"}
-                                    <ChevronDownIcon/>
-                                </Button>
-                            </DropdownMenu.Trigger>
-                            <DropdownMenu.Content>
-                                <DropdownMenu.Item onClick={() => setPriorityFilter(null)}>All
-                                    Priorities</DropdownMenu.Item>
-                                <DropdownMenu.Separator/>
-                                <DropdownMenu.Item onClick={() => setPriorityFilter("High")}>High</DropdownMenu.Item>
-                                <DropdownMenu.Item
-                                    onClick={() => setPriorityFilter("Medium")}>Medium</DropdownMenu.Item>
-                                <DropdownMenu.Item onClick={() => setPriorityFilter("Low")}>Low</DropdownMenu.Item>
-                            </DropdownMenu.Content>
-                        </DropdownMenu.Root>
-
-                        <DropdownMenu.Root>
-                            <DropdownMenu.Trigger>
-                                <Button variant="soft" color="gray">
-                                    Area: {areaFilter || "All"}
-                                    <ChevronDownIcon/>
-                                </Button>
-                            </DropdownMenu.Trigger>
-                            <DropdownMenu.Content>
-                                <DropdownMenu.Item onClick={() => setAreaFilter(null)}>All Areas</DropdownMenu.Item>
-                                <DropdownMenu.Separator/>
-                                <DropdownMenu.Item onClick={() => setAreaFilter("Adultos")}>Adultos</DropdownMenu.Item>
-                                <DropdownMenu.Item
-                                    onClick={() => setAreaFilter("Endodoncia")}>Endodoncia</DropdownMenu.Item>
-                                <DropdownMenu.Item onClick={() => setAreaFilter("Cirugía")}>Cirugía</DropdownMenu.Item>
-                                <DropdownMenu.Item
-                                    onClick={() => setAreaFilter("Odontopediatría")}>Odontopediatría</DropdownMenu.Item>
-                            </DropdownMenu.Content>
-                        </DropdownMenu.Root>
-
-                        {(searchQuery || statusFilter || priorityFilter || areaFilter) && (
-                            <Flex align="center">
-                                <Button variant="ghost" color="red" onClick={resetFilters}>
-                                    <ResetIcon/> Clear Filters
-                                </Button>
-                            </Flex>
-                        )}
+                        <Heading size="5">42</Heading>
                     </Flex>
+                </Card>
 
-                    {hasChanges && (
-                        <Flex gap="3" align="center" className="ml-auto bg-blue-500/10 py-1 px-3 rounded-full border border-blue-500/20">
-                            <Text size="2" color="blue" weight="medium">
-                                Unsaved status changes
-                            </Text>
-                            <Button variant="ghost" size="1" color="gray" onClick={handleResetChanges}>
-                                <ResetIcon /> Reset
+                <Card size="1" className="bg-white/5 border-border-strong">
+                    <Flex direction="column" gap="1">
+                        <Flex justify="between" align="center">
+                            <Text size="1" color="gray" weight="medium"
+                                  className="uppercase tracking-wider">Functional</Text>
+                            <CheckCircledIcon className="text-green-400"/>
+                        </Flex>
+                        <Heading size="5">28</Heading>
+                    </Flex>
+                </Card>
+
+                <Card size="1" className="bg-white/5 border-border-strong">
+                    <Flex direction="column" gap="1">
+                        <Flex justify="between" align="center">
+                            <Text size="1" color="gray" weight="medium"
+                                  className="uppercase tracking-wider">Partial</Text>
+                            <Half2Icon className="text-yellow-400"/>
+                        </Flex>
+                        <Heading size="5">9</Heading>
+                    </Flex>
+                </Card>
+
+                <Card size="1" className="bg-white/5 border-border-strong">
+                    <Flex direction="column" gap="1">
+                        <Flex justify="between" align="center">
+                            <Text size="1" color="gray" weight="medium"
+                                  className="uppercase tracking-wider">Non-Functional</Text>
+                            <ExclamationTriangleIcon className="text-red-400"/>
+                        </Flex>
+                        <Heading size="5">5</Heading>
+                    </Flex>
+                </Card>
+            </Grid>
+            <Separator className="my-4" size="4" color="blue"/>
+            <Flex gap="4" align="center" mb="4">
+                <Box flexGrow="1">
+                    <TextField.Root
+                        placeholder="Search unit or issue..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    >
+                        <TextField.Slot>
+                            <MagnifyingGlassIcon height="16" width="16"/>
+                        </TextField.Slot>
+                    </TextField.Root>
+                </Box>
+                <Flex gap="3">
+                    <DropdownMenu.Root>
+                        <DropdownMenu.Trigger>
+                            <Button variant="soft" color="gray">
+                                Status: {statusFilter || "All"}
+                                <ChevronDownIcon/>
                             </Button>
-                            <Button variant="soft" size="1" color="blue" onClick={handleConfirmChanges}>
-                                <CheckCircledIcon /> Confirm
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content>
+                            <DropdownMenu.Item onClick={() => setStatusFilter(null)}>All
+                                Statuses</DropdownMenu.Item>
+                            <DropdownMenu.Separator/>
+                            <DropdownMenu.Item onClick={() => setStatusFilter("Open")}>Open</DropdownMenu.Item>
+                            <DropdownMenu.Item onClick={() => setStatusFilter("In Progress")}>In
+                                Progress</DropdownMenu.Item>
+                            <DropdownMenu.Item onClick={() => setStatusFilter("Closed")}>Closed</DropdownMenu.Item>
+                        </DropdownMenu.Content>
+                    </DropdownMenu.Root>
+
+                    <DropdownMenu.Root>
+                        <DropdownMenu.Trigger>
+                            <Button variant="soft" color="gray">
+                                Priority: {priorityFilter || "All"}
+                                <ChevronDownIcon/>
+                            </Button>
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content>
+                            <DropdownMenu.Item onClick={() => setPriorityFilter(null)}>All
+                                Priorities</DropdownMenu.Item>
+                            <DropdownMenu.Separator/>
+                            <DropdownMenu.Item onClick={() => setPriorityFilter("High")}>High</DropdownMenu.Item>
+                            <DropdownMenu.Item
+                                onClick={() => setPriorityFilter("Medium")}>Medium</DropdownMenu.Item>
+                            <DropdownMenu.Item onClick={() => setPriorityFilter("Low")}>Low</DropdownMenu.Item>
+                        </DropdownMenu.Content>
+                    </DropdownMenu.Root>
+
+                    <DropdownMenu.Root>
+                        <DropdownMenu.Trigger>
+                            <Button variant="soft" color="gray">
+                                Area: {areaFilter || "All"}
+                                <ChevronDownIcon/>
+                            </Button>
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content>
+                            <DropdownMenu.Item onClick={() => setAreaFilter(null)}>All Areas</DropdownMenu.Item>
+                            <DropdownMenu.Separator/>
+                            <DropdownMenu.Item onClick={() => setAreaFilter("Adultos")}>Adultos</DropdownMenu.Item>
+                            <DropdownMenu.Item
+                                onClick={() => setAreaFilter("Endodoncia")}>Endodoncia</DropdownMenu.Item>
+                            <DropdownMenu.Item onClick={() => setAreaFilter("Cirugía")}>Cirugía</DropdownMenu.Item>
+                            <DropdownMenu.Item
+                                onClick={() => setAreaFilter("Odontopediatría")}>Odontopediatría</DropdownMenu.Item>
+                        </DropdownMenu.Content>
+                    </DropdownMenu.Root>
+
+                    {(searchQuery || statusFilter || priorityFilter || areaFilter) && (
+                        <Flex align="center">
+                            <Button variant="ghost" color="red" onClick={resetFilters}>
+                                <ResetIcon/> Clear Filters
                             </Button>
                         </Flex>
                     )}
                 </Flex>
 
-                <Table.Root variant="surface">
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.ColumnHeaderCell>
-                                <Flex gap="2" align="center">
-                                    <Checkbox
-                                        checked={
-                                            filteredData.length > 0 && filteredData.every(item => item.status === "Closed")
-                                                ? true
-                                                : filteredData.some(item => item.status === "Closed")
-                                                    ? "indeterminate"
-                                                    : false
-                                        }
-                                        onCheckedChange={(checked) => handleSelectAll(checked === true)}
-                                    />
-                                    Unit #
-                                </Flex>
-                            </Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Component / Issue</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Area</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Priority</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Comments</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Extra</Table.ColumnHeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-
-                    <Table.Body>
-                        {filteredData.map((row) => (
-                            <Table.Row key={row.id}>
-                                <Table.RowHeaderCell>
-                                    <Flex gap="2" align="center">
-                                         <Checkbox
-                                             checked={row.status === "Closed"}
-                                             onCheckedChange={(checked) => handleToggleStatus(row.id, checked === true)}
-                                         />
-                                        {row.unit}
-                                    </Flex>
-                                </Table.RowHeaderCell>
-                                <Table.Cell>{row.issue}</Table.Cell>
-                                <Table.Cell>{row.area}</Table.Cell>
-                                <Table.Cell>
-                                    <DropdownMenu.Root>
-                                        <DropdownMenu.Trigger>
-                                            <Box className="cursor-pointer hover:opacity-80 transition-opacity">
-                                                <Badge variant="soft" color={
-                                                    row.status === "Open" ? "red" :
-                                                        row.status === "In Progress" ? "blue" : "green"
-                                                } className="gap-1">
-                                                    {row.status}
-                                                    <ChevronDownIcon width="12" height="12"/>
-                                                </Badge>
-                                            </Box>
-                                        </DropdownMenu.Trigger>
-                                        <DropdownMenu.Content>
-                                            <DropdownMenu.Item onClick={() => handleUpdateStatus(row.id, "Open")}>
-                                                <Flex gap="2" align="center">
-                                                    <Badge color="red" variant="soft" size="1">Open</Badge>
-                                                </Flex>
-                                            </DropdownMenu.Item>
-                                            <DropdownMenu.Item onClick={() => handleUpdateStatus(row.id, "In Progress")}>
-                                                <Flex gap="2" align="center">
-                                                    <Badge color="blue" variant="soft" size="1">In Progress</Badge>
-                                                </Flex>
-                                            </DropdownMenu.Item>
-                                            <DropdownMenu.Item onClick={() => handleUpdateStatus(row.id, "Closed")}>
-                                                <Flex gap="2" align="center">
-                                                    <Badge color="green" variant="soft" size="1">Closed</Badge>
-                                                </Flex>
-                                            </DropdownMenu.Item>
-                                        </DropdownMenu.Content>
-                                    </DropdownMenu.Root>
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <Badge color={row.priorityColor}>{row.priority}</Badge>
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <HoverCard.Root>
-                                        <HoverCard.Trigger>
-                                            <Text color="blue" className="cursor-pointer hover:underline">
-                                                <Strong>Comments</Strong>
-                                            </Text>
-                                        </HoverCard.Trigger>
-                                        <HoverCard.Content maxWidth="400px">
-                                            <ScrollArea type="always" scrollbars="vertical" style={{height: 200}}>
-                                                <Box pr="4">
-                                                    <Heading size="3" mb="3">Unit Comments</Heading>
-                                                    <Flex direction="column" gap="4">
-                                                        {mockComments.map((comment) => (
-                                                            <Flex key={comment.id} gap="3" align="start">
-                                                                <Avatar
-                                                                    size="2"
-                                                                    fallback={comment.user[0]}
-                                                                    radius="full"
-                                                                    variant="soft"
-                                                                    color="blue"
-                                                                />
-                                                                <Box flexGrow="1">
-                                                                    <Flex justify="between" align="center" gap="4"
-                                                                          mb="1">
-                                                                        <Text size="2"
-                                                                              weight="bold">{comment.user}</Text>
-                                                                        <Text size="1"
-                                                                              color="gray">{comment.time}</Text>
-                                                                    </Flex>
-                                                                    <Text as="p" size="2" color="gray" highContrast>
-                                                                        {comment.text}
-                                                                    </Text>
-                                                                </Box>
-                                                            </Flex>
-                                                        ))}
-                                                    </Flex>
-                                                </Box>
-                                            </ScrollArea>
-                                        </HoverCard.Content>
-                                    </HoverCard.Root>
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <DropdownMenu.Root>
-                                        <DropdownMenu.Trigger>
-                                            <IconButton variant="ghost" color="gray">
-                                                <DotsVerticalIcon/>
-                                            </IconButton>
-                                        </DropdownMenu.Trigger>
-                                        <DropdownMenu.Content>
-                                            <DropdownMenu.Item>View Details</DropdownMenu.Item>
-                                            <DropdownMenu.Item>Edit Unit</DropdownMenu.Item>
-                                            <DropdownMenu.Separator/>
-                                            <DropdownMenu.Item>Assign Maintenance</DropdownMenu.Item>
-                                            <DropdownMenu.Item color="red">Mark Out of Service</DropdownMenu.Item>
-                                        </DropdownMenu.Content>
-                                    </DropdownMenu.Root>
-                                </Table.Cell>
-                            </Table.Row>
-                        ))}
-                    </Table.Body>
-                </Table.Root>
-
-                {filteredData.length === 0 && (
-                    <Flex direction="column" align="center" justify="center" py="9" gap="2">
-                        <Text color="gray" size="4">No units found matching your criteria</Text>
-                        <Button variant="soft" onClick={resetFilters}>Clear all filters</Button>
+                {hasChanges && (
+                    <Flex gap="3" align="center"
+                          className="ml-auto bg-blue-500/10 py-1 px-3 rounded-full border border-blue-500/20">
+                        <Text size="2" color="blue" weight="medium">
+                            Unsaved status changes
+                        </Text>
+                        <Button variant="ghost" size="1" color="gray" onClick={handleResetChanges}>
+                            <ResetIcon/> Reset
+                        </Button>
+                        <Button variant="soft" size="1" color="blue" onClick={handleConfirmChanges}>
+                            <CheckCircledIcon/> Confirm
+                        </Button>
                     </Flex>
                 )}
+            </Flex>
 
-            </main>
+            <Table.Root variant="surface">
+                <Table.Header>
+                    <Table.Row>
+                        <Table.ColumnHeaderCell>
+                            <Flex gap="2" align="center">
+                                <Checkbox
+                                    checked={
+                                        filteredData.length > 0 && filteredData.every(item => item.status === "Closed")
+                                            ? true
+                                            : filteredData.some(item => item.status === "Closed")
+                                                ? "indeterminate"
+                                                : false
+                                    }
+                                    onCheckedChange={(checked) => handleSelectAll(checked === true)}
+                                />
+                                Unit #
+                            </Flex>
+                        </Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Component / Issue</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Area</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Priority</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Comments</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Extra</Table.ColumnHeaderCell>
+                    </Table.Row>
+                </Table.Header>
+
+                <Table.Body>
+                    {filteredData.map((row) => (
+                        <Table.Row key={row.id}>
+                            <Table.RowHeaderCell>
+                                <Flex gap="2" align="center">
+                                    <Checkbox
+                                        checked={row.status === "Closed"}
+                                        onCheckedChange={(checked) => handleToggleStatus(row.id, checked === true)}
+                                    />
+                                    {row.unit}
+                                </Flex>
+                            </Table.RowHeaderCell>
+                            <Table.Cell>{row.issue}</Table.Cell>
+                            <Table.Cell>{row.area}</Table.Cell>
+                            <Table.Cell>
+                                <DropdownMenu.Root>
+                                    <DropdownMenu.Trigger>
+                                        <Box className="cursor-pointer hover:opacity-80 transition-opacity">
+                                            <Badge variant="soft" color={
+                                                row.status === "Open" ? "red" :
+                                                    row.status === "In Progress" ? "blue" : "green"
+                                            } className="gap-1">
+                                                {row.status}
+                                                <ChevronDownIcon width="12" height="12"/>
+                                            </Badge>
+                                        </Box>
+                                    </DropdownMenu.Trigger>
+                                    <DropdownMenu.Content>
+                                        <DropdownMenu.Item onClick={() => handleUpdateStatus(row.id, "Open")}>
+                                            <Flex gap="2" align="center">
+                                                <Badge color="red" variant="soft" size="1">Open</Badge>
+                                            </Flex>
+                                        </DropdownMenu.Item>
+                                        <DropdownMenu.Item onClick={() => handleUpdateStatus(row.id, "In Progress")}>
+                                            <Flex gap="2" align="center">
+                                                <Badge color="blue" variant="soft" size="1">In Progress</Badge>
+                                            </Flex>
+                                        </DropdownMenu.Item>
+                                        <DropdownMenu.Item onClick={() => handleUpdateStatus(row.id, "Closed")}>
+                                            <Flex gap="2" align="center">
+                                                <Badge color="green" variant="soft" size="1">Closed</Badge>
+                                            </Flex>
+                                        </DropdownMenu.Item>
+                                    </DropdownMenu.Content>
+                                </DropdownMenu.Root>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Badge color={row.priorityColor}>{row.priority}</Badge>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <HoverCard.Root>
+                                    <HoverCard.Trigger>
+                                        <Text color="blue" className="cursor-pointer hover:underline">
+                                            <Strong>Comments</Strong>
+                                        </Text>
+                                    </HoverCard.Trigger>
+                                    <HoverCard.Content maxWidth="400px">
+                                        <ScrollArea type="always" scrollbars="vertical" style={{height: 200}}>
+                                            <Box pr="4">
+                                                <Heading size="3" mb="3">Unit Comments</Heading>
+                                                <Flex direction="column" gap="4">
+                                                    {mockComments.map((comment) => (
+                                                        <Flex key={comment.id} gap="3" align="start">
+                                                            <Avatar
+                                                                size="2"
+                                                                fallback={comment.user[0]}
+                                                                radius="full"
+                                                                variant="soft"
+                                                                color="blue"
+                                                            />
+                                                            <Box flexGrow="1">
+                                                                <Flex justify="between" align="center" gap="4"
+                                                                      mb="1">
+                                                                    <Text size="2"
+                                                                          weight="bold">{comment.user}</Text>
+                                                                    <Text size="1"
+                                                                          color="gray">{comment.time}</Text>
+                                                                </Flex>
+                                                                <Text as="p" size="2" color="gray" highContrast>
+                                                                    {comment.text}
+                                                                </Text>
+                                                            </Box>
+                                                        </Flex>
+                                                    ))}
+                                                </Flex>
+                                            </Box>
+                                        </ScrollArea>
+                                    </HoverCard.Content>
+                                </HoverCard.Root>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <DropdownMenu.Root>
+                                    <DropdownMenu.Trigger>
+                                        <IconButton variant="ghost" color="gray">
+                                            <DotsVerticalIcon/>
+                                        </IconButton>
+                                    </DropdownMenu.Trigger>
+                                    <DropdownMenu.Content>
+                                        <DropdownMenu.Item>View Details</DropdownMenu.Item>
+                                        <DropdownMenu.Item>Edit Unit</DropdownMenu.Item>
+                                        <DropdownMenu.Separator/>
+                                        <DropdownMenu.Item>Assign Maintenance</DropdownMenu.Item>
+                                        <DropdownMenu.Item color="red">Mark Out of Service</DropdownMenu.Item>
+                                    </DropdownMenu.Content>
+                                </DropdownMenu.Root>
+                            </Table.Cell>
+                        </Table.Row>
+                    ))}
+                </Table.Body>
+            </Table.Root>
+
+            {filteredData.length === 0 && (
+                <Flex direction="column" align="center" justify="center" py="9" gap="2">
+                    <Text color="gray" size="4">No units found matching your criteria</Text>
+                    <Button variant="soft" onClick={resetFilters}>Clear all filters</Button>
+                </Flex>
+            )}
+
+        </>
     );
 }
