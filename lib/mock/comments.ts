@@ -1,4 +1,4 @@
-const mockComments = [
+export const mockComments = [
     {
         id: 1,
         user: "Dr. Smith",

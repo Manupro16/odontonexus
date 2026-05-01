@@ -58,25 +58,25 @@ export function SideBar({ isOpen, onToggleAction }: SideBarProps) {
                         {isOpen && <Text {...TextConfig}>Dashboard</Text>}
                     </Flex>
                 </Link>
-                <Link href="/units" className="w-full">
+                <Link href="/dashboard/units" className="w-full">
                     <Flex align="center" gapX="3" className={`${isOpen ? "px-3" : "justify-center"}`}>
                         <CubeIcon/>
                         {isOpen && <Text {...TextConfig}>Units</Text>}
                     </Flex>
                 </Link>
-                <Link href="/reports" className="w-full">
+                <Link href="/dashboard/reports" className="w-full">
                     <Flex align="center" gapX="3" className={`${isOpen ? "px-3" : "justify-center"}`}>
                         <ExclamationTriangleIcon/>
                         {isOpen && <Text {...TextConfig}>Reports</Text>}
                     </Flex>
                 </Link>
-                <Link href="/maintenance" className="w-full">
+                <Link href="/dashboard/maintenance" className="w-full">
                     <Flex align="center" gapX="3" className={`${isOpen ? "px-3" : "justify-center"}`}>
                         <GearIcon/>
                         {isOpen && <Text {...TextConfig}>Maintenance</Text>}
                     </Flex>
                 </Link>
-                <Link href="/areas" className="w-full">
+                <Link href="/dashboard/areas" className="w-full">
                     <Flex align="center" gapX="3" className={`${isOpen ? "px-3" : "justify-center"}`}>
                         <GridIcon/>
                         {isOpen && <Text {...TextConfig}>Areas</Text>}

@@ -1,4 +1,4 @@
-const mockTableData = [
+export const mockTableData = [
     {
         id: 1,
         unit: "Unit 12",

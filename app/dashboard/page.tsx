@@ -32,6 +32,8 @@ import {
     ResetIcon
 } from "@radix-ui/react-icons"
 import {useMemo, useState} from "react";
+import {mockTableData} from "@/lib/mock/dashboard-stats";
+import {mockComments} from "@/lib/mock/comments";
 
 export default function DashBoard() {
 
