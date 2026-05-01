@@ -24,13 +24,13 @@ const routeConfig: Record<string, { title: string; subtitle: string }> = {
         title: "Areas",
         subtitle: "Organize units by clinic zones"
     },
-    "/settings": {
-        title: "Settings",
-        subtitle: "Configure your account and application preferences"
-    },
     "/dashboard/settings": {
         title: "Settings",
         subtitle: "Configure your account and application preferences"
+    },
+    "/dashboard/logout": {
+        title: "Logout",
+        subtitle: "Sign out of your account"
     }
 };
 
