@@ -1,36 +1,4 @@
-import {
-    Box,
-    Button,
-    Card,
-    Flex,
-    Grid,
-    Heading,
-    IconButton,
-    Separator,
-    Table,
-    Text,
-    Checkbox,
-    Badge,
-    HoverCard,
-    Avatar, ScrollArea, Strong,
-    DropdownMenu,
-    TextField
-} from "@radix-ui/themes";
-
-import {
-    CheckCircledIcon,
-    ChevronDownIcon,
-    CubeIcon,
-    DashboardIcon,
-    DotsVerticalIcon,
-    DoubleArrowLeftIcon,
-    DoubleArrowRightIcon,
-    ExclamationTriangleIcon,
-    ExitIcon,
-    GearIcon,
-    GridIcon,
-    Half2Icon, MagnifyingGlassIcon, ResetIcon
-} from "@radix-ui/react-icons"
+import {Button, Flex, Heading, Text} from "@radix-ui/themes";
 
 export default function TopBar() {
     return (

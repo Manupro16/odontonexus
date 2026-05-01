@@ -1,37 +1,16 @@
 'use client'
 
-import {
-    Box,
-    Button,
-    Card,
-    Flex,
-    Grid,
-    Heading,
-    IconButton,
-    Separator,
-    Table,
-    Text,
-    Checkbox,
-    Badge,
-    HoverCard,
-    Avatar, ScrollArea, Strong,
-    DropdownMenu,
-    TextField
-} from "@radix-ui/themes";
+import {Box, Flex, IconButton, Separator, Text} from "@radix-ui/themes";
 
 import {
-    CheckCircledIcon,
-    ChevronDownIcon,
     CubeIcon,
     DashboardIcon,
-    DotsVerticalIcon,
     DoubleArrowLeftIcon,
     DoubleArrowRightIcon,
     ExclamationTriangleIcon,
     ExitIcon,
     GearIcon,
-    GridIcon,
-    Half2Icon, MagnifyingGlassIcon, ResetIcon
+    GridIcon
 } from "@radix-ui/react-icons"
 import Link from "next/link";
 import {useState} from "react";
