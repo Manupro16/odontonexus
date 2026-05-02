@@ -79,7 +79,7 @@ export function UnitDetailsDialog({unit, trigger}: UnitDetailsDialogProps) {
                             <DataList.Item>
                                 <DataList.Label color="gray">Serial Number</DataList.Label>
                                 <DataList.Value>
-                                    <Text family="mono" size="2">{unit.serialNumber || "N/A"}</Text>
+                                    <Text size="2">{unit.serialNumber || "N/A"}</Text>
                                 </DataList.Value>
                             </DataList.Item>
                             <DataList.Item>
@@ -112,7 +112,7 @@ export function UnitDetailsDialog({unit, trigger}: UnitDetailsDialogProps) {
                             <Flex gap="2" align="start">
                                 <InfoCircledIcon className="mt-1" />
                                 <Box>
-                                    <Strong size="2">Observations</Strong>
+                                    <Strong >Observations</Strong>
                                     <Text as="p" size="2" color="gray">
                                         {unit.observations}
                                     </Text>
