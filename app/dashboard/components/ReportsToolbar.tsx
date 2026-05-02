@@ -1,6 +1,7 @@
 import {Box, Button, DropdownMenu, Flex, Text, TextField} from "@radix-ui/themes";
 import {CheckCircledIcon, ChevronDownIcon, MagnifyingGlassIcon, ResetIcon} from "@radix-ui/react-icons";
 import {ReportPriority, ReportStatus} from "@/lib/types";
+import {AREAS, REPORT_PRIORITIES, REPORT_STATUSES} from "@/lib/constants";
 
 interface ReportsToolbarProps {
     searchQuery: string;
@@ -56,10 +57,11 @@ export function ReportsToolbar({
                         <DropdownMenu.Item onClick={() => setStatusFilter(null)}>All
                             Statuses</DropdownMenu.Item>
                         <DropdownMenu.Separator/>
-                        <DropdownMenu.Item onClick={() => setStatusFilter("Open")}>Open</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setStatusFilter("In Progress")}>In
-                            Progress</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setStatusFilter("Closed")}>Closed</DropdownMenu.Item>
+                        {REPORT_STATUSES.map(status => (
+                            <DropdownMenu.Item key={status} onClick={() => setStatusFilter(status)}>
+                                {status}
+                            </DropdownMenu.Item>
+                        ))}
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
@@ -74,10 +76,11 @@ export function ReportsToolbar({
                         <DropdownMenu.Item onClick={() => setPriorityFilter(null)}>All
                             Priorities</DropdownMenu.Item>
                         <DropdownMenu.Separator/>
-                        <DropdownMenu.Item onClick={() => setPriorityFilter("High")}>High</DropdownMenu.Item>
-                        <DropdownMenu.Item
-                            onClick={() => setPriorityFilter("Medium")}>Medium</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setPriorityFilter("Low")}>Low</DropdownMenu.Item>
+                        {REPORT_PRIORITIES.map(priority => (
+                            <DropdownMenu.Item key={priority} onClick={() => setPriorityFilter(priority)}>
+                                {priority}
+                            </DropdownMenu.Item>
+                        ))}
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
@@ -91,12 +94,11 @@ export function ReportsToolbar({
                     <DropdownMenu.Content>
                         <DropdownMenu.Item onClick={() => setAreaFilter(null)}>All Areas</DropdownMenu.Item>
                         <DropdownMenu.Separator/>
-                        <DropdownMenu.Item onClick={() => setAreaFilter("Adultos")}>Adultos</DropdownMenu.Item>
-                        <DropdownMenu.Item
-                            onClick={() => setAreaFilter("Endodoncia")}>Endodoncia</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setAreaFilter("Cirugía")}>Cirugía</DropdownMenu.Item>
-                        <DropdownMenu.Item
-                            onClick={() => setAreaFilter("Odontopediatría")}>Odontopediatría</DropdownMenu.Item>
+                        {AREAS.map(area => (
+                            <DropdownMenu.Item key={area} onClick={() => setAreaFilter(area)}>
+                                {area}
+                            </DropdownMenu.Item>
+                        ))}
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 

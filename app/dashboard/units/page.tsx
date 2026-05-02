@@ -14,6 +14,10 @@ export default function UnitsPage() {
         statusFilter,
         setStatusFilter,
         filteredUnits,
+        hasChanges,
+        handleUpdateUnitStatus,
+        handleConfirmChanges,
+        handleResetChanges,
         resetFilters
     } = useUnitsPageController();
 
@@ -27,12 +31,19 @@ export default function UnitsPage() {
                 statusFilter={statusFilter}
                 setStatusFilter={setStatusFilter}
                 resetFilters={resetFilters}
+                hasChanges={hasChanges}
+                handleResetChanges={handleResetChanges}
+                handleConfirmChanges={handleConfirmChanges}
             />
 
             {filteredUnits.length > 0 ? (
                 <Grid columns={{ initial: "1", sm: "2", lg: "3" }} gap="4">
                     {filteredUnits.map((unit) => (
-                        <UnitCard key={unit.id} unit={unit} />
+                        <UnitCard 
+                            key={unit.id} 
+                            unit={unit} 
+                            onUpdateStatus={(newStatus) => handleUpdateUnitStatus(unit.id, newStatus)}
+                        />
                     ))}
                 </Grid>
             ) : (

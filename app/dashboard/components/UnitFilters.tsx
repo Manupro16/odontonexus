@@ -1,6 +1,7 @@
-import {Box, Button, DropdownMenu, Flex, TextField} from "@radix-ui/themes";
-import {ChevronDownIcon, MagnifyingGlassIcon, ResetIcon} from "@radix-ui/react-icons";
+import {Box, Button, DropdownMenu, Flex, Text, TextField} from "@radix-ui/themes";
+import {CheckCircledIcon, ChevronDownIcon, MagnifyingGlassIcon, ResetIcon} from "@radix-ui/react-icons";
 import {UnitStatus} from "@/lib/types";
+import {AREAS, UNIT_STATUSES} from "@/lib/constants";
 
 interface UnitFiltersProps {
     searchQuery: string;
@@ -10,6 +11,9 @@ interface UnitFiltersProps {
     statusFilter: UnitStatus | null;
     setStatusFilter: (status: UnitStatus | null) => void;
     resetFilters: () => void;
+    hasChanges: boolean;
+    handleResetChanges: () => void;
+    handleConfirmChanges: () => void;
 }
 
 export function UnitFilters({
@@ -19,7 +23,10 @@ export function UnitFilters({
                                 setAreaFilter,
                                 statusFilter,
                                 setStatusFilter,
-                                resetFilters
+                                resetFilters,
+                                hasChanges,
+                                handleResetChanges,
+                                handleConfirmChanges
                             }: UnitFiltersProps) {
     return (
         <Flex gap="4" align="center" mb="6">
@@ -45,10 +52,11 @@ export function UnitFilters({
                     <DropdownMenu.Content>
                         <DropdownMenu.Item onClick={() => setAreaFilter(null)}>All Areas</DropdownMenu.Item>
                         <DropdownMenu.Separator/>
-                        <DropdownMenu.Item onClick={() => setAreaFilter("Adultos")}>Adultos</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setAreaFilter("Endodoncia")}>Endodoncia</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setAreaFilter("Cirugía")}>Cirugía</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setAreaFilter("Odontopediatría")}>Odontopediatría</DropdownMenu.Item>
+                        {AREAS.map(area => (
+                            <DropdownMenu.Item key={area} onClick={() => setAreaFilter(area)}>
+                                {area}
+                            </DropdownMenu.Item>
+                        ))}
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
@@ -62,9 +70,11 @@ export function UnitFilters({
                     <DropdownMenu.Content>
                         <DropdownMenu.Item onClick={() => setStatusFilter(null)}>All Statuses</DropdownMenu.Item>
                         <DropdownMenu.Separator/>
-                        <DropdownMenu.Item onClick={() => setStatusFilter("Operativa")}>Operativa</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setStatusFilter("Parcialmente Operativa")}>Parcialmente Operativa</DropdownMenu.Item>
-                        <DropdownMenu.Item onClick={() => setStatusFilter("Fuera de Servicio")}>Fuera de Servicio</DropdownMenu.Item>
+                        {UNIT_STATUSES.map(status => (
+                            <DropdownMenu.Item key={status} onClick={() => setStatusFilter(status)}>
+                                {status}
+                            </DropdownMenu.Item>
+                        ))}
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
@@ -74,6 +84,21 @@ export function UnitFilters({
                     </Button>
                 )}
             </Flex>
+
+            {hasChanges && (
+                <Flex gap="3" align="center"
+                      className="ml-auto bg-blue-500/10 py-1 px-3 rounded-full border border-blue-500/20">
+                    <Text size="2" color="blue" weight="medium">
+                        Unsaved status changes
+                    </Text>
+                    <Button variant="ghost" size="1" color="gray" onClick={handleResetChanges}>
+                        <ResetIcon/> Reset
+                    </Button>
+                    <Button variant="soft" size="1" color="blue" onClick={handleConfirmChanges}>
+                        <CheckCircledIcon/> Confirm
+                    </Button>
+                </Flex>
+            )}
         </Flex>
     );
 }

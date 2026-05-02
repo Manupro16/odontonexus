@@ -19,6 +19,10 @@ export interface DentalUnit {
     area: string;
     status: UnitStatus;
     lastReview: string;
+    brand?: string;
+    model?: string;
+    serialNumber?: string;
+    installationDate?: string;
     components: {
         chair: boolean;
         lamp: boolean;

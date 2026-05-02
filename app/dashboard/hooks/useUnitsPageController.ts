@@ -6,7 +6,12 @@ export function useUnitsPageController() {
     const [searchQuery, setSearchQuery] = useState("");
     const [areaFilter, setAreaFilter] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<UnitStatus | null>(null);
-    const [unitsData] = useState<DentalUnit[]>(mockUnits);
+    const [unitsData, setUnitsData] = useState<DentalUnit[]>(mockUnits);
+    const [originalUnitsData, setOriginalUnitsData] = useState<DentalUnit[]>(mockUnits);
+
+    const hasChanges = useMemo(() => {
+        return JSON.stringify(unitsData) !== JSON.stringify(originalUnitsData);
+    }, [unitsData, originalUnitsData]);
 
     const filteredUnits = useMemo(() => {
         return unitsData.filter(unit => {
@@ -19,6 +24,20 @@ export function useUnitsPageController() {
             return matchesSearch && matchesArea && matchesStatus;
         });
     }, [unitsData, searchQuery, areaFilter, statusFilter]);
+
+    const handleUpdateUnitStatus = (id: string, newStatus: UnitStatus) => {
+        setUnitsData(prev => prev.map(unit => 
+            unit.id === id ? { ...unit, status: newStatus } : unit
+        ));
+    };
+
+    const handleConfirmChanges = () => {
+        setOriginalUnitsData(unitsData);
+    };
+
+    const handleResetChanges = () => {
+        setUnitsData(originalUnitsData);
+    };
 
     const resetFilters = () => {
         setSearchQuery("");
@@ -34,6 +53,10 @@ export function useUnitsPageController() {
         statusFilter,
         setStatusFilter,
         filteredUnits,
+        hasChanges,
+        handleUpdateUnitStatus,
+        handleConfirmChanges,
+        handleResetChanges,
         resetFilters
     };
 }
