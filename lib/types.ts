@@ -10,3 +10,23 @@ export interface Report {
     priority: ReportPriority;
     priorityColor: "red" | "orange" | "green" | "blue" | "gray";
 }
+
+export type UnitStatus = "Operativa" | "Parcialmente Operativa" | "Fuera de Servicio";
+
+export interface DentalUnit {
+    id: string; // Unified unique ID (e.g. "U-01")
+    number: number;
+    area: string;
+    status: UnitStatus;
+    lastMaintenance: string;
+    components: {
+        chair: boolean;
+        lamp: boolean;
+        tripleSyringe: boolean;
+        pedal: boolean;
+        suction: boolean;
+        micromotor: boolean;
+        highSpeed: boolean;
+    };
+    observations?: string;
+}
