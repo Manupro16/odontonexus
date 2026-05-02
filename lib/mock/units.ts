@@ -6,7 +6,7 @@ export const mockUnits: DentalUnit[] = [
         number: 1,
         area: "Adultos",
         status: "Operativa",
-        lastMaintenance: "2024-04-15",
+        lastReview: "2024-04-15",
         components: {
             chair: true,
             lamp: true,
@@ -22,7 +22,7 @@ export const mockUnits: DentalUnit[] = [
         number: 2,
         area: "Adultos",
         status: "Parcialmente Operativa",
-        lastMaintenance: "2024-03-20",
+        lastReview: "2024-03-20",
         components: {
             chair: true,
             lamp: false,
@@ -39,7 +39,7 @@ export const mockUnits: DentalUnit[] = [
         number: 3,
         area: "Endodoncia",
         status: "Fuera de Servicio",
-        lastMaintenance: "2024-01-10",
+        lastReview: "2024-01-10",
         components: {
             chair: true,
             lamp: true,
@@ -56,7 +56,7 @@ export const mockUnits: DentalUnit[] = [
         number: 4,
         area: "Odontopediatría",
         status: "Operativa",
-        lastMaintenance: "2024-04-25",
+        lastReview: "2024-04-25",
         components: {
             chair: true,
             lamp: true,
@@ -72,7 +72,7 @@ export const mockUnits: DentalUnit[] = [
         number: 5,
         area: "Cirugía",
         status: "Operativa",
-        lastMaintenance: "2024-04-10",
+        lastReview: "2024-04-10",
         components: {
             chair: true,
             lamp: true,
@@ -88,7 +88,7 @@ export const mockUnits: DentalUnit[] = [
         number: 6,
         area: "Adultos",
         status: "Operativa",
-        lastMaintenance: "2024-04-01",
+        lastReview: "2024-04-01",
         components: {
             chair: true,
             lamp: true,

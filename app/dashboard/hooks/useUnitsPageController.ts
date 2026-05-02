@@ -11,7 +11,9 @@ export function useUnitsPageController() {
     const filteredUnits = useMemo(() => {
         return unitsData.filter(unit => {
             const matchesSearch = unit.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                unit.area.toLowerCase().includes(searchQuery.toLowerCase());
+                unit.area.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                unit.number.toString().includes(searchQuery) ||
+                (unit.observations?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
             const matchesArea = areaFilter ? unit.area === areaFilter : true;
             const matchesStatus = statusFilter ? unit.status === statusFilter : true;
             return matchesSearch && matchesArea && matchesStatus;

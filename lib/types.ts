@@ -18,7 +18,7 @@ export interface DentalUnit {
     number: number;
     area: string;
     status: UnitStatus;
-    lastMaintenance: string;
+    lastReview: string;
     components: {
         chair: boolean;
         lamp: boolean;

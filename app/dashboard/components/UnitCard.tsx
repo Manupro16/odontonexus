@@ -48,7 +48,7 @@ export function UnitCard({unit}: UnitCardProps) {
 
                 <Flex direction="column" gap="1">
                     <Text size="2" color="gray">Area: <Strong>{unit.area}</Strong></Text>
-                    <Text size="1" color="gray">Last Check: {unit.lastMaintenance}</Text>
+                    <Text size="2" color="gray">Last Review: <Strong>{unit.lastReview || "No data"}</Strong></Text>
                 </Flex>
 
                 <Separator size="4" />
