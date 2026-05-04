@@ -40,7 +40,7 @@ export const mockUnits: DentalUnit[] = [
             micromotor: true,
             highSpeed: true
         },
-        observations: "Lámpara con parpadeo constante."
+         observations: "Lámpara con parpadeo constante."
     },
     {
         id: "U-03",
