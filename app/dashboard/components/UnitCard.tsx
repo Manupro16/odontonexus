@@ -10,6 +10,8 @@ import {
 import {UNIT_STATUSES} from "@/lib/constants";
 import {UnitDetailsDialog} from "./UnitDetailsDialog";
 import {ReportFailureDialog} from "./ReportFailureDialog";
+import Link from "next/link";
+
 
 interface UnitCardProps {
     unit: DentalUnit;
@@ -59,7 +61,7 @@ export function UnitCard({unit, onUpdateStatus}: UnitCardProps) {
                             <DropdownMenu.Content>
                                 <UnitDetailsDialog 
                                     unit={unit} 
-                                    trigger={<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>View Details</DropdownMenu.Item>} 
+                                    trigger={<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>View Quick Details</DropdownMenu.Item>}
                                 />
                                 <ReportFailureDialog 
                                     unit={unit} 
@@ -119,14 +121,12 @@ export function UnitCard({unit, onUpdateStatus}: UnitCardProps) {
                 )}
 
                 <Flex gap="2" mt="1">
-                    <UnitDetailsDialog
-                        unit={unit}
-                        trigger={
-                            <Button variant="soft" color="gray" size="1" className="flex-1">
-                                Review Unit
-                            </Button>
-                        }
-                    />
+                    <Button variant="soft" color="gray" size="1" className="flex-1" asChild>
+                        <Link href="/">
+                            Review Unit
+                        </Link>
+                    </Button>
+
                     <ReportFailureDialog
                         unit={unit}
                         trigger={
