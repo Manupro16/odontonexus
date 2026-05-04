@@ -122,7 +122,7 @@ export function UnitCard({unit, onUpdateStatus}: UnitCardProps) {
 
                 <Flex gap="2" mt="1">
                     <Button variant="soft" color="gray" size="1" className="flex-1" asChild>
-                        <Link href="/">
+                        <Link href={`/dashboard/units/${unit.id}`}>
                             Review Unit
                         </Link>
                     </Button>
