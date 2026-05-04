@@ -119,21 +119,21 @@ export function UnitCard({unit, onUpdateStatus}: UnitCardProps) {
                 )}
 
                 <Flex gap="2" mt="1">
-                    <UnitDetailsDialog 
-                        unit={unit} 
+                    <UnitDetailsDialog
+                        unit={unit}
                         trigger={
                             <Button variant="soft" color="gray" size="1" className="flex-1">
-                                View Details
+                                Review Unit
                             </Button>
-                        } 
+                        }
                     />
-                    <ReportFailureDialog 
-                        unit={unit} 
+                    <ReportFailureDialog
+                        unit={unit}
                         trigger={
                             <Button variant="soft" color="red" size="1" className="flex-1">
-                                <ExclamationTriangleIcon /> Report Failure
+                                <ExclamationTriangleIcon /> Delete Unit
                             </Button>
-                        } 
+                        }
                     />
                 </Flex>
             </Flex>
