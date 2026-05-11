@@ -131,7 +131,7 @@ export function UnitCard({unit, onUpdateStatus}: UnitCardProps) {
                         unit={unit}
                         trigger={
                             <Button variant="soft" color="red" size="1" className="flex-1">
-                                <ExclamationTriangleIcon /> Delete Unit
+                                <ExclamationTriangleIcon /> Report Failure
                             </Button>
                         }
                     />

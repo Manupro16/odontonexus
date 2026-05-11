@@ -1,9 +1,10 @@
 'use client'
 
-import {Button, Flex, Grid, Text} from "@radix-ui/themes";
+import {Button, Flex, Grid, Heading, Text, Box} from "@radix-ui/themes";
 import {useUnitsPageController} from "../hooks/useUnitsPageController";
 import {UnitCard} from "../components/UnitCard";
 import {UnitFilters} from "../components/UnitFilters";
+import {PlusIcon} from "@radix-ui/react-icons";
 
 export default function UnitsPage() {
     const {
@@ -23,6 +24,16 @@ export default function UnitsPage() {
 
     return (
         <Flex direction="column" gap="4">
+            <Flex justify="between" align="end" mb="2">
+                <Box>
+                    <Heading size="8" mb="1">Dental Units</Heading>
+                    <Text color="gray" size="2">Manage and monitor your clinic's equipment health and status.</Text>
+                </Box>
+                <Button size="3">
+                    <PlusIcon /> Add New Unit
+                </Button>
+            </Flex>
+
             <UnitFilters
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
