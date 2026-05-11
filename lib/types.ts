@@ -9,6 +9,8 @@ export interface Report {
     status: ReportStatus;
     priority: ReportPriority;
     priorityColor: "red" | "orange" | "green" | "blue" | "gray";
+    createdAt: string;
+    reporter: string;
 }
 
 export type UnitStatus = "Operativa" | "Parcialmente Operativa" | "Fuera de Servicio";

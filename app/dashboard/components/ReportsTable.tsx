@@ -37,6 +37,8 @@ export function ReportsTable({
                     </Table.ColumnHeaderCell>
                     <Table.ColumnHeaderCell>Component / Issue</Table.ColumnHeaderCell>
                     <Table.ColumnHeaderCell>Area</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell>Reporter</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell>Date</Table.ColumnHeaderCell>
                     <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
                     <Table.ColumnHeaderCell>Priority</Table.ColumnHeaderCell>
                     <Table.ColumnHeaderCell>Comments</Table.ColumnHeaderCell>
@@ -57,7 +59,15 @@ export function ReportsTable({
                             </Flex>
                         </Table.RowHeaderCell>
                         <Table.Cell>{row.issue}</Table.Cell>
-                        <Table.Cell>{row.area}</Table.Cell>
+                        <Table.Cell>
+                            <Badge variant="outline" color="gray">{row.area}</Badge>
+                        </Table.Cell>
+                        <Table.Cell>
+                            <Text size="2">{row.reporter}</Text>
+                        </Table.Cell>
+                        <Table.Cell>
+                            <Text size="1" color="gray">{row.createdAt}</Text>
+                        </Table.Cell>
                         <Table.Cell>
                             <DropdownMenu.Root>
                                 <DropdownMenu.Trigger>

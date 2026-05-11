@@ -1,10 +1,85 @@
-import {Flex, Heading, Text} from "@radix-ui/themes";
+'use client'
+
+import {Button, Flex, Heading, Text, Box, Separator} from "@radix-ui/themes";
+import {useReportsPageController} from "../hooks/useReportsPageController";
+import {ReportsSummaryStats} from "../components/ReportsSummaryStats";
+import {ReportsToolbar} from "../components/ReportsToolbar";
+import {ReportsTable} from "../components/ReportsTable";
+import {DownloadIcon, PlusIcon} from "@radix-ui/react-icons";
 
 export default function ReportsPage() {
+    const {
+        searchQuery,
+        setSearchQuery,
+        statusFilter,
+        setStatusFilter,
+        priorityFilter,
+        setPriorityFilter,
+        areaFilter,
+        setAreaFilter,
+        hasChanges,
+        filteredData,
+        stats,
+        handleToggleStatus,
+        handleUpdateStatus,
+        handleSelectAll,
+        handleConfirmChanges,
+        handleResetChanges,
+        resetFilters
+    } = useReportsPageController();
+
     return (
-        <Flex direction="column" gap="4">
-            <Heading size="8">Reports & Analytics</Heading>
-            <Text size="4" color="gray">View detailed performance and maintenance reports here.</Text>
+        <Flex direction="column" gap="5">
+            <Flex justify="between" align="end">
+                <Box>
+                    <Heading size="8" mb="1">Reports & Analytics</Heading>
+                    <Text size="2" color="gray">Monitor equipment performance, incident logs, and resolution metrics.</Text>
+                </Box>
+                <Flex gap="3">
+                    <Button variant="outline" color="gray">
+                        <DownloadIcon /> Export
+                    </Button>
+                    <Button color="blue">
+                        <PlusIcon /> Create Report
+                    </Button>
+                </Flex>
+            </Flex>
+
+            <ReportsSummaryStats stats={stats} />
+
+            <Separator size="4" />
+
+            <Box>
+                <Heading size="4" mb="4">Incident Log</Heading>
+                <ReportsToolbar
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    statusFilter={statusFilter}
+                    setStatusFilter={setStatusFilter}
+                    priorityFilter={priorityFilter}
+                    setPriorityFilter={setPriorityFilter}
+                    areaFilter={areaFilter}
+                    setAreaFilter={setAreaFilter}
+                    resetFilters={resetFilters}
+                    hasChanges={hasChanges}
+                    handleResetChanges={handleResetChanges}
+                    handleConfirmChanges={handleConfirmChanges}
+                />
+
+                <ReportsTable
+                    filteredData={filteredData}
+                    handleSelectAll={handleSelectAll}
+                    handleToggleStatus={handleToggleStatus}
+                    handleUpdateStatus={handleUpdateStatus}
+                />
+
+                {filteredData.length === 0 && (
+                    <Flex direction="column" align="center" justify="center" py="9" gap="2">
+                        <Text color="gray" size="4">No reports found matching your criteria</Text>
+                        <Button variant="soft" onClick={resetFilters}>Clear all filters</Button>
+                    </Flex>
+                )}
+            </Box>
         </Flex>
     );
 }

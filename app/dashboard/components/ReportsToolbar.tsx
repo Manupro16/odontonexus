@@ -36,7 +36,7 @@ export function ReportsToolbar({
         <Flex gap="4" align="center" mb="4">
             <Box flexGrow="1">
                 <TextField.Root
-                    placeholder="Search unit or issue..."
+                    placeholder="Search unit, issue or reporter..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 >
