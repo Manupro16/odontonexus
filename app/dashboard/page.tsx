@@ -2,8 +2,8 @@
 
 import {Button, Flex, Separator, Text} from "@radix-ui/themes";
 import {useDashboardPageController} from "./hooks/useDashboardPageController";
-import {StatsRow} from "./components/StatsRow";
-import {ReportsToolbar} from "./components/ReportsToolbar";
+import {StatsRow} from "./components/global-components/StatsRow";
+import {SearchToolbar} from "./components/global-components/SearchToolbar";
 import {ReportsTable} from "./components/ReportsTable";
 
 export default function DashBoard() {
@@ -30,7 +30,7 @@ export default function DashBoard() {
         <>
             <StatsRow/>
             <Separator className="my-4" size="4" color="blue"/>
-            <ReportsToolbar
+            <SearchToolbar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 statusFilter={statusFilter}

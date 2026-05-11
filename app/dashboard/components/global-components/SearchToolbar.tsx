@@ -18,7 +18,7 @@ interface ReportsToolbarProps {
     handleConfirmChanges: () => void;
 }
 
-export function ReportsToolbar({
+export function SearchToolbar({
                                    searchQuery,
                                    setSearchQuery,
                                    statusFilter,

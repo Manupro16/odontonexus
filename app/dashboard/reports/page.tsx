@@ -3,7 +3,7 @@
 import {Button, Flex, Heading, Text, Box, Separator} from "@radix-ui/themes";
 import {useReportsPageController} from "../hooks/useReportsPageController";
 import {ReportsSummaryStats} from "../components/ReportsSummaryStats";
-import {ReportsToolbar} from "../components/ReportsToolbar";
+import {SearchToolbar} from "../components/global-components/SearchToolbar";
 import {ReportsTable} from "../components/ReportsTable";
 import {DownloadIcon, PlusIcon} from "@radix-ui/react-icons";
 
@@ -51,7 +51,7 @@ export default function ReportsPage() {
 
             <Box>
                 <Heading size="4" mb="4">Incident Log</Heading>
-                <ReportsToolbar
+                <SearchToolbar
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
                     statusFilter={statusFilter}

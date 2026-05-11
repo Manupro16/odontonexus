@@ -2,8 +2,8 @@
 
 import {Button, Flex, Grid, Heading, Text, Box} from "@radix-ui/themes";
 import {useUnitsPageController} from "../hooks/useUnitsPageController";
-import {UnitCard} from "../components/UnitCard";
-import {UnitFilters} from "../components/UnitFilters";
+import {UnitCard} from "@/app/dashboard/components/units-components/UnitCard";
+import {UnitFilters} from "@/app/dashboard/components/units-components/UnitFilters";
 import {PlusIcon} from "@radix-ui/react-icons";
 
 export default function UnitsPage() {

@@ -9,7 +9,7 @@ import {
 } from "@radix-ui/react-icons";
 import {UNIT_STATUSES} from "@/lib/constants";
 import {UnitDetailsDialog} from "./UnitDetailsDialog";
-import {ReportFailureDialog} from "./ReportFailureDialog";
+import {ReportFailureDialog} from "../ReportFailureDialog";
 import Link from "next/link";
 
 
