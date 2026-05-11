@@ -27,7 +27,7 @@ export default function UnitsPage() {
             <Flex justify="between" align="end" mb="2">
                 <Box>
                     <Heading size="8" mb="1">Dental Units</Heading>
-                    <Text color="gray" size="2">Manage and monitor your clinic's equipment health and status.</Text>
+                    <Text color="gray" size="2">Manage and monitor your clinic&#39;s equipment health and status.</Text>
                 </Box>
                 <Button size="3">
                     <PlusIcon /> Add New Unit

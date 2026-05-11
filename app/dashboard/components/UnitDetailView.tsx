@@ -18,7 +18,6 @@ import {
     CalendarIcon,
     CheckCircledIcon,
     ExclamationTriangleIcon,
-    InfoCircledIcon,
     MinusCircledIcon,
     GearIcon,
     ClockIcon,
