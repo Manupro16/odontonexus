@@ -1,7 +1,7 @@
 
 
 import {mockUnits} from "@/lib/mock/units";
-import {UnitDetailView} from "@/app/dashboard/components/units-components/UnitDetailView";
+import {UnitDetailView} from "@/app/dashboard/components/units/UnitDetailView";
 import {Button, Flex, Text} from "@radix-ui/themes";
 import Link from "next/link";
 import {ArrowLeftIcon} from "@radix-ui/react-icons";

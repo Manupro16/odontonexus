@@ -1,6 +1,6 @@
 import {Badge, Box, Checkbox, DropdownMenu, Flex, HoverCard, IconButton, Strong, Table, Text} from "@radix-ui/themes";
 import {ChevronDownIcon, DotsVerticalIcon} from "@radix-ui/react-icons";
-import {CommentsHoverCard} from "./global-components/CommentsHoverCard";
+import {CommentsHoverCard} from "@/app/dashboard/components/globals/CommentsHoverCard";
 import {Report, ReportStatus} from "@/lib/types";
 
 interface ReportsTableProps {

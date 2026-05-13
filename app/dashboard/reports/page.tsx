@@ -3,10 +3,10 @@
 import {Button, Flex, Heading, Text, Box, Separator} from "@radix-ui/themes";
 import {useReportsPageController} from "../hooks/useReportsPageController";
 import {ReportsSummaryStats} from "../components/ReportsSummaryStats";
-import {SearchToolbar} from "../components/global-components/SearchToolbar";
+import {SearchToolbar} from "@/app/dashboard/components/globals/SearchToolbar";
 import {RpTest} from "../components/RpTest";
 import {DownloadIcon, PlusIcon} from "@radix-ui/react-icons";
-import {ReportsTable} from "@/app/dashboard/components/reports-components/ReportsTable";
+import {ReportsTable} from "@/app/dashboard/components/reports/ReportsTable";
 
 export default function ReportsPage() {
     const {

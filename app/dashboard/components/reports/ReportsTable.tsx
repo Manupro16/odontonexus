@@ -10,9 +10,9 @@ import {
   Text,
 } from "@radix-ui/themes";
 import { ChevronDownIcon, DotsVerticalIcon } from "@radix-ui/react-icons";
-import { CommentsHoverCard } from "@/app/dashboard/components/global-components/CommentsHoverCard";
+import { CommentsHoverCard } from "@/app/dashboard/components/globals/CommentsHoverCard";
 import {DataTableColumn, Report, ReportStatus} from "@/lib/types";
-import DataTable from "@/app/dashboard/components/global-components/DataTable";
+import DataTable from "@/app/dashboard/components/globals/DataTable";
 
 interface ReportsTableProps {
   filteredData: Report[];

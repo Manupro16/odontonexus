@@ -2,8 +2,8 @@
 
 import {Button, Flex, Separator, Text} from "@radix-ui/themes";
 import {useDashboardPageController} from "./hooks/useDashboardPageController";
-import {StatsRow} from "./components/global-components/StatsRow";
-import {SearchToolbar} from "./components/global-components/SearchToolbar";
+import {StatsRow} from "@/app/dashboard/components/globals/StatsRow";
+import {SearchToolbar} from "@/app/dashboard/components/globals/SearchToolbar";
 import {RpTest} from "./components/RpTest";
 
 export default function DashBoard() {
