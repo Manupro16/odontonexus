@@ -4,8 +4,9 @@ import {Button, Flex, Heading, Text, Box, Separator} from "@radix-ui/themes";
 import {useReportsPageController} from "../hooks/useReportsPageController";
 import {ReportsSummaryStats} from "../components/ReportsSummaryStats";
 import {SearchToolbar} from "../components/global-components/SearchToolbar";
-import {ReportsTable} from "../components/ReportsTable";
+import {RpTest} from "../components/RpTest";
 import {DownloadIcon, PlusIcon} from "@radix-ui/react-icons";
+import {ReportsTable} from "@/app/dashboard/components/reports-components/ReportsTable";
 
 export default function ReportsPage() {
     const {
@@ -66,12 +67,8 @@ export default function ReportsPage() {
                     handleConfirmChanges={handleConfirmChanges}
                 />
 
-                <ReportsTable
-                    filteredData={filteredData}
-                    handleSelectAll={handleSelectAll}
-                    handleToggleStatus={handleToggleStatus}
-                    handleUpdateStatus={handleUpdateStatus}
-                />
+
+                <ReportsTable filteredData={filteredData} handleSelectAll={handleSelectAll} handleToggleStatus={handleToggleStatus} handleUpdateStatus={handleUpdateStatus} />
 
                 {filteredData.length === 0 && (
                     <Flex direction="column" align="center" justify="center" py="9" gap="2">

@@ -4,7 +4,7 @@ import {Button, Flex, Separator, Text} from "@radix-ui/themes";
 import {useDashboardPageController} from "./hooks/useDashboardPageController";
 import {StatsRow} from "./components/global-components/StatsRow";
 import {SearchToolbar} from "./components/global-components/SearchToolbar";
-import {ReportsTable} from "./components/ReportsTable";
+import {RpTest} from "./components/RpTest";
 
 export default function DashBoard() {
     const {
@@ -45,7 +45,7 @@ export default function DashBoard() {
                 handleConfirmChanges={handleConfirmChanges}
             />
 
-            <ReportsTable
+            <RpTest
                 filteredData={filteredData}
                 handleSelectAll={handleSelectAll}
                 handleToggleStatus={handleToggleStatus}

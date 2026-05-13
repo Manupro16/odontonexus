@@ -10,7 +10,7 @@ interface ReportsTableProps {
     handleUpdateStatus: (id: number, newStatus: ReportStatus) => void;
 }
 
-export function ReportsTable({
+export function RpTest({
                                  filteredData,
                                  handleSelectAll,
                                  handleToggleStatus,

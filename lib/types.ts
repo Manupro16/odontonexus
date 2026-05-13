@@ -1,3 +1,5 @@
+import {ReactNode} from "react";
+
 export type ReportStatus = "Open" | "In Progress" | "Closed";
 export type ReportPriority = "Low" | "Medium" | "High";
 
@@ -36,3 +38,18 @@ export interface DentalUnit {
     };
     observations?: string;
 }
+
+
+export type DataTableColumn<T> = {
+    id: string;
+    header: ReactNode;
+    cell: (row: T) => ReactNode;
+    isRowHeader?: boolean
+}
+
+export interface DataTableProps<T> {
+  data: T[];
+  columns: DataTableColumn<T>[];
+  getRowId: (row: T) => string | number;
+}
+
