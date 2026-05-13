@@ -3,6 +3,13 @@ import {ReactNode} from "react";
 export type ReportStatus = "Open" | "In Progress" | "Closed";
 export type ReportPriority = "Low" | "Medium" | "High";
 
+export interface ReportsTableProps {
+  filteredData: Report[];
+  handleSelectAll: (checked: boolean) => void;
+  handleToggleStatus: (id: number, checked: boolean) => void;
+  handleUpdateStatus: (id: number, newStatus: ReportStatus) => void;
+}
+
 export interface Report {
     id: number;
     unit: string;

@@ -11,15 +11,10 @@ import {
 } from "@radix-ui/themes";
 import { ChevronDownIcon, DotsVerticalIcon } from "@radix-ui/react-icons";
 import { CommentsHoverCard } from "@/app/dashboard/components/globals/CommentsHoverCard";
-import {DataTableColumn, Report, ReportStatus} from "@/lib/types";
+import {DataTableColumn, Report, ReportsTableProps, ReportStatus} from "@/lib/types";
 import DataTable from "@/app/dashboard/components/globals/DataTable";
 
-interface ReportsTableProps {
-  filteredData: Report[];
-  handleSelectAll: (checked: boolean) => void;
-  handleToggleStatus: (id: number, checked: boolean) => void;
-  handleUpdateStatus: (id: number, newStatus: ReportStatus) => void;
-}
+
 
 export function ReportsTable({
   filteredData,
