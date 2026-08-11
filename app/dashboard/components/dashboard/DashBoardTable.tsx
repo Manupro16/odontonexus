@@ -1,13 +1,7 @@
 
-import {DataTableColumn, Report, ReportsTableProps, ReportStatus} from "@/lib/types";
+import { ReportsTable } from "@/app/dashboard/components/reports/ReportsTable";
+import { ReportsTableProps } from "@/lib/types";
 
-
-export default function DashBoardTable({filteredData, handleToggleStatus, handleUpdateStatus, handleSelectAll}: ReportsTableProps) {
-
-
-    const columns: DataTableColumn<Report>[] = {
-
-    }
-
-
+export default function DashBoardTable(props: ReportsTableProps) {
+  return <ReportsTable {...props} />;
 }
