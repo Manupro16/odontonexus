@@ -7,7 +7,7 @@ import {SearchToolbar} from "@/app/dashboard/components/globals/SearchToolbar";
 import {DownloadIcon, PlusIcon} from "@radix-ui/react-icons";
 import {ReportsTable} from "@/app/dashboard/components/reports/ReportsTable";
 import {CreateReportDialog, CreateReportPayload} from "@/app/dashboard/components/reports/CreateReportDialog";
-import {useMemo, useState} from "react";
+import {Suspense, useMemo, useState} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {Report} from "@/lib/types";
 import {mockUnits} from "@/lib/mock/units";
@@ -18,7 +18,7 @@ const priorityToColor = {
     Low: "green"
 } as const;
 
-export default function ReportsPage() {
+function ReportsPageContent() {
     const [isManualCreateDialogOpen, setIsManualCreateDialogOpen] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
@@ -143,5 +143,13 @@ export default function ReportsPage() {
                 )}
             </Box>
         </Flex>
+    );
+}
+
+export default function ReportsPage() {
+    return (
+        <Suspense fallback={null}>
+            <ReportsPageContent />
+        </Suspense>
     );
 }

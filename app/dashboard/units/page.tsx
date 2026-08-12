@@ -6,11 +6,11 @@ import {UnitCard} from "@/app/dashboard/components/units/UnitCard";
 import {UnitFilters} from "@/app/dashboard/components/units/UnitFilters";
 import {PlusIcon} from "@radix-ui/react-icons";
 import {CreateUnitDialog, CreateUnitPayload} from "@/app/dashboard/components/units/CreateUnitDialog";
-import {useMemo, useState} from "react";
+import {Suspense, useMemo, useState} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {DentalUnit} from "@/lib/types";
 
-export default function UnitsPage() {
+function UnitsPageContent() {
     const [isManualCreateDialogOpen, setIsManualCreateDialogOpen] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
@@ -139,5 +139,13 @@ export default function UnitsPage() {
                 </Flex>
             )}
         </Flex>
+    );
+}
+
+export default function UnitsPage() {
+    return (
+        <Suspense fallback={null}>
+            <UnitsPageContent />
+        </Suspense>
     );
 }
