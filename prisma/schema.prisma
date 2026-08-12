@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  SUPERVISOR
+  TECHNICIAN
+  CLINIC_STAFF
+}
+
+enum AreaCode {
+  ADULTS
+  ENDODONTICS
+  SURGERY
+  PEDIATRIC_DENTISTRY
+  ORTHODONTICS
+  PERIODONTICS
+}
+
+enum UnitStatus {
+  OPERATIONAL
+  PARTIALLY_OPERATIONAL
+  OUT_OF_SERVICE
+}
+
+enum ReportStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum ReportPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum MaintenanceType {
+  PREVENTIVE
+  CORRECTIVE
+  INSTALLATION
+  INSPECTION
+}
+
+enum MaintenanceOutcome {
+  SCHEDULED
+  COMPLETED
+  PARTIAL
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  fullName     String
+  email        String?  @unique
+  employeeCode String?  @unique
+  role         UserRole @default(CLINIC_STAFF)
+
+  reportsCreated       Report[]            @relation("ReportCreatedBy")
+  maintenancePerformed MaintenanceRecord[] @relation("MaintenancePerformedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([fullName])
+}
+
+model Area {
+  id          String   @id @default(cuid())
+  code        AreaCode @unique
+  displayName String
+  isActive    Boolean  @default(true)
+
+  units Unit[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Unit {
+  id               String     @id @default(cuid())
+  unitCode         String     @unique
+  areaId           String
+  area             Area       @relation(fields: [areaId], references: [id], onDelete: Restrict)
+  status           UnitStatus
+  lastReviewAt     DateTime?
+  brand            String?
+  model            String?
+  serialNumber     String?    @unique
+  installationDate DateTime?
+  observations     String?
+
+  reports      Report[]
+  maintenance  MaintenanceRecord[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([areaId, status])
+  @@index([status])
+  @@index([lastReviewAt])
+  @@index([brand, model])
+}
+
+model Report {
+  id              String         @id @default(cuid())
+  legacyNumericId Int?           @unique
+
+  unitId           String
+  unit             Unit           @relation(fields: [unitId], references: [id], onDelete: Restrict)
+  issueDescription String
+  status           ReportStatus   @default(OPEN)
+  priority         ReportPriority @default(MEDIUM)
+
+  reporterName String?
+  reporterId   String?
+  reporter     User? @relation("ReportCreatedBy", fields: [reporterId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  closedAt  DateTime?
+
+  maintenanceRecords MaintenanceRecord[]
+
+  @@index([unitId, status])
+  @@index([priority, status])
+  @@index([createdAt])
+  @@index([reporterId])
+  @@index([status, closedAt])
+}
+
+model MaintenanceRecord {
+  id String @id @default(cuid())
+
+  unitId String
+  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Restrict)
+
+  reportId String?
+  report   Report? @relation(fields: [reportId], references: [id], onDelete: SetNull)
+
+  type        MaintenanceType
+  title       String
+  description String?
+  outcome     MaintenanceOutcome
+  scheduledFor DateTime?
+  performedAt  DateTime?
+
+  performedById String?
+  performedBy   User? @relation("MaintenancePerformedBy", fields: [performedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([unitId, scheduledFor])
+  @@index([unitId, performedAt])
+  @@index([reportId])
+  @@index([outcome, scheduledFor])
+  @@index([outcome, performedAt])
+  @@index([performedById])
+}
