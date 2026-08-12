@@ -2,6 +2,7 @@
 
 import {Button, Flex, Heading, Text} from "@radix-ui/themes";
 import {usePathname} from "next/navigation";
+import Link from "next/link";
 
 const routeConfig: Record<string, { title: string; subtitle: string }> = {
     "/dashboard": {
@@ -52,7 +53,12 @@ export default function TopBar() {
                     </Text>
                 </Flex>
                 <Flex align="center" gap="3">
-                    <Button color="blue">Report Failure</Button>
+                    <Button variant="soft" color="gray" asChild>
+                        <Link href="/dashboard/units?create=true">Add Unit</Link>
+                    </Button>
+                    <Button color="blue" asChild>
+                        <Link href="/dashboard/reports?create=true">Report Issue</Link>
+                    </Button>
                 </Flex>
             </Flex>
         </header>

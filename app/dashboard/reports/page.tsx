@@ -4,11 +4,28 @@ import {Button, Flex, Heading, Text, Box, Separator} from "@radix-ui/themes";
 import {useReportsPageController} from "../hooks/useReportsPageController";
 import {ReportsSummaryStats} from "../components/ReportsSummaryStats";
 import {SearchToolbar} from "@/app/dashboard/components/globals/SearchToolbar";
-import {RpTest} from "../components/RpTest";
 import {DownloadIcon, PlusIcon} from "@radix-ui/react-icons";
 import {ReportsTable} from "@/app/dashboard/components/reports/ReportsTable";
+import {CreateReportDialog, CreateReportPayload} from "@/app/dashboard/components/reports/CreateReportDialog";
+import {useMemo, useState} from "react";
+import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import {Report} from "@/lib/types";
+import {mockUnits} from "@/lib/mock/units";
+
+const priorityToColor = {
+    High: "red",
+    Medium: "orange",
+    Low: "green"
+} as const;
 
 export default function ReportsPage() {
+    const [isManualCreateDialogOpen, setIsManualCreateDialogOpen] = useState(false);
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const shouldAutoOpenCreateDialog = searchParams.get("create") === "true";
+    const isCreateDialogOpen = isManualCreateDialogOpen || shouldAutoOpenCreateDialog;
+
     const {
         searchQuery,
         setSearchQuery,
@@ -19,15 +36,56 @@ export default function ReportsPage() {
         areaFilter,
         setAreaFilter,
         hasChanges,
+        tableData,
         filteredData,
         stats,
         handleToggleStatus,
         handleUpdateStatus,
         handleSelectAll,
+        handleCreateReport,
         handleConfirmChanges,
         handleResetChanges,
         resetFilters
     } = useReportsPageController();
+
+    const availableUnitIds = useMemo(() => mockUnits.map((unit) => unit.id), []);
+
+    const clearCreateQueryParam = () => {
+        if (!shouldAutoOpenCreateDialog) {
+            return;
+        }
+
+        const nextParams = new URLSearchParams(searchParams.toString());
+        nextParams.delete("create");
+        const nextUrl = nextParams.size > 0 ? `${pathname}?${nextParams.toString()}` : pathname;
+        router.replace(nextUrl);
+    };
+
+    const handleCreateReportFromDialog = (payload: CreateReportPayload) => {
+        const nextId = tableData.reduce((max, report) => Math.max(max, report.id), 0) + 1;
+
+        const newReport: Report = {
+            id: nextId,
+            unit: payload.unit,
+            issue: payload.issue,
+            area: payload.area,
+            status: "Open",
+            priority: payload.priority,
+            priorityColor: priorityToColor[payload.priority],
+            createdAt: new Date().toISOString().slice(0, 10),
+            reporter: payload.reporter
+        };
+
+        handleCreateReport(newReport);
+    };
+
+    const handleCreateDialogOpenChange = (open: boolean) => {
+        setIsManualCreateDialogOpen(open);
+
+        if (!open) {
+            clearCreateQueryParam();
+        }
+    };
 
     return (
         <Flex direction="column" gap="5">
@@ -40,11 +98,18 @@ export default function ReportsPage() {
                     <Button variant="outline" color="gray">
                         <DownloadIcon /> Export
                     </Button>
-                    <Button color="blue">
+                    <Button color="blue" onClick={() => setIsManualCreateDialogOpen(true)}>
                         <PlusIcon /> Create Report
                     </Button>
                 </Flex>
             </Flex>
+
+            <CreateReportDialog
+                open={isCreateDialogOpen}
+                onOpenChange={handleCreateDialogOpenChange}
+                onCreate={handleCreateReportFromDialog}
+                availableUnits={availableUnitIds}
+            />
 
             <ReportsSummaryStats stats={stats} />
 

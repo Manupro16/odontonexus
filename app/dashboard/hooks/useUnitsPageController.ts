@@ -31,6 +31,10 @@ export function useUnitsPageController() {
         ));
     };
 
+    const handleCreateUnit = (newUnit: DentalUnit) => {
+        setUnitsData(prev => [newUnit, ...prev]);
+    };
+
     const handleConfirmChanges = () => {
         setOriginalUnitsData(unitsData);
     };
@@ -53,8 +57,10 @@ export function useUnitsPageController() {
         statusFilter,
         setStatusFilter,
         filteredUnits,
+        unitsData,
         hasChanges,
         handleUpdateUnitStatus,
+        handleCreateUnit,
         handleConfirmChanges,
         handleResetChanges,
         resetFilters

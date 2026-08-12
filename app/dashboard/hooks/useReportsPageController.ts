@@ -57,6 +57,10 @@ export function useReportsPageController() {
         })));
     };
 
+    const handleCreateReport = (newReport: Report) => {
+        setTableData(prev => [newReport, ...prev]);
+    };
+
     const handleConfirmChanges = () => {
         setOriginalData(tableData);
     };
@@ -82,11 +86,13 @@ export function useReportsPageController() {
         areaFilter,
         setAreaFilter,
         hasChanges,
+        tableData,
         filteredData,
         stats,
         handleToggleStatus,
         handleUpdateStatus,
         handleSelectAll,
+        handleCreateReport,
         handleConfirmChanges,
         handleResetChanges,
         resetFilters
