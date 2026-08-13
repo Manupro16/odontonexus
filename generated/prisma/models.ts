@@ -8,9 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User'
-export type * from './models/Area'
-export type * from './models/Unit'
-export type * from './models/Report'
-export type * from './models/MaintenanceRecord'
-export type * from './commonInputTypes'
+export type * from './models/User.ts'
+export type * from './models/Area.ts'
+export type * from './models/Unit.ts'
+export type * from './models/Report.ts'
+export type * from './models/MaintenanceRecord.ts'
+export type * from './commonInputTypes.ts'
