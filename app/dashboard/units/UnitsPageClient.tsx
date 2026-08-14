@@ -9,6 +9,7 @@ import {CreateUnitDialog, CreateUnitPayload} from "@/app/dashboard/components/un
 import {useMemo, useState} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {DentalUnit} from "@/lib/types";
+import {createUnit} from "./actions";
 
 interface UnitsPageClientProps {
     initialUnits: DentalUnit[];
@@ -60,29 +61,16 @@ export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
         router.replace(nextUrl);
     };
 
-    const handleCreateUnitFromDialog = (payload: CreateUnitPayload) => {
-        const numericFromId = Number.parseInt(payload.id.replace(/\D/g, ""), 10);
-        const unitNumber = Number.isNaN(numericFromId) ? unitsData.length + 1 : numericFromId;
+    const handleCreateUnitFromDialog = async (payload: CreateUnitPayload): Promise<string | null> => {
+        const result = await createUnit(payload);
 
-        const newUnit: DentalUnit = {
-            id: payload.id,
-            number: unitNumber,
-            area: payload.area,
-            status: payload.status,
-            lastReview: new Date().toISOString().slice(0, 10),
-            components: {
-                chair: true,
-                lamp: true,
-                tripleSyringe: true,
-                pedal: true,
-                suction: true,
-                micromotor: true,
-                highSpeed: true
-            },
-            observations: payload.observations
-        };
+        if (!result.ok) {
+            return result.error;
+        }
 
-        handleCreateUnit(newUnit);
+        handleCreateUnit(result.unit);
+        router.refresh();
+        return null;
     };
 
     const handleCreateDialogOpenChange = (open: boolean) => {

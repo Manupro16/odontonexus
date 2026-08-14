@@ -1,4 +1,4 @@
-import {useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {DentalUnit, UnitStatus} from "@/lib/types";
 
 export function useUnitsPageController(initialUnits: DentalUnit[]) {
@@ -7,6 +7,11 @@ export function useUnitsPageController(initialUnits: DentalUnit[]) {
     const [statusFilter, setStatusFilter] = useState<UnitStatus | null>(null);
     const [unitsData, setUnitsData] = useState<DentalUnit[]>(initialUnits);
     const [originalUnitsData, setOriginalUnitsData] = useState<DentalUnit[]>(initialUnits);
+
+    useEffect(() => {
+        setUnitsData(initialUnits);
+        setOriginalUnitsData(initialUnits);
+    }, [initialUnits]);
 
     const hasChanges = useMemo(() => {
         return JSON.stringify(unitsData) !== JSON.stringify(originalUnitsData);

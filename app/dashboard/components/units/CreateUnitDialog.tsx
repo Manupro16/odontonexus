@@ -13,7 +13,7 @@ export interface CreateUnitPayload {
 interface CreateUnitDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onCreate: (payload: CreateUnitPayload) => void;
+    onCreate: (payload: CreateUnitPayload) => Promise<string | null>;
     existingUnitIds: string[];
     suggestedUnitId: string;
 }
@@ -29,12 +29,16 @@ export function CreateUnitDialog({
     const [area, setArea] = useState<string>(AREAS[0] ?? "");
     const [status, setStatus] = useState<UnitStatus>("Operativa");
     const [observations, setObservations] = useState("");
+    const [submitError, setSubmitError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const resetForm = () => {
         setId(suggestedUnitId);
         setArea(AREAS[0] ?? "");
         setStatus("Operativa");
         setObservations("");
+        setSubmitError(null);
+        setIsSubmitting(false);
     };
 
     const hasDuplicateId = useMemo(() => {
@@ -46,19 +50,28 @@ export function CreateUnitDialog({
         return existingUnitIds.some((unitId) => unitId.toLowerCase() === normalized);
     }, [existingUnitIds, id]);
 
-    const isSubmitDisabled = !id.trim() || !area || hasDuplicateId;
+    const isSubmitDisabled = !id.trim() || !area || hasDuplicateId || isSubmitting;
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
         if (isSubmitDisabled) {
             return;
         }
 
-        onCreate({
+        setSubmitError(null);
+        setIsSubmitting(true);
+
+        const errorMessage = await onCreate({
             id: id.trim(),
             area,
             status,
             observations: observations.trim() || undefined
         });
+
+        if (errorMessage) {
+            setSubmitError(errorMessage);
+            setIsSubmitting(false);
+            return;
+        }
 
         resetForm();
         onOpenChange(false);
@@ -95,6 +108,12 @@ export function CreateUnitDialog({
                     {hasDuplicateId && (
                         <Text size="1" color="red">
                             This Unit ID already exists.
+                        </Text>
+                    )}
+
+                    {submitError && (
+                        <Text size="1" color="red">
+                            {submitError}
                         </Text>
                     )}
 
@@ -148,7 +167,7 @@ export function CreateUnitDialog({
                         Cancel
                     </Button>
                     <Button color="blue" onClick={handleCreate} disabled={isSubmitDisabled}>
-                        Create Unit
+                        {isSubmitting ? "Creating..." : "Create Unit"}
                     </Button>
                 </Flex>
             </Dialog.Content>
