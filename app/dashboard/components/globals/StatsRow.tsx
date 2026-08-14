@@ -1,7 +1,18 @@
 import {Card, Flex, Grid, Heading, Text} from "@radix-ui/themes";
 import {CheckCircledIcon, CubeIcon, ExclamationTriangleIcon, Half2Icon} from "@radix-ui/react-icons";
 
-export function StatsRow() {
+export interface UnitStats {
+    total: number;
+    functional: number;
+    partial: number;
+    nonFunctional: number;
+}
+
+interface StatsRowProps {
+    stats: UnitStats;
+}
+
+export function StatsRow({stats}: StatsRowProps) {
     return (
         <Grid columns="4" gap="4">
             <Card size="1" className="bg-white/5 border-border-strong">
@@ -11,7 +22,7 @@ export function StatsRow() {
                             Units</Text>
                         <CubeIcon className="text-blue-400"/>
                     </Flex>
-                    <Heading size="5">42</Heading>
+                    <Heading size="5">{stats.total}</Heading>
                 </Flex>
             </Card>
 
@@ -22,7 +33,7 @@ export function StatsRow() {
                               className="uppercase tracking-wider">Functional</Text>
                         <CheckCircledIcon className="text-green-400"/>
                     </Flex>
-                    <Heading size="5">28</Heading>
+                    <Heading size="5">{stats.functional}</Heading>
                 </Flex>
             </Card>
 
@@ -33,7 +44,7 @@ export function StatsRow() {
                               className="uppercase tracking-wider">Partial</Text>
                         <Half2Icon className="text-yellow-400"/>
                     </Flex>
-                    <Heading size="5">9</Heading>
+                    <Heading size="5">{stats.partial}</Heading>
                 </Flex>
             </Card>
 
@@ -44,7 +55,7 @@ export function StatsRow() {
                               className="uppercase tracking-wider">Non-Functional</Text>
                         <ExclamationTriangleIcon className="text-red-400"/>
                     </Flex>
-                    <Heading size="5">5</Heading>
+                    <Heading size="5">{stats.nonFunctional}</Heading>
                 </Flex>
             </Card>
         </Grid>

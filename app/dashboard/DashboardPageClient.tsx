@@ -1,0 +1,67 @@
+'use client'
+
+import {Button, Flex, Separator, Text} from "@radix-ui/themes";
+import {useDashboardPageController} from "./hooks/useDashboardPageController";
+import {StatsRow, UnitStats} from "@/app/dashboard/components/globals/StatsRow";
+import {SearchToolbar} from "@/app/dashboard/components/globals/SearchToolbar";
+import {RpTest} from "./components/RpTest";
+
+interface DashboardPageClientProps {
+    unitStats: UnitStats;
+}
+
+export function DashboardPageClient({unitStats}: DashboardPageClientProps) {
+    const {
+        searchQuery,
+        setSearchQuery,
+        statusFilter,
+        setStatusFilter,
+        priorityFilter,
+        setPriorityFilter,
+        areaFilter,
+        setAreaFilter,
+        hasChanges,
+        filteredData,
+        handleToggleStatus,
+        handleUpdateStatus,
+        handleSelectAll,
+        handleConfirmChanges,
+        handleResetChanges,
+        resetFilters
+    } = useDashboardPageController();
+
+    return (
+        <>
+            <StatsRow stats={unitStats}/>
+            <Separator className="my-4" size="4" color="blue"/>
+            <SearchToolbar
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
+                priorityFilter={priorityFilter}
+                setPriorityFilter={setPriorityFilter}
+                areaFilter={areaFilter}
+                setAreaFilter={setAreaFilter}
+                resetFilters={resetFilters}
+                hasChanges={hasChanges}
+                handleResetChanges={handleResetChanges}
+                handleConfirmChanges={handleConfirmChanges}
+            />
+
+            <RpTest
+                filteredData={filteredData}
+                handleSelectAll={handleSelectAll}
+                handleToggleStatus={handleToggleStatus}
+                handleUpdateStatus={handleUpdateStatus}
+            />
+
+            {filteredData.length === 0 && (
+                <Flex direction="column" align="center" justify="center" py="9" gap="2">
+                    <Text color="gray" size="4">No units found matching your criteria</Text>
+                    <Button variant="soft" onClick={resetFilters}>Clear all filters</Button>
+                </Flex>
+            )}
+        </>
+    );
+}

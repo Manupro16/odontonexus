@@ -1,63 +1,26 @@
-'use client'
+import {UnitStatus as PrismaUnitStatus} from "@/generated/prisma/enums";
+import prisma from "@/lib/prisma";
+import {DashboardPageClient} from "./DashboardPageClient";
+import {UnitStats} from "@/app/dashboard/components/globals/StatsRow";
 
-import {Button, Flex, Separator, Text} from "@radix-ui/themes";
-import {useDashboardPageController} from "./hooks/useDashboardPageController";
-import {StatsRow} from "@/app/dashboard/components/globals/StatsRow";
-import {SearchToolbar} from "@/app/dashboard/components/globals/SearchToolbar";
-import {RpTest} from "./components/RpTest";
+async function getUnitStats(): Promise<UnitStats> {
+    const [total, functional, partial, nonFunctional] = await Promise.all([
+        prisma.unit.count(),
+        prisma.unit.count({where: {status: PrismaUnitStatus.OPERATIONAL}}),
+        prisma.unit.count({where: {status: PrismaUnitStatus.PARTIALLY_OPERATIONAL}}),
+        prisma.unit.count({where: {status: PrismaUnitStatus.OUT_OF_SERVICE}})
+    ]);
 
-export default function DashBoard() {
-    const {
-        searchQuery,
-        setSearchQuery,
-        statusFilter,
-        setStatusFilter,
-        priorityFilter,
-        setPriorityFilter,
-        areaFilter,
-        setAreaFilter,
-        hasChanges,
-        filteredData,
-        handleToggleStatus,
-        handleUpdateStatus,
-        handleSelectAll,
-        handleConfirmChanges,
-        handleResetChanges,
-        resetFilters
-    } = useDashboardPageController();
+    return {
+        total,
+        functional,
+        partial,
+        nonFunctional
+    };
+}
 
-    return (
-        <>
-            <StatsRow/>
-            <Separator className="my-4" size="4" color="blue"/>
-            <SearchToolbar
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-                priorityFilter={priorityFilter}
-                setPriorityFilter={setPriorityFilter}
-                areaFilter={areaFilter}
-                setAreaFilter={setAreaFilter}
-                resetFilters={resetFilters}
-                hasChanges={hasChanges}
-                handleResetChanges={handleResetChanges}
-                handleConfirmChanges={handleConfirmChanges}
-            />
+export default async function DashBoard() {
+    const unitStats = await getUnitStats();
 
-            <RpTest
-                filteredData={filteredData}
-                handleSelectAll={handleSelectAll}
-                handleToggleStatus={handleToggleStatus}
-                handleUpdateStatus={handleUpdateStatus}
-            />
-
-            {filteredData.length === 0 && (
-                <Flex direction="column" align="center" justify="center" py="9" gap="2">
-                    <Text color="gray" size="4">No units found matching your criteria</Text>
-                    <Button variant="soft" onClick={resetFilters}>Clear all filters</Button>
-                </Flex>
-            )}
-        </>
-    );
+    return <DashboardPageClient unitStats={unitStats}/>;
 }
