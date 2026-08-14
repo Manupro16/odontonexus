@@ -9,7 +9,7 @@ import {CreateUnitDialog, CreateUnitPayload} from "@/app/dashboard/components/un
 import {useMemo, useState} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {DentalUnit} from "@/lib/types";
-import {createUnit} from "./actions";
+import {createUnit, updateUnitReview} from "./actions";
 
 interface UnitsPageClientProps {
     initialUnits: DentalUnit[];
@@ -17,6 +17,8 @@ interface UnitsPageClientProps {
 
 export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
     const [isManualCreateDialogOpen, setIsManualCreateDialogOpen] = useState(false);
+    const [isSavingStatusChanges, setIsSavingStatusChanges] = useState(false);
+    const [statusSaveError, setStatusSaveError] = useState<string | null>(null);
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -32,9 +34,11 @@ export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
         setStatusFilter,
         filteredUnits,
         unitsData,
+        pendingStatusUpdates,
         hasChanges,
         handleUpdateUnitStatus,
         handleCreateUnit,
+        handleApplyPersistedUpdates,
         handleConfirmChanges,
         handleResetChanges,
         resetFilters
@@ -71,6 +75,39 @@ export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
         handleCreateUnit(result.unit);
         router.refresh();
         return null;
+    };
+
+    const handleConfirmStatusChanges = async () => {
+        if (pendingStatusUpdates.length === 0) {
+            handleConfirmChanges();
+            return;
+        }
+
+        setIsSavingStatusChanges(true);
+        setStatusSaveError(null);
+
+        const result = await updateUnitReview({
+            updates: pendingStatusUpdates
+        });
+
+        setIsSavingStatusChanges(false);
+
+        if (!result.ok) {
+            setStatusSaveError(result.error);
+            return;
+        }
+
+        handleApplyPersistedUpdates(result.units);
+        router.refresh();
+    };
+
+    const handleResetStatusChanges = () => {
+        if (isSavingStatusChanges) {
+            return;
+        }
+
+        setStatusSaveError(null);
+        handleResetChanges();
     };
 
     const handleCreateDialogOpenChange = (open: boolean) => {
@@ -110,9 +147,16 @@ export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
                 setStatusFilter={setStatusFilter}
                 resetFilters={resetFilters}
                 hasChanges={hasChanges}
-                handleResetChanges={handleResetChanges}
-                handleConfirmChanges={handleConfirmChanges}
+                handleResetChanges={handleResetStatusChanges}
+                handleConfirmChanges={handleConfirmStatusChanges}
+                isSavingChanges={isSavingStatusChanges}
             />
+
+            {statusSaveError && (
+                <Text size="2" color="red" mt="-2">
+                    {statusSaveError}
+                </Text>
+            )}
 
             {filteredUnits.length > 0 ? (
                 <Grid columns={{ initial: "1", sm: "2", lg: "3" }} gap="4">

@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import {Prisma} from "@/generated/prisma/client";
 import {UnitStatus as PrismaUnitStatusType} from "@/generated/prisma/enums";
 import {DentalUnit, UnitStatus} from "@/lib/types";
+import {revalidatePath} from "next/cache";
 
 interface CreateUnitInput {
     id: string;
@@ -14,6 +15,19 @@ interface CreateUnitInput {
 
 type CreateUnitResult =
     | { ok: true; unit: DentalUnit }
+    | { ok: false; error: string };
+
+interface UpdateUnitStatusInput {
+    id: string;
+    status: UnitStatus;
+}
+
+interface UpdateUnitReviewInput {
+    updates: UpdateUnitStatusInput[];
+}
+
+type UpdateUnitReviewResult =
+    | { ok: true; units: DentalUnit[] }
     | { ok: false; error: string };
 
 const defaultComponents: DentalUnit["components"] = {
@@ -45,6 +59,34 @@ function toIsoDate(date: Date | null) {
 function parseUnitNumber(unitCode: string) {
     const parsed = Number.parseInt(unitCode.replace(/\D/g, ""), 10);
     return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+function toDentalUnit(unit: {
+    unitCode: string;
+    status: PrismaUnitStatusType;
+    lastReviewAt: Date | null;
+    brand: string | null;
+    model: string | null;
+    serialNumber: string | null;
+    installationDate: Date | null;
+    observations: string | null;
+    area: {
+        displayName: string;
+    };
+}): DentalUnit {
+    return {
+        id: unit.unitCode,
+        number: parseUnitNumber(unit.unitCode),
+        area: unit.area.displayName,
+        status: statusFromPrisma[unit.status] ?? "Operativa",
+        lastReview: toIsoDate(unit.lastReviewAt),
+        brand: unit.brand ?? undefined,
+        model: unit.model ?? undefined,
+        serialNumber: unit.serialNumber ?? undefined,
+        installationDate: toIsoDate(unit.installationDate),
+        components: defaultComponents,
+        observations: unit.observations ?? undefined
+    };
 }
 
 export async function createUnit(input: CreateUnitInput): Promise<CreateUnitResult> {
@@ -95,19 +137,7 @@ export async function createUnit(input: CreateUnitInput): Promise<CreateUnitResu
 
         return {
             ok: true,
-            unit: {
-                id: createdUnit.unitCode,
-                number: parseUnitNumber(createdUnit.unitCode),
-                area: createdUnit.area.displayName,
-                status: statusFromPrisma[createdUnit.status] ?? "Operativa",
-                lastReview: toIsoDate(createdUnit.lastReviewAt),
-                brand: createdUnit.brand ?? undefined,
-                model: createdUnit.model ?? undefined,
-                serialNumber: createdUnit.serialNumber ?? undefined,
-                installationDate: toIsoDate(createdUnit.installationDate),
-                components: defaultComponents,
-                observations: createdUnit.observations ?? undefined
-            }
+            unit: toDentalUnit(createdUnit)
         };
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
@@ -118,5 +148,87 @@ export async function createUnit(input: CreateUnitInput): Promise<CreateUnitResu
         }
 
         return {ok: false, error: "We could not create the unit right now. Please try again."};
+    }
+}
+
+export async function updateUnitReview(input: UpdateUnitReviewInput): Promise<UpdateUnitReviewResult> {
+    if (!Array.isArray(input.updates) || input.updates.length === 0) {
+        return {ok: false, error: "No unit changes were provided."};
+    }
+
+    const normalizedUpdates = input.updates.map((update) => ({
+        id: update.id.trim(),
+        status: update.status
+    }));
+
+    if (normalizedUpdates.some((update) => !update.id)) {
+        return {ok: false, error: "One or more units are missing an ID."};
+    }
+
+    const updateByUnitCode = new Map<string, PrismaUnitStatusType>();
+    for (const update of normalizedUpdates) {
+        const prismaStatus = statusToPrisma[update.status];
+        if (!prismaStatus) {
+            return {ok: false, error: "One of the selected statuses is invalid."};
+        }
+
+        updateByUnitCode.set(update.id, prismaStatus);
+    }
+
+    const unitCodes = Array.from(updateByUnitCode.keys());
+
+    const existingUnits = await prisma.unit.findMany({
+        where: {
+            unitCode: {
+                in: unitCodes
+            }
+        },
+        select: {
+            unitCode: true
+        }
+    });
+
+    if (existingUnits.length !== unitCodes.length) {
+        return {
+            ok: false,
+            error: "One or more units no longer exist. Please refresh and try again."
+        };
+    }
+
+    const reviewedAt = new Date();
+
+    try {
+        const updatedUnits = await prisma.$transaction(
+            unitCodes.map((unitCode) => prisma.unit.update({
+                where: {
+                    unitCode
+                },
+                data: {
+                    status: updateByUnitCode.get(unitCode)!,
+                    lastReviewAt: reviewedAt
+                },
+                include: {
+                    area: {
+                        select: {
+                            displayName: true
+                        }
+                    }
+                }
+            }))
+        );
+
+        revalidatePath("/dashboard/units");
+        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/reports");
+
+        return {
+            ok: true,
+            units: updatedUnits.map(toDentalUnit)
+        };
+    } catch {
+        return {
+            ok: false,
+            error: "We could not save the unit review right now. Please try again."
+        };
     }
 }

@@ -13,7 +13,8 @@ interface UnitFiltersProps {
     resetFilters: () => void;
     hasChanges: boolean;
     handleResetChanges: () => void;
-    handleConfirmChanges: () => void;
+    handleConfirmChanges: () => void | Promise<void>;
+    isSavingChanges?: boolean;
 }
 
 export function UnitFilters({
@@ -26,7 +27,8 @@ export function UnitFilters({
                                 resetFilters,
                                 hasChanges,
                                 handleResetChanges,
-                                handleConfirmChanges
+                                handleConfirmChanges,
+                                isSavingChanges = false
                             }: UnitFiltersProps) {
     return (
         <Flex gap="4" align="center" mb="6">
@@ -89,12 +91,12 @@ export function UnitFilters({
                 <Flex gap="3" align="center"
                       className="ml-auto bg-blue-500/10 py-1 px-3 rounded-full border border-blue-500/20">
                     <Text size="2" color="blue" weight="medium">
-                        Unsaved status changes
+                        {isSavingChanges ? "Saving changes..." : "Unsaved status changes"}
                     </Text>
-                    <Button variant="ghost" size="1" color="gray" onClick={handleResetChanges}>
+                    <Button variant="ghost" size="1" color="gray" onClick={handleResetChanges} disabled={isSavingChanges}>
                         <ResetIcon/> Reset
                     </Button>
-                    <Button variant="soft" size="1" color="blue" onClick={handleConfirmChanges}>
+                    <Button variant="soft" size="1" color="blue" onClick={handleConfirmChanges} disabled={isSavingChanges}>
                         <CheckCircledIcon/> Confirm
                     </Button>
                 </Flex>
