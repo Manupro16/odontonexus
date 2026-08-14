@@ -132,7 +132,7 @@ const unitsFromFrontend = [
 const reportsFromFrontend = [
   {
     legacyNumericId: 1,
-    unitCode: "U-12",
+    unitCode: "U-02",
     issueDescription: "Lamp failure",
     area: "Adultos",
     status: "Open",
@@ -152,7 +152,7 @@ const reportsFromFrontend = [
   },
   {
     legacyNumericId: 3,
-    unitCode: "U-08",
+    unitCode: "U-05",
     issueDescription: "Micromotor not working",
     area: "Cirugía",
     status: "Open",
@@ -162,7 +162,7 @@ const reportsFromFrontend = [
   },
   {
     legacyNumericId: 4,
-    unitCode: "U-15",
+    unitCode: "U-04",
     issueDescription: "Water leak",
     area: "Odontopediatría",
     status: "Closed",
@@ -172,7 +172,7 @@ const reportsFromFrontend = [
   },
   {
     legacyNumericId: 5,
-    unitCode: "U-22",
+    unitCode: "U-01",
     issueDescription: "Suction power low",
     area: "Adultos",
     status: "Open",

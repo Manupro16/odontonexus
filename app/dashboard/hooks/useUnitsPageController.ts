@@ -1,13 +1,12 @@
 import {useMemo, useState} from "react";
-import {mockUnits} from "@/lib/mock/units";
 import {DentalUnit, UnitStatus} from "@/lib/types";
 
-export function useUnitsPageController() {
+export function useUnitsPageController(initialUnits: DentalUnit[]) {
     const [searchQuery, setSearchQuery] = useState("");
     const [areaFilter, setAreaFilter] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<UnitStatus | null>(null);
-    const [unitsData, setUnitsData] = useState<DentalUnit[]>(mockUnits);
-    const [originalUnitsData, setOriginalUnitsData] = useState<DentalUnit[]>(mockUnits);
+    const [unitsData, setUnitsData] = useState<DentalUnit[]>(initialUnits);
+    const [originalUnitsData, setOriginalUnitsData] = useState<DentalUnit[]>(initialUnits);
 
     const hasChanges = useMemo(() => {
         return JSON.stringify(unitsData) !== JSON.stringify(originalUnitsData);

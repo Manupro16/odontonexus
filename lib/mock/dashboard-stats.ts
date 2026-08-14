@@ -3,7 +3,7 @@ import { Report } from "../types";
 export const mockTableData: Report[] = [
     {
         id: 1,
-        unit: "U-12",
+        unit: "U-02",
         issue: "Lamp failure",
         area: "Adultos",
         status: "Open",
@@ -25,7 +25,7 @@ export const mockTableData: Report[] = [
     },
     {
         id: 3,
-        unit: "U-08",
+        unit: "U-05",
         issue: "Micromotor not working",
         area: "Cirugía",
         status: "Open",
@@ -36,7 +36,7 @@ export const mockTableData: Report[] = [
     },
     {
         id: 4,
-        unit: "U-15",
+        unit: "U-04",
         issue: "Water leak",
         area: "Odontopediatría",
         status: "Closed",
@@ -47,7 +47,7 @@ export const mockTableData: Report[] = [
     },
     {
         id: 5,
-        unit: "U-22",
+        unit: "U-01",
         issue: "Suction power low",
         area: "Adultos",
         status: "Open",
