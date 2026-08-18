@@ -9,22 +9,22 @@ import {ReportsTable} from "@/app/dashboard/components/reports/ReportsTable";
 import {CreateReportDialog, CreateReportPayload} from "@/app/dashboard/components/reports/CreateReportDialog";
 import {useState} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
-import {Report} from "@/lib/types";
+import {Report, ReportUnitOption} from "@/lib/types";
 import {createReport} from "./actions";
 
 interface ReportsPageClientProps {
-    availableUnitIds: string[];
+    availableUnits: ReportUnitOption[];
     initialReports: Report[];
 }
 
-export function ReportsPageClient({availableUnitIds, initialReports}: ReportsPageClientProps) {
+export function ReportsPageClient({availableUnits, initialReports}: ReportsPageClientProps) {
     const [isManualCreateDialogOpen, setIsManualCreateDialogOpen] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const shouldAutoOpenCreateDialog = searchParams.get("create") === "true";
     const requestedUnitId = searchParams.get("unit");
-    const preselectedUnitId = requestedUnitId && availableUnitIds.includes(requestedUnitId)
+    const preselectedUnitId = requestedUnitId && availableUnits.some((unit) => unit.unitCode === requestedUnitId)
         ? requestedUnitId
         : undefined;
     const isCreateDialogOpen = isManualCreateDialogOpen || shouldAutoOpenCreateDialog;
@@ -103,7 +103,7 @@ export function ReportsPageClient({availableUnitIds, initialReports}: ReportsPag
                 open={isCreateDialogOpen}
                 onOpenChange={handleCreateDialogOpenChange}
                 onCreate={handleCreateReportFromDialog}
-                availableUnits={availableUnitIds}
+                availableUnits={availableUnits}
                 preselectedUnitId={preselectedUnitId}
             />
 

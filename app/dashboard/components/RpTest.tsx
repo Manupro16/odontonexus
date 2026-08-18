@@ -6,8 +6,8 @@ import {Report, ReportStatus} from "@/lib/types";
 interface ReportsTableProps {
     filteredData: Report[];
     handleSelectAll: (checked: boolean) => void;
-    handleToggleStatus: (id: number, checked: boolean) => void;
-    handleUpdateStatus: (id: number, newStatus: ReportStatus) => void;
+    handleToggleStatus: (id: Report["id"], checked: boolean) => void;
+    handleUpdateStatus: (id: Report["id"], newStatus: ReportStatus) => void;
 }
 
 export function RpTest({

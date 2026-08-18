@@ -22,6 +22,11 @@ export interface Report {
     reporter: string;
 }
 
+export interface ReportUnitOption {
+    unitCode: string;
+    area: string;
+}
+
 export type UnitStatus = "Operativa" | "Parcialmente Operativa" | "Fuera de Servicio";
 
 export interface DentalUnit {

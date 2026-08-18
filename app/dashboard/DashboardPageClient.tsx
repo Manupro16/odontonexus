@@ -5,12 +5,14 @@ import {useDashboardPageController} from "./hooks/useDashboardPageController";
 import {StatsRow, UnitStats} from "@/app/dashboard/components/globals/StatsRow";
 import {SearchToolbar} from "@/app/dashboard/components/globals/SearchToolbar";
 import {RpTest} from "./components/RpTest";
+import {Report} from "@/lib/types";
 
 interface DashboardPageClientProps {
     unitStats: UnitStats;
+    initialReports: Report[];
 }
 
-export function DashboardPageClient({unitStats}: DashboardPageClientProps) {
+export function DashboardPageClient({unitStats, initialReports}: DashboardPageClientProps) {
     const {
         searchQuery,
         setSearchQuery,
@@ -28,7 +30,7 @@ export function DashboardPageClient({unitStats}: DashboardPageClientProps) {
         handleConfirmChanges,
         handleResetChanges,
         resetFilters
-    } = useDashboardPageController();
+    } = useDashboardPageController({initialReports});
 
     return (
         <>

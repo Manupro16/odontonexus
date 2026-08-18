@@ -9,7 +9,6 @@ import {Report} from "@/lib/types";
 interface CreateReportInput {
     unit: string;
     issue: string;
-    area?: string;
     priority: "Low" | "Medium" | "High";
     reporter?: string;
 }

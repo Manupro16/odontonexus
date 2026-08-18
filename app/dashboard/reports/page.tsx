@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import {Suspense} from "react";
 import {ReportsPageClient} from "./ReportsPageClient";
-import {Report} from "@/lib/types";
+import {Report, ReportUnitOption} from "@/lib/types";
 import {ReportPriority as PrismaReportPriorityType, ReportStatus as PrismaReportStatusType} from "@/generated/prisma/enums";
 
 const priorityFromPrisma: Record<PrismaReportPriorityType, Report["priority"]> = {
@@ -62,26 +62,34 @@ async function getReports(): Promise<Report[]> {
     });
 }
 
-async function getAvailableUnitIds() {
+async function getAvailableUnits(): Promise<ReportUnitOption[]> {
     const units = await prisma.unit.findMany({
         select: {
-            unitCode: true
+            unitCode: true,
+            area: {
+                select: {
+                    displayName: true
+                }
+            }
         },
         orderBy: {
             unitCode: "asc"
         }
     });
 
-    return units.map((unit) => unit.unitCode);
+    return units.map((unit) => ({
+        unitCode: unit.unitCode,
+        area: unit.area.displayName
+    }));
 }
 
 export default async function ReportsPage() {
-    const availableUnitIds = await getAvailableUnitIds();
+    const availableUnits = await getAvailableUnits();
     const reports = await getReports();
 
     return (
         <Suspense fallback={null}>
-            <ReportsPageClient availableUnitIds={availableUnitIds} initialReports={reports}/>
+            <ReportsPageClient availableUnits={availableUnits} initialReports={reports}/>
         </Suspense>
     );
 }

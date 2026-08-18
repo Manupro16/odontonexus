@@ -1,12 +1,11 @@
-import {AREAS, REPORT_PRIORITIES} from "@/lib/constants";
-import {ReportPriority} from "@/lib/types";
+import {REPORT_PRIORITIES} from "@/lib/constants";
+import {ReportPriority, ReportUnitOption} from "@/lib/types";
 import {Button, Dialog, Flex, Select, Text, TextArea, TextField} from "@radix-ui/themes";
 import {useEffect, useState} from "react";
 
 export interface CreateReportPayload {
     unit: string;
     issue: string;
-    area: string;
     priority: ReportPriority;
     reporter: string;
 }
@@ -15,16 +14,20 @@ interface CreateReportDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onCreate: (payload: CreateReportPayload) => Promise<{ok: true} | {ok: false; error: string}>;
-    availableUnits: string[];
+    availableUnits: ReportUnitOption[];
     preselectedUnitId?: string;
 }
 
-function resolveSelectedUnit(availableUnits: string[], preselectedUnitId?: string) {
-    if (preselectedUnitId && availableUnits.includes(preselectedUnitId)) {
+function resolveSelectedUnit(availableUnits: ReportUnitOption[], preselectedUnitId?: string) {
+    if (preselectedUnitId && availableUnits.some((unit) => unit.unitCode === preselectedUnitId)) {
         return preselectedUnitId;
     }
 
-    return availableUnits[0] ?? "";
+    return availableUnits[0]?.unitCode ?? "";
+}
+
+function resolveSelectedArea(availableUnits: ReportUnitOption[], selectedUnitCode: string) {
+    return availableUnits.find((unit) => unit.unitCode === selectedUnitCode)?.area ?? "";
 }
 
 export function CreateReportDialog({
@@ -36,16 +39,15 @@ export function CreateReportDialog({
 }: CreateReportDialogProps) {
     const [unit, setUnit] = useState(() => resolveSelectedUnit(availableUnits, preselectedUnitId));
     const [issue, setIssue] = useState("");
-    const [area, setArea] = useState<string>(AREAS[0] ?? "");
     const [priority, setPriority] = useState<ReportPriority>("Medium");
     const [reporter, setReporter] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const selectedArea = resolveSelectedArea(availableUnits, unit);
 
     const resetForm = () => {
         setUnit(resolveSelectedUnit(availableUnits, preselectedUnitId));
         setIssue("");
-        setArea(AREAS[0] ?? "");
         setPriority("Medium");
         setReporter("");
         setError(null);
@@ -59,7 +61,7 @@ export function CreateReportDialog({
         setUnit(resolveSelectedUnit(availableUnits, preselectedUnitId));
     }, [open, availableUnits, preselectedUnitId]);
 
-    const isSubmitDisabled = !unit || !issue.trim() || !area || isSubmitting;
+    const isSubmitDisabled = !unit || !selectedArea || !issue.trim() || isSubmitting;
 
     const handleCreate = async () => {
         if (isSubmitDisabled) {
@@ -72,7 +74,6 @@ export function CreateReportDialog({
         const result = await onCreate({
             unit,
             issue: issue.trim(),
-            area,
             priority,
             reporter: reporter.trim() || "Unknown"
         });
@@ -112,9 +113,9 @@ export function CreateReportDialog({
                         <Select.Root value={unit} onValueChange={setUnit}>
                             <Select.Trigger className="w-full" />
                             <Select.Content>
-                                {availableUnits.map((unitId) => (
-                                    <Select.Item key={unitId} value={unitId}>
-                                        {unitId}
+                                {availableUnits.map((unitOption) => (
+                                    <Select.Item key={unitOption.unitCode} value={unitOption.unitCode}>
+                                        {unitOption.unitCode}
                                     </Select.Item>
                                 ))}
                             </Select.Content>
@@ -125,16 +126,13 @@ export function CreateReportDialog({
                         <Text as="div" size="2" mb="1" weight="bold">
                             Area
                         </Text>
-                        <Select.Root value={area} onValueChange={setArea}>
-                            <Select.Trigger className="w-full" />
-                            <Select.Content>
-                                {AREAS.map((item) => (
-                                    <Select.Item key={item} value={item}>
-                                        {item}
-                                    </Select.Item>
-                                ))}
-                            </Select.Content>
-                        </Select.Root>
+                        <TextField.Root
+                            value={selectedArea || "Select a unit to derive area"}
+                            readOnly
+                        />
+                        <Text as="p" size="1" color="gray" mt="1">
+                            Area is derived automatically from the selected unit.
+                        </Text>
                     </label>
 
                     <label>
