@@ -1,7 +1,7 @@
 import {REPORT_PRIORITIES} from "@/lib/constants";
 import {ReportPriority, ReportUnitOption} from "@/lib/types";
 import {Button, Dialog, Flex, Select, Text, TextArea, TextField} from "@radix-ui/themes";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 export interface CreateReportPayload {
     unit: string;
@@ -37,31 +37,24 @@ export function CreateReportDialog({
     availableUnits,
     preselectedUnitId
 }: CreateReportDialogProps) {
-    const [unit, setUnit] = useState(() => resolveSelectedUnit(availableUnits, preselectedUnitId));
+    const [unit, setUnit] = useState<string | null>(null);
     const [issue, setIssue] = useState("");
     const [priority, setPriority] = useState<ReportPriority>("Medium");
     const [reporter, setReporter] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const selectedArea = resolveSelectedArea(availableUnits, unit);
+    const selectedUnit = unit ?? resolveSelectedUnit(availableUnits, preselectedUnitId);
+    const selectedArea = resolveSelectedArea(availableUnits, selectedUnit);
 
     const resetForm = () => {
-        setUnit(resolveSelectedUnit(availableUnits, preselectedUnitId));
+        setUnit(null);
         setIssue("");
         setPriority("Medium");
         setReporter("");
         setError(null);
     };
 
-    useEffect(() => {
-        if (!open) {
-            return;
-        }
-
-        setUnit(resolveSelectedUnit(availableUnits, preselectedUnitId));
-    }, [open, availableUnits, preselectedUnitId]);
-
-    const isSubmitDisabled = !unit || !selectedArea || !issue.trim() || isSubmitting;
+    const isSubmitDisabled = !selectedUnit || !selectedArea || !issue.trim() || isSubmitting;
 
     const handleCreate = async () => {
         if (isSubmitDisabled) {
@@ -72,7 +65,7 @@ export function CreateReportDialog({
         setError(null);
 
         const result = await onCreate({
-            unit,
+            unit: selectedUnit,
             issue: issue.trim(),
             priority,
             reporter: reporter.trim() || "Unknown"
@@ -85,8 +78,7 @@ export function CreateReportDialog({
             return;
         }
 
-        resetForm();
-        onOpenChange(false);
+        handleOpenChange(false);
     };
 
     const handleOpenChange = (nextOpen: boolean) => {
@@ -110,7 +102,7 @@ export function CreateReportDialog({
                         <Text as="div" size="2" mb="1" weight="bold">
                             Unit
                         </Text>
-                        <Select.Root value={unit} onValueChange={setUnit}>
+                        <Select.Root value={selectedUnit} onValueChange={setUnit}>
                             <Select.Trigger className="w-full" />
                             <Select.Content>
                                 {availableUnits.map((unitOption) => (
@@ -182,7 +174,7 @@ export function CreateReportDialog({
                 )}
 
                 <Flex gap="3" mt="4" justify="end">
-                    <Button variant="soft" color="gray" onClick={() => onOpenChange(false)}>
+                    <Button variant="soft" color="gray" onClick={() => handleOpenChange(false)}>
                         Cancel
                     </Button>
                     <Button color="blue" onClick={handleCreate} disabled={isSubmitDisabled}>
