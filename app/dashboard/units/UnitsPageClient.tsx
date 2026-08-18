@@ -44,6 +44,8 @@ export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
         handleResetChanges,
         resetFilters
     } = useUnitsPageController(initialUnits);
+    const hasUnits = unitsData.length > 0;
+    const hasActiveFilters = Boolean(searchQuery || areaFilter || statusFilter);
 
     const suggestedUnitId = useMemo(() => {
         const maxNumber = unitsData.reduce((max, unit) => {
@@ -172,12 +174,16 @@ export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
                         />
                     ))}
                 </Grid>
-            ) : (
+            ) : !hasUnits ? (
+                <Flex direction="column" align="center" justify="center" py="9" gap="2">
+                    <Text color="gray" size="4">No dental units are available</Text>
+                </Flex>
+            ) : hasActiveFilters ? (
                 <Flex direction="column" align="center" justify="center" py="9" gap="2">
                     <Text color="gray" size="4">No units found matching your criteria</Text>
                     <Button variant="soft" onClick={resetFilters}>Clear all filters</Button>
                 </Flex>
-            )}
+            ) : null}
         </Flex>
     );
 }

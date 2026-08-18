@@ -57,6 +57,7 @@ async function getReports(): Promise<Report[]> {
             priority,
             priorityColor: priorityToColor[priority],
             createdAt: toIsoDate(report.createdAt),
+            closedAt: report.closedAt ? toIsoDate(report.closedAt) : null,
             reporter: report.reporterName ?? "Unknown"
         };
     });

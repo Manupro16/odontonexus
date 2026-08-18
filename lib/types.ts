@@ -19,6 +19,7 @@ export interface Report {
     priority: ReportPriority;
     priorityColor: "red" | "orange" | "green" | "blue" | "gray";
     createdAt: string;
+    closedAt?: string | null;
     reporter: string;
 }
 

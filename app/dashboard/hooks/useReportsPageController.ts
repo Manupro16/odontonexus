@@ -33,13 +33,38 @@ export function useReportsPageController({initialReports}: UseReportsPageControl
         const total = tableData.length;
         const open = tableData.filter(r => r.status === "Open").length;
         const highPriority = tableData.filter(r => r.priority === "High" && r.status !== "Closed").length;
-        const resolvedThisMonth = tableData.filter(r => r.status === "Closed").length; // Mock logic
+        const now = new Date();
+        const monthAgo = new Date(now);
+        monthAgo.setDate(now.getDate() - 30);
+
+        const closedReports = tableData.filter((report) => report.status === "Closed");
+        const resolvedThisMonth = closedReports.filter((report) => {
+            const resolvedAt = new Date(report.closedAt ?? report.createdAt);
+            return !Number.isNaN(resolvedAt.getTime()) && resolvedAt >= monthAgo;
+        }).length;
+
+        const resolutionDurationsInDays = closedReports.reduce<number[]>((durations, report) => {
+            const createdAt = new Date(report.createdAt);
+            const closedAt = new Date(report.closedAt ?? report.createdAt);
+
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(closedAt.getTime())) {
+                return durations;
+            }
+
+            durations.push(Math.max(0, (closedAt.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24)));
+            return durations;
+        }, []);
+
+        const averageResolutionDays = resolutionDurationsInDays.length === 0
+            ? 0
+            : Number((resolutionDurationsInDays.reduce((sum, days) => sum + days, 0) / resolutionDurationsInDays.length).toFixed(1));
 
         return {
             total,
             open,
             highPriority,
-            resolvedThisMonth
+            resolvedThisMonth,
+            averageResolutionDays
         };
     }, [tableData]);
 

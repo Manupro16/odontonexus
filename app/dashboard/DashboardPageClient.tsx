@@ -23,6 +23,7 @@ export function DashboardPageClient({unitStats, initialReports}: DashboardPageCl
         areaFilter,
         setAreaFilter,
         hasChanges,
+        tableData,
         filteredData,
         handleToggleStatus,
         handleUpdateStatus,
@@ -31,6 +32,8 @@ export function DashboardPageClient({unitStats, initialReports}: DashboardPageCl
         handleResetChanges,
         resetFilters
     } = useDashboardPageController({initialReports});
+    const hasReports = tableData.length > 0;
+    const hasActiveFilters = Boolean(searchQuery || statusFilter || priorityFilter || areaFilter);
 
     return (
         <>
@@ -51,19 +54,25 @@ export function DashboardPageClient({unitStats, initialReports}: DashboardPageCl
                 handleConfirmChanges={handleConfirmChanges}
             />
 
-            <RpTest
-                filteredData={filteredData}
-                handleSelectAll={handleSelectAll}
-                handleToggleStatus={handleToggleStatus}
-                handleUpdateStatus={handleUpdateStatus}
-            />
+            {hasReports && (
+                <RpTest
+                    filteredData={filteredData}
+                    handleSelectAll={handleSelectAll}
+                    handleToggleStatus={handleToggleStatus}
+                    handleUpdateStatus={handleUpdateStatus}
+                />
+            )}
 
-            {filteredData.length === 0 && (
+            {!hasReports ? (
                 <Flex direction="column" align="center" justify="center" py="9" gap="2">
-                    <Text color="gray" size="4">No units found matching your criteria</Text>
+                    <Text color="gray" size="4">No incidents have been reported</Text>
+                </Flex>
+            ) : filteredData.length === 0 && hasActiveFilters ? (
+                <Flex direction="column" align="center" justify="center" py="9" gap="2">
+                    <Text color="gray" size="4">No reports found matching your criteria</Text>
                     <Button variant="soft" onClick={resetFilters}>Clear all filters</Button>
                 </Flex>
-            )}
+            ) : null}
         </>
     );
 }

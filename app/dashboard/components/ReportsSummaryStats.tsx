@@ -12,6 +12,7 @@ interface ReportsSummaryStatsProps {
         open: number;
         highPriority: number;
         resolvedThisMonth: number;
+        averageResolutionDays: number;
     }
 }
 
@@ -46,7 +47,7 @@ export function ReportsSummaryStats({stats}: ReportsSummaryStatsProps) {
                         <Text size="1" color="gray" weight="bold" className="uppercase tracking-wider">Avg. Resolution</Text>
                         <TimerIcon className="text-orange-500" width="20" height="20" />
                     </Flex>
-                    <Heading size="6">1.2d</Heading>
+                    <Heading size="6">{stats.averageResolutionDays.toFixed(1)}d</Heading>
                     <Text size="1" color="orange">Estimated fix time</Text>
                 </Flex>
             </Card>

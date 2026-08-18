@@ -39,6 +39,7 @@ export function ReportsPageClient({availableUnits, initialReports}: ReportsPageC
         areaFilter,
         setAreaFilter,
         hasChanges,
+        tableData,
         filteredData,
         stats,
         handleToggleStatus,
@@ -49,6 +50,8 @@ export function ReportsPageClient({availableUnits, initialReports}: ReportsPageC
         handleResetChanges,
         resetFilters
     } = useReportsPageController({initialReports});
+    const hasReports = tableData.length > 0;
+    const hasActiveFilters = Boolean(searchQuery || statusFilter || priorityFilter || areaFilter);
 
     const clearCreateQueryParam = () => {
         if (!shouldAutoOpenCreateDialog) {
@@ -128,15 +131,25 @@ export function ReportsPageClient({availableUnits, initialReports}: ReportsPageC
                     handleConfirmChanges={handleConfirmChanges}
                 />
 
+                {hasReports && (
+                    <ReportsTable
+                        filteredData={filteredData}
+                        handleSelectAll={handleSelectAll}
+                        handleToggleStatus={handleToggleStatus}
+                        handleUpdateStatus={handleUpdateStatus}
+                    />
+                )}
 
-                <ReportsTable filteredData={filteredData} handleSelectAll={handleSelectAll} handleToggleStatus={handleToggleStatus} handleUpdateStatus={handleUpdateStatus} />
-
-                {filteredData.length === 0 && (
+                {!hasReports ? (
+                    <Flex direction="column" align="center" justify="center" py="9" gap="2">
+                        <Text color="gray" size="4">No reports are available</Text>
+                    </Flex>
+                ) : filteredData.length === 0 && hasActiveFilters ? (
                     <Flex direction="column" align="center" justify="center" py="9" gap="2">
                         <Text color="gray" size="4">No reports found matching your criteria</Text>
                         <Button variant="soft" onClick={resetFilters}>Clear all filters</Button>
                     </Flex>
-                )}
+                ) : null}
             </Box>
         </Flex>
     );
