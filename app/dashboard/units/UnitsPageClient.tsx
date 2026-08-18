@@ -6,7 +6,7 @@ import {UnitCard} from "@/app/dashboard/components/units/UnitCard";
 import {UnitFilters} from "@/app/dashboard/components/units/UnitFilters";
 import {PlusIcon} from "@radix-ui/react-icons";
 import {CreateUnitDialog, CreateUnitPayload} from "@/app/dashboard/components/units/CreateUnitDialog";
-import {useMemo, useState} from "react";
+import {useMemo, useState, useTransition} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {DentalUnit} from "@/lib/types";
 import {createUnit, updateUnitReview} from "./actions";
@@ -17,13 +17,15 @@ interface UnitsPageClientProps {
 
 export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
     const [isManualCreateDialogOpen, setIsManualCreateDialogOpen] = useState(false);
-    const [isSavingStatusChanges, setIsSavingStatusChanges] = useState(false);
+    const [isPersistingStatusChanges, setIsPersistingStatusChanges] = useState(false);
     const [statusSaveError, setStatusSaveError] = useState<string | null>(null);
+    const [isRefreshing, startRefreshTransition] = useTransition();
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const shouldAutoOpenCreateDialog = searchParams.get("create") === "true";
     const isCreateDialogOpen = isManualCreateDialogOpen || shouldAutoOpenCreateDialog;
+    const isSavingStatusChanges = isPersistingStatusChanges || isRefreshing;
 
     const {
         searchQuery,
@@ -38,7 +40,6 @@ export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
         hasChanges,
         handleUpdateUnitStatus,
         handleCreateUnit,
-        handleApplyPersistedUpdates,
         handleConfirmChanges,
         handleResetChanges,
         resetFilters
@@ -73,7 +74,9 @@ export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
         }
 
         handleCreateUnit(result.unit);
-        router.refresh();
+        startRefreshTransition(() => {
+            router.refresh();
+        });
         return null;
     };
 
@@ -83,22 +86,23 @@ export function UnitsPageClient({initialUnits}: UnitsPageClientProps) {
             return;
         }
 
-        setIsSavingStatusChanges(true);
+        setIsPersistingStatusChanges(true);
         setStatusSaveError(null);
 
         const result = await updateUnitReview({
             updates: pendingStatusUpdates
         });
 
-        setIsSavingStatusChanges(false);
-
         if (!result.ok) {
+            setIsPersistingStatusChanges(false);
             setStatusSaveError(result.error);
             return;
         }
 
-        handleApplyPersistedUpdates(result.units);
-        router.refresh();
+        setIsPersistingStatusChanges(false);
+        startRefreshTransition(() => {
+            router.refresh();
+        });
     };
 
     const handleResetStatusChanges = () => {

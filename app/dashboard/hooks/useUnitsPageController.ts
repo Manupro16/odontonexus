@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from "react";
+import {useMemo, useState} from "react";
 import {DentalUnit, UnitStatus} from "@/lib/types";
 
 interface UnitStatusUpdate {
@@ -10,17 +10,35 @@ export function useUnitsPageController(initialUnits: DentalUnit[]) {
     const [searchQuery, setSearchQuery] = useState("");
     const [areaFilter, setAreaFilter] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<UnitStatus | null>(null);
-    const [unitsData, setUnitsData] = useState<DentalUnit[]>(initialUnits);
-    const [originalUnitsData, setOriginalUnitsData] = useState<DentalUnit[]>(initialUnits);
+    const [statusDraftByUnitId, setStatusDraftByUnitId] = useState<Record<string, UnitStatus>>({});
+    const [optimisticCreatedUnits, setOptimisticCreatedUnits] = useState<DentalUnit[]>([]);
 
-    useEffect(() => {
-        setUnitsData(initialUnits);
-        setOriginalUnitsData(initialUnits);
-    }, [initialUnits]);
+    const canonicalUnits = useMemo(() => {
+        const serverUnitIds = new Set(initialUnits.map((unit) => unit.id));
+        const optimisticOnlyUnits = optimisticCreatedUnits.filter((unit) => !serverUnitIds.has(unit.id));
 
-    const hasChanges = useMemo(() => {
-        return JSON.stringify(unitsData) !== JSON.stringify(originalUnitsData);
-    }, [unitsData, originalUnitsData]);
+        return [...optimisticOnlyUnits, ...initialUnits];
+    }, [initialUnits, optimisticCreatedUnits]);
+
+    const canonicalStatusById = useMemo(
+        () => new Map(canonicalUnits.map((unit) => [unit.id, unit.status])),
+        [canonicalUnits]
+    );
+
+    const unitsData = useMemo(
+        () => canonicalUnits.map((unit) => {
+            const draftStatus = statusDraftByUnitId[unit.id];
+            if (!draftStatus || draftStatus === unit.status) {
+                return unit;
+            }
+
+            return {
+                ...unit,
+                status: draftStatus
+            };
+        }),
+        [canonicalUnits, statusDraftByUnitId]
+    );
 
     const filteredUnits = useMemo(() => {
         return unitsData.filter(unit => {
@@ -35,43 +53,66 @@ export function useUnitsPageController(initialUnits: DentalUnit[]) {
     }, [unitsData, searchQuery, areaFilter, statusFilter]);
 
     const pendingStatusUpdates = useMemo<UnitStatusUpdate[]>(() => {
-        const originalStatusById = new Map(originalUnitsData.map((unit) => [unit.id, unit.status]));
-
         return unitsData
-            .filter((unit) => originalStatusById.get(unit.id) !== unit.status)
+            .filter((unit) => canonicalStatusById.get(unit.id) !== unit.status)
             .map((unit) => ({
                 id: unit.id,
                 status: unit.status
             }));
-    }, [unitsData, originalUnitsData]);
+    }, [unitsData, canonicalStatusById]);
+
+    const hasChanges = pendingStatusUpdates.length > 0;
 
     const handleUpdateUnitStatus = (id: string, newStatus: UnitStatus) => {
-        setUnitsData(prev => prev.map(unit => 
-            unit.id === id ? { ...unit, status: newStatus } : unit
-        ));
-    };
-
-    const handleCreateUnit = (newUnit: DentalUnit) => {
-        setUnitsData(prev => [newUnit, ...prev]);
-    };
-
-    const handleConfirmChanges = () => {
-        setOriginalUnitsData(unitsData);
-    };
-
-    const handleApplyPersistedUpdates = (updatedUnits: DentalUnit[]) => {
-        if (updatedUnits.length === 0) {
+        const canonicalStatus = canonicalStatusById.get(id);
+        if (!canonicalStatus) {
             return;
         }
 
-        const updatedUnitsById = new Map(updatedUnits.map((unit) => [unit.id, unit]));
+        setStatusDraftByUnitId((prev) => {
+            if (newStatus === canonicalStatus) {
+                if (!(id in prev)) {
+                    return prev;
+                }
 
-        setUnitsData((prev) => prev.map((unit) => updatedUnitsById.get(unit.id) ?? unit));
-        setOriginalUnitsData((prev) => prev.map((unit) => updatedUnitsById.get(unit.id) ?? unit));
+                const next = {
+                    ...prev
+                };
+                delete next[id];
+                return next;
+            }
+
+            if (prev[id] === newStatus) {
+                return prev;
+            }
+
+            return {
+                ...prev,
+                [id]: newStatus
+            };
+        });
+    };
+
+    const handleCreateUnit = (newUnit: DentalUnit) => {
+        setOptimisticCreatedUnits((prev) => [newUnit, ...prev.filter((unit) => unit.id !== newUnit.id)]);
+    };
+
+    const handleConfirmChanges = () => {
+        setStatusDraftByUnitId((prev) => {
+            const next: Record<string, UnitStatus> = {};
+
+            for (const [unitId, status] of Object.entries(prev)) {
+                if (canonicalStatusById.get(unitId) !== status) {
+                    next[unitId] = status;
+                }
+            }
+
+            return next;
+        });
     };
 
     const handleResetChanges = () => {
-        setUnitsData(originalUnitsData);
+        setStatusDraftByUnitId({});
     };
 
     const resetFilters = () => {
@@ -93,7 +134,6 @@ export function useUnitsPageController(initialUnits: DentalUnit[]) {
         hasChanges,
         handleUpdateUnitStatus,
         handleCreateUnit,
-        handleApplyPersistedUpdates,
         handleConfirmChanges,
         handleResetChanges,
         resetFilters

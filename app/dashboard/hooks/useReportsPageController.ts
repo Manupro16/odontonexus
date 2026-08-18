@@ -1,14 +1,17 @@
 import {useMemo, useState} from "react";
-import {mockTableData} from "@/lib/mock/dashboard-stats";
 import {Report, ReportPriority, ReportStatus} from "@/lib/types";
 
-export function useReportsPageController() {
+interface UseReportsPageControllerArgs {
+    initialReports: Report[];
+}
+
+export function useReportsPageController({initialReports}: UseReportsPageControllerArgs) {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<ReportStatus | null>(null);
     const [priorityFilter, setPriorityFilter] = useState<ReportPriority | null>(null);
     const [areaFilter, setAreaFilter] = useState<string | null>(null);
-    const [tableData, setTableData] = useState<Report[]>(mockTableData);
-    const [originalData, setOriginalData] = useState<Report[]>(mockTableData);
+    const [tableData, setTableData] = useState<Report[]>(initialReports);
+    const [originalData, setOriginalData] = useState<Report[]>(initialReports);
 
     const hasChanges = useMemo(() => {
         return JSON.stringify(tableData) !== JSON.stringify(originalData);
@@ -40,13 +43,13 @@ export function useReportsPageController() {
         };
     }, [tableData]);
 
-    const handleUpdateStatus = (id: number, newStatus: ReportStatus) => {
+    const handleUpdateStatus = (id: Report["id"], newStatus: ReportStatus) => {
         setTableData(prev => prev.map(item =>
             item.id === id ? {...item, status: newStatus} : item
         ));
     };
 
-    const handleToggleStatus = (id: number, checked: boolean) => {
+    const handleToggleStatus = (id: Report["id"], checked: boolean) => {
         handleUpdateStatus(id, checked ? "Closed" : "Open");
     };
 

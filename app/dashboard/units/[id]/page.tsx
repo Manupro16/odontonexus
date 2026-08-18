@@ -33,6 +33,18 @@ interface UnitDetailPageProps {
 export default async function UnitDetailPage({params}: UnitDetailPageProps) {
     const { id } = await params;
 
+    const availableAreas = await prisma.area.findMany({
+        where: {
+            isActive: true
+        },
+        select: {
+            displayName: true
+        },
+        orderBy: {
+            displayName: "asc"
+        }
+    });
+
     const unitRecord = await prisma.unit.findUnique({
         where: {
             unitCode: id
@@ -74,5 +86,5 @@ export default async function UnitDetailPage({params}: UnitDetailPageProps) {
         observations: unitRecord.observations ?? undefined
     };
 
-    return <UnitDetailView unit={unit} />;
+    return <UnitDetailView unit={unit} availableAreas={availableAreas.map((area) => area.displayName)} />;
 }

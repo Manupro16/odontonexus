@@ -1,7 +1,7 @@
 import {AREAS, REPORT_PRIORITIES} from "@/lib/constants";
 import {ReportPriority} from "@/lib/types";
 import {Button, Dialog, Flex, Select, Text, TextArea, TextField} from "@radix-ui/themes";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export interface CreateReportPayload {
     unit: string;
@@ -14,44 +14,75 @@ export interface CreateReportPayload {
 interface CreateReportDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onCreate: (payload: CreateReportPayload) => void;
+    onCreate: (payload: CreateReportPayload) => Promise<{ok: true} | {ok: false; error: string}>;
     availableUnits: string[];
+    preselectedUnitId?: string;
+}
+
+function resolveSelectedUnit(availableUnits: string[], preselectedUnitId?: string) {
+    if (preselectedUnitId && availableUnits.includes(preselectedUnitId)) {
+        return preselectedUnitId;
+    }
+
+    return availableUnits[0] ?? "";
 }
 
 export function CreateReportDialog({
     open,
     onOpenChange,
     onCreate,
-    availableUnits
+    availableUnits,
+    preselectedUnitId
 }: CreateReportDialogProps) {
-    const [unit, setUnit] = useState(availableUnits[0] ?? "");
+    const [unit, setUnit] = useState(() => resolveSelectedUnit(availableUnits, preselectedUnitId));
     const [issue, setIssue] = useState("");
     const [area, setArea] = useState<string>(AREAS[0] ?? "");
     const [priority, setPriority] = useState<ReportPriority>("Medium");
     const [reporter, setReporter] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const resetForm = () => {
-        setUnit(availableUnits[0] ?? "");
+        setUnit(resolveSelectedUnit(availableUnits, preselectedUnitId));
         setIssue("");
         setArea(AREAS[0] ?? "");
         setPriority("Medium");
         setReporter("");
+        setError(null);
     };
 
-    const isSubmitDisabled = !unit || !issue.trim() || !area;
+    useEffect(() => {
+        if (!open) {
+            return;
+        }
 
-    const handleCreate = () => {
+        setUnit(resolveSelectedUnit(availableUnits, preselectedUnitId));
+    }, [open, availableUnits, preselectedUnitId]);
+
+    const isSubmitDisabled = !unit || !issue.trim() || !area || isSubmitting;
+
+    const handleCreate = async () => {
         if (isSubmitDisabled) {
             return;
         }
 
-        onCreate({
+        setIsSubmitting(true);
+        setError(null);
+
+        const result = await onCreate({
             unit,
             issue: issue.trim(),
             area,
             priority,
             reporter: reporter.trim() || "Unknown"
         });
+
+        setIsSubmitting(false);
+
+        if (!result.ok) {
+            setError(result.error);
+            return;
+        }
 
         resetForm();
         onOpenChange(false);
@@ -146,12 +177,18 @@ export function CreateReportDialog({
                     </label>
                 </Flex>
 
+                {error && (
+                    <Text size="2" color="red" mt="3" as="p">
+                        {error}
+                    </Text>
+                )}
+
                 <Flex gap="3" mt="4" justify="end">
                     <Button variant="soft" color="gray" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
                     <Button color="blue" onClick={handleCreate} disabled={isSubmitDisabled}>
-                        Create Report
+                        {isSubmitting ? "Creating..." : "Create Report"}
                     </Button>
                 </Flex>
             </Dialog.Content>

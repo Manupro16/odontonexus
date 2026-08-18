@@ -6,12 +6,12 @@ export type ReportPriority = "Low" | "Medium" | "High";
 export interface ReportsTableProps {
   filteredData: Report[];
   handleSelectAll: (checked: boolean) => void;
-  handleToggleStatus: (id: number, checked: boolean) => void;
-  handleUpdateStatus: (id: number, newStatus: ReportStatus) => void;
+  handleToggleStatus: (id: Report["id"], checked: boolean) => void;
+  handleUpdateStatus: (id: Report["id"], newStatus: ReportStatus) => void;
 }
 
 export interface Report {
-    id: number;
+    id: string;
     unit: string;
     issue: string;
     area: string;

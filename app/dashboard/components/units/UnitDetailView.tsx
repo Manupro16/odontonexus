@@ -6,12 +6,16 @@ import {
     Button,
     Card,
     DataList,
+    Dialog,
     Flex,
     Grid,
     Heading,
+    Select,
     Separator,
     Strong,
-    Text
+    Text,
+    TextArea,
+    TextField
 } from "@radix-ui/themes";
 import {
     ArrowLeftIcon,
@@ -23,23 +27,109 @@ import {
     ClockIcon,
     FileTextIcon
 } from "@radix-ui/react-icons";
-import {DentalUnit} from "@/lib/types";
+import {DentalUnit, UnitStatus} from "@/lib/types";
 import {useRouter} from "next/navigation";
+import {useState, useTransition} from "react";
+import {UNIT_STATUSES} from "@/lib/constants";
+import {updateUnitMetadata} from "@/app/dashboard/units/actions";
 
 interface UnitDetailViewProps {
     unit: DentalUnit;
+    availableAreas: string[];
 }
 
-export function UnitDetailView({unit}: UnitDetailViewProps) {
-    const router = useRouter();
+interface UnitEditFormState {
+    area: string;
+    status: UnitStatus;
+    brand: string;
+    model: string;
+    serialNumber: string;
+    installationDate: string;
+    observations: string;
+}
 
-    const statusConfig = {
+function toUnitEditForm(unit: DentalUnit): UnitEditFormState {
+    return {
+        area: unit.area,
+        status: unit.status,
+        brand: unit.brand ?? "",
+        model: unit.model ?? "",
+        serialNumber: unit.serialNumber ?? "",
+        installationDate: unit.installationDate ?? "",
+        observations: unit.observations ?? ""
+    };
+}
+
+export function UnitDetailView({unit, availableAreas}: UnitDetailViewProps) {
+    const router = useRouter();
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isSavingEdit, setIsSavingEdit] = useState(false);
+    const [editError, setEditError] = useState<string | null>(null);
+    const [isRefreshing, startRefreshTransition] = useTransition();
+    const [editForm, setEditForm] = useState<UnitEditFormState>(() => toUnitEditForm(unit));
+
+    const statusConfig: Record<UnitStatus, { color: "green" | "orange" | "red"; icon: JSX.Element }> = {
         "Operativa": { color: "green" as const, icon: <CheckCircledIcon /> },
         "Parcialmente Operativa": { color: "orange" as const, icon: <ExclamationTriangleIcon /> },
         "Fuera de Servicio": { color: "red" as const, icon: <MinusCircledIcon /> }
     };
 
+    const areaOptions = availableAreas.includes(unit.area)
+        ? availableAreas
+        : [unit.area, ...availableAreas];
+
+    const isEditSubmitDisabled = !editForm.area.trim() || isSavingEdit || isRefreshing;
     const config = statusConfig[unit.status];
+
+    const handleEditDialogOpenChange = (open: boolean) => {
+        setIsEditDialogOpen(open);
+        setEditError(null);
+
+        if (open) {
+            setEditForm(toUnitEditForm(unit));
+        }
+    };
+
+    const handleSaveEdit = async () => {
+        if (isEditSubmitDisabled) {
+            return;
+        }
+
+        setIsSavingEdit(true);
+        setEditError(null);
+
+        const result = await updateUnitMetadata({
+            id: unit.id,
+            area: editForm.area,
+            status: editForm.status,
+            brand: editForm.brand,
+            model: editForm.model,
+            serialNumber: editForm.serialNumber,
+            installationDate: editForm.installationDate,
+            observations: editForm.observations
+        });
+
+        setIsSavingEdit(false);
+
+        if (!result.ok) {
+            setEditError(result.error);
+            return;
+        }
+
+        setIsEditDialogOpen(false);
+        startRefreshTransition(() => {
+            router.refresh();
+        });
+    };
+
+    const handleReportFailure = () => {
+        const params = new URLSearchParams({
+            create: "true",
+            unit: unit.id
+        });
+
+        router.push(`/dashboard/reports?${params.toString()}`);
+    };
 
     return (
         <Flex direction="column" gap="4">
@@ -49,10 +139,138 @@ export function UnitDetailView({unit}: UnitDetailViewProps) {
                     <ArrowLeftIcon /> Back to Units
                 </Button>
                 <Flex gap="3">
-                    <Button variant="soft" color="gray">
-                        <GearIcon /> Edit Unit
-                    </Button>
-                    <Button variant="solid" color="red">
+                    <Dialog.Root open={isEditDialogOpen} onOpenChange={handleEditDialogOpenChange}>
+                        <Dialog.Trigger asChild>
+                            <Button variant="soft" color="gray">
+                                <GearIcon /> Edit Unit
+                            </Button>
+                        </Dialog.Trigger>
+                        <Dialog.Content maxWidth="560px">
+                            <Dialog.Title>Edit Unit {unit.id}</Dialog.Title>
+                            <Dialog.Description size="2" mb="4">
+                                Update the unit metadata and save the changes.
+                            </Dialog.Description>
+
+                            <Flex direction="column" gap="3">
+                                <label>
+                                    <Text as="div" size="2" mb="1" weight="bold">
+                                        Area
+                                    </Text>
+                                    <Select.Root
+                                        value={editForm.area}
+                                        onValueChange={(value) => setEditForm((prev) => ({...prev, area: value}))}
+                                    >
+                                        <Select.Trigger className="w-full" />
+                                        <Select.Content>
+                                            {areaOptions.map((areaName) => (
+                                                <Select.Item key={areaName} value={areaName}>
+                                                    {areaName}
+                                                </Select.Item>
+                                            ))}
+                                        </Select.Content>
+                                    </Select.Root>
+                                </label>
+
+                                <label>
+                                    <Text as="div" size="2" mb="1" weight="bold">
+                                        Status
+                                    </Text>
+                                    <Select.Root
+                                        value={editForm.status}
+                                        onValueChange={(value) => setEditForm((prev) => ({...prev, status: value as UnitStatus}))}
+                                    >
+                                        <Select.Trigger className="w-full" />
+                                        <Select.Content>
+                                            {UNIT_STATUSES.map((status) => (
+                                                <Select.Item key={status} value={status}>
+                                                    {status}
+                                                </Select.Item>
+                                            ))}
+                                        </Select.Content>
+                                    </Select.Root>
+                                </label>
+
+                                <Grid columns={{initial: "1", sm: "2"}} gap="3">
+                                    <label>
+                                        <Text as="div" size="2" mb="1" weight="bold">
+                                            Brand
+                                        </Text>
+                                        <TextField.Root
+                                            value={editForm.brand}
+                                            onChange={(event) => setEditForm((prev) => ({...prev, brand: event.target.value}))}
+                                            placeholder="Not specified"
+                                        />
+                                    </label>
+                                    <label>
+                                        <Text as="div" size="2" mb="1" weight="bold">
+                                            Model
+                                        </Text>
+                                        <TextField.Root
+                                            value={editForm.model}
+                                            onChange={(event) => setEditForm((prev) => ({...prev, model: event.target.value}))}
+                                            placeholder="Not specified"
+                                        />
+                                    </label>
+                                </Grid>
+
+                                <Grid columns={{initial: "1", sm: "2"}} gap="3">
+                                    <label>
+                                        <Text as="div" size="2" mb="1" weight="bold">
+                                            Serial Number
+                                        </Text>
+                                        <TextField.Root
+                                            value={editForm.serialNumber}
+                                            onChange={(event) => setEditForm((prev) => ({...prev, serialNumber: event.target.value}))}
+                                            placeholder="N/A"
+                                        />
+                                    </label>
+                                    <label>
+                                        <Text as="div" size="2" mb="1" weight="bold">
+                                            Installation Date
+                                        </Text>
+                                        <TextField.Root
+                                            type="date"
+                                            value={editForm.installationDate}
+                                            onChange={(event) => setEditForm((prev) => ({...prev, installationDate: event.target.value}))}
+                                        />
+                                    </label>
+                                </Grid>
+
+                                <label>
+                                    <Text as="div" size="2" mb="1" weight="bold">
+                                        Observations
+                                    </Text>
+                                    <TextArea
+                                        rows={4}
+                                        value={editForm.observations}
+                                        onChange={(event) => setEditForm((prev) => ({...prev, observations: event.target.value}))}
+                                        placeholder="No observations recorded"
+                                    />
+                                </label>
+                            </Flex>
+
+                            {editError && (
+                                <Text size="2" color="red" mt="3" as="p">
+                                    {editError}
+                                </Text>
+                            )}
+
+                            <Flex gap="3" mt="4" justify="end">
+                                <Button
+                                    variant="soft"
+                                    color="gray"
+                                    onClick={() => handleEditDialogOpenChange(false)}
+                                    disabled={isSavingEdit || isRefreshing}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button color="blue" onClick={handleSaveEdit} disabled={isEditSubmitDisabled}>
+                                    {isSavingEdit || isRefreshing ? "Saving..." : "Save Changes"}
+                                </Button>
+                            </Flex>
+                        </Dialog.Content>
+                    </Dialog.Root>
+                    <Button variant="solid" color="red" onClick={handleReportFailure}>
                         <ExclamationTriangleIcon /> Report Failure
                     </Button>
                 </Flex>

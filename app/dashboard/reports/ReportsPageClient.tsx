@@ -10,23 +10,23 @@ import {CreateReportDialog, CreateReportPayload} from "@/app/dashboard/component
 import {useState} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {Report} from "@/lib/types";
-
-const priorityToColor = {
-    High: "red",
-    Medium: "orange",
-    Low: "green"
-} as const;
+import {createReport} from "./actions";
 
 interface ReportsPageClientProps {
     availableUnitIds: string[];
+    initialReports: Report[];
 }
 
-export function ReportsPageClient({availableUnitIds}: ReportsPageClientProps) {
+export function ReportsPageClient({availableUnitIds, initialReports}: ReportsPageClientProps) {
     const [isManualCreateDialogOpen, setIsManualCreateDialogOpen] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const shouldAutoOpenCreateDialog = searchParams.get("create") === "true";
+    const requestedUnitId = searchParams.get("unit");
+    const preselectedUnitId = requestedUnitId && availableUnitIds.includes(requestedUnitId)
+        ? requestedUnitId
+        : undefined;
     const isCreateDialogOpen = isManualCreateDialogOpen || shouldAutoOpenCreateDialog;
 
     const {
@@ -39,7 +39,6 @@ export function ReportsPageClient({availableUnitIds}: ReportsPageClientProps) {
         areaFilter,
         setAreaFilter,
         hasChanges,
-        tableData,
         filteredData,
         stats,
         handleToggleStatus,
@@ -49,7 +48,7 @@ export function ReportsPageClient({availableUnitIds}: ReportsPageClientProps) {
         handleConfirmChanges,
         handleResetChanges,
         resetFilters
-    } = useReportsPageController();
+    } = useReportsPageController({initialReports});
 
     const clearCreateQueryParam = () => {
         if (!shouldAutoOpenCreateDialog) {
@@ -58,26 +57,21 @@ export function ReportsPageClient({availableUnitIds}: ReportsPageClientProps) {
 
         const nextParams = new URLSearchParams(searchParams.toString());
         nextParams.delete("create");
+        nextParams.delete("unit");
         const nextUrl = nextParams.size > 0 ? `${pathname}?${nextParams.toString()}` : pathname;
         router.replace(nextUrl);
     };
 
-    const handleCreateReportFromDialog = (payload: CreateReportPayload) => {
-        const nextId = tableData.reduce((max, report) => Math.max(max, report.id), 0) + 1;
+    const handleCreateReportFromDialog = async (payload: CreateReportPayload) => {
+        const result = await createReport(payload);
 
-        const newReport: Report = {
-            id: nextId,
-            unit: payload.unit,
-            issue: payload.issue,
-            area: payload.area,
-            status: "Open",
-            priority: payload.priority,
-            priorityColor: priorityToColor[payload.priority],
-            createdAt: new Date().toISOString().slice(0, 10),
-            reporter: payload.reporter
-        };
+        if (!result.ok) {
+            return result;
+        }
 
-        handleCreateReport(newReport);
+        handleCreateReport(result.report);
+
+        return {ok: true as const};
     };
 
     const handleCreateDialogOpenChange = (open: boolean) => {
@@ -110,6 +104,7 @@ export function ReportsPageClient({availableUnitIds}: ReportsPageClientProps) {
                 onOpenChange={handleCreateDialogOpenChange}
                 onCreate={handleCreateReportFromDialog}
                 availableUnits={availableUnitIds}
+                preselectedUnitId={preselectedUnitId}
             />
 
             <ReportsSummaryStats stats={stats} />
