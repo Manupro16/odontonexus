@@ -1,6 +1,11 @@
 import {useMemo, useState} from "react";
 import {Report, ReportPriority, ReportStatus} from "@/lib/types";
 
+interface ReportStatusUpdate {
+    id: Report["id"];
+    status: ReportStatus;
+}
+
 interface UseReportsPageControllerArgs {
     initialReports: Report[];
 }
@@ -13,9 +18,28 @@ export function useReportsPageController({initialReports}: UseReportsPageControl
     const [tableData, setTableData] = useState<Report[]>(initialReports);
     const [originalData, setOriginalData] = useState<Report[]>(initialReports);
 
-    const hasChanges = useMemo(() => {
-        return JSON.stringify(tableData) !== JSON.stringify(originalData);
-    }, [tableData, originalData]);
+    const originalStatusById = useMemo(
+        () => new Map(originalData.map((report) => [report.id, report.status])),
+        [originalData]
+    );
+
+    const pendingStatusUpdates = useMemo<ReportStatusUpdate[]>(() => {
+        return tableData.reduce<ReportStatusUpdate[]>((updates, report) => {
+            const originalStatus = originalStatusById.get(report.id);
+            if (!originalStatus || originalStatus === report.status) {
+                return updates;
+            }
+
+            updates.push({
+                id: report.id,
+                status: report.status
+            });
+
+            return updates;
+        }, []);
+    }, [tableData, originalStatusById]);
+
+    const hasChanges = pendingStatusUpdates.length > 0;
 
     const filteredData = useMemo(() => {
         return tableData.filter(item => {
@@ -87,10 +111,22 @@ export function useReportsPageController({initialReports}: UseReportsPageControl
 
     const handleCreateReport = (newReport: Report) => {
         setTableData(prev => [newReport, ...prev]);
+        setOriginalData(prev => [newReport, ...prev]);
     };
 
-    const handleConfirmChanges = () => {
-        setOriginalData(tableData);
+    const mergeReportsById = (reports: Report[], persistedReports: Report[]) => {
+        const persistedById = new Map(persistedReports.map((report) => [report.id, report]));
+
+        return reports.map((report) => persistedById.get(report.id) ?? report);
+    };
+
+    const reconcilePersistedStatusChanges = (persistedReports: Report[]) => {
+        if (persistedReports.length === 0) {
+            return;
+        }
+
+        setTableData((prev) => mergeReportsById(prev, persistedReports));
+        setOriginalData((prev) => mergeReportsById(prev, persistedReports));
     };
 
     const handleResetChanges = () => {
@@ -114,6 +150,7 @@ export function useReportsPageController({initialReports}: UseReportsPageControl
         areaFilter,
         setAreaFilter,
         hasChanges,
+        pendingStatusUpdates,
         tableData,
         filteredData,
         stats,
@@ -121,7 +158,7 @@ export function useReportsPageController({initialReports}: UseReportsPageControl
         handleUpdateStatus,
         handleSelectAll,
         handleCreateReport,
-        handleConfirmChanges,
+        reconcilePersistedStatusChanges,
         handleResetChanges,
         resetFilters
     };

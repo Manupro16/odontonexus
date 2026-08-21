@@ -10,7 +10,7 @@ import {CreateReportDialog, CreateReportPayload} from "@/app/dashboard/component
 import {useState} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {Report, ReportUnitOption} from "@/lib/types";
-import {createReport} from "./actions";
+import {createReport, updateReportStatuses} from "./actions";
 
 interface ReportsPageClientProps {
     availableUnits: ReportUnitOption[];
@@ -19,6 +19,8 @@ interface ReportsPageClientProps {
 
 export function ReportsPageClient({availableUnits, initialReports}: ReportsPageClientProps) {
     const [isManualCreateDialogOpen, setIsManualCreateDialogOpen] = useState(false);
+    const [isPersistingStatusChanges, setIsPersistingStatusChanges] = useState(false);
+    const [statusSaveError, setStatusSaveError] = useState<string | null>(null);
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -39,6 +41,7 @@ export function ReportsPageClient({availableUnits, initialReports}: ReportsPageC
         areaFilter,
         setAreaFilter,
         hasChanges,
+        pendingStatusUpdates,
         tableData,
         filteredData,
         stats,
@@ -46,12 +49,13 @@ export function ReportsPageClient({availableUnits, initialReports}: ReportsPageC
         handleUpdateStatus,
         handleSelectAll,
         handleCreateReport,
-        handleConfirmChanges,
+        reconcilePersistedStatusChanges,
         handleResetChanges,
         resetFilters
     } = useReportsPageController({initialReports});
     const hasReports = tableData.length > 0;
     const hasActiveFilters = Boolean(searchQuery || statusFilter || priorityFilter || areaFilter);
+    const isSavingStatusChanges = isPersistingStatusChanges;
 
     const clearCreateQueryParam = () => {
         if (!shouldAutoOpenCreateDialog) {
@@ -83,6 +87,37 @@ export function ReportsPageClient({availableUnits, initialReports}: ReportsPageC
         if (!open) {
             clearCreateQueryParam();
         }
+    };
+
+    const handleConfirmStatusChanges = async () => {
+        if (pendingStatusUpdates.length === 0) {
+            return;
+        }
+
+        setIsPersistingStatusChanges(true);
+        setStatusSaveError(null);
+
+        const result = await updateReportStatuses({
+            updates: pendingStatusUpdates
+        });
+
+        if (!result.ok) {
+            setIsPersistingStatusChanges(false);
+            setStatusSaveError(result.error);
+            return;
+        }
+
+        reconcilePersistedStatusChanges(result.reports);
+        setIsPersistingStatusChanges(false);
+    };
+
+    const handleResetStatusChanges = () => {
+        if (isSavingStatusChanges) {
+            return;
+        }
+
+        setStatusSaveError(null);
+        handleResetChanges();
     };
 
     return (
@@ -127,9 +162,16 @@ export function ReportsPageClient({availableUnits, initialReports}: ReportsPageC
                     setAreaFilter={setAreaFilter}
                     resetFilters={resetFilters}
                     hasChanges={hasChanges}
-                    handleResetChanges={handleResetChanges}
-                    handleConfirmChanges={handleConfirmChanges}
+                    handleResetChanges={handleResetStatusChanges}
+                    handleConfirmChanges={handleConfirmStatusChanges}
+                    isSavingChanges={isSavingStatusChanges}
                 />
+
+                {statusSaveError && (
+                    <Text size="2" color="red" mt="2">
+                        {statusSaveError}
+                    </Text>
+                )}
 
                 {hasReports && (
                     <ReportsTable

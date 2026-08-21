@@ -16,6 +16,7 @@ interface ReportsToolbarProps {
     hasChanges: boolean;
     handleResetChanges: () => void;
     handleConfirmChanges: () => void;
+    isSavingChanges?: boolean;
 }
 
 export function SearchToolbar({
@@ -30,7 +31,8 @@ export function SearchToolbar({
                                    resetFilters,
                                    hasChanges,
                                    handleResetChanges,
-                                   handleConfirmChanges
+                                   handleConfirmChanges,
+                                   isSavingChanges = false
                                }: ReportsToolbarProps) {
     return (
         <Flex gap="4" align="center" mb="4">
@@ -117,11 +119,11 @@ export function SearchToolbar({
                     <Text size="2" color="blue" weight="medium">
                         Unsaved status changes
                     </Text>
-                    <Button variant="ghost" size="1" color="gray" onClick={handleResetChanges}>
+                    <Button variant="ghost" size="1" color="gray" onClick={handleResetChanges} disabled={isSavingChanges}>
                         <ResetIcon/> Reset
                     </Button>
-                    <Button variant="soft" size="1" color="blue" onClick={handleConfirmChanges}>
-                        <CheckCircledIcon/> Confirm
+                    <Button variant="soft" size="1" color="blue" onClick={handleConfirmChanges} disabled={isSavingChanges}>
+                        <CheckCircledIcon/> {isSavingChanges ? "Saving..." : "Confirm"}
                     </Button>
                 </Flex>
             )}
