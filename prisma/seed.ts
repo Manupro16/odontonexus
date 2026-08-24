@@ -1,4 +1,10 @@
-import { PrismaClient } from "../generated/prisma/client.ts";
+import { PrismaClient } from "../generated/prisma/client";
+import type {
+  AreaCode as PrismaAreaCode,
+  ReportPriority as PrismaReportPriority,
+  ReportStatus as PrismaReportStatus,
+  UnitStatus as PrismaUnitStatus,
+} from "../generated/prisma/enums";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -10,7 +16,52 @@ const prisma = new PrismaClient({
   accelerateUrl: databaseUrl,
 });
 
-const areaMappings = {
+type AreaLabel =
+  | "Adultos"
+  | "Endodoncia"
+  | "Cirugía"
+  | "Odontopediatría"
+  | "Ortodoncia"
+  | "Periodoncia";
+
+type UnitStatusLabel =
+  | "Operativa"
+  | "Parcialmente Operativa"
+  | "Fuera de Servicio";
+
+type ReportStatusLabel = "Open" | "In Progress" | "Closed";
+
+type ReportPriorityLabel = "Low" | "Medium" | "High";
+
+interface AreaMapping {
+  code: PrismaAreaCode;
+  displayName: AreaLabel;
+}
+
+interface UnitSeedRecord {
+  unitCode: string;
+  area: AreaLabel;
+  status: UnitStatusLabel;
+  lastReview: string;
+  brand?: string;
+  model?: string;
+  serialNumber?: string;
+  installationDate?: string;
+  observations?: string;
+}
+
+interface ReportSeedRecord {
+  legacyNumericId: number;
+  unitCode: string;
+  issueDescription: string;
+  area: AreaLabel;
+  status: ReportStatusLabel;
+  priority: ReportPriorityLabel;
+  createdAt: string;
+  reporterName: string;
+}
+
+const areaMappings: Record<AreaLabel, AreaMapping> = {
   Adultos: {
     code: "ADULTS",
     displayName: "Adultos",
@@ -37,25 +88,25 @@ const areaMappings = {
   },
 };
 
-const unitStatusMappings = {
+const unitStatusMappings: Record<UnitStatusLabel, PrismaUnitStatus> = {
   Operativa: "OPERATIONAL",
   "Parcialmente Operativa": "PARTIALLY_OPERATIONAL",
   "Fuera de Servicio": "OUT_OF_SERVICE",
 };
 
-const reportStatusMappings = {
+const reportStatusMappings: Record<ReportStatusLabel, PrismaReportStatus> = {
   Open: "OPEN",
   "In Progress": "IN_PROGRESS",
   Closed: "CLOSED",
 };
 
-const reportPriorityMappings = {
+const reportPriorityMappings: Record<ReportPriorityLabel, PrismaReportPriority> = {
   Low: "LOW",
   Medium: "MEDIUM",
   High: "HIGH",
 };
 
-const areasFromFrontend = [
+const areasFromFrontend: AreaLabel[] = [
   "Adultos",
   "Endodoncia",
   "Cirugía",
@@ -64,7 +115,7 @@ const areasFromFrontend = [
   "Periodoncia",
 ];
 
-const unitsFromFrontend = [
+const unitsFromFrontend: UnitSeedRecord[] = [
   {
     unitCode: "U-01",
     area: "Adultos",
@@ -129,7 +180,7 @@ const unitsFromFrontend = [
   },
 ];
 
-const reportsFromFrontend = [
+const reportsFromFrontend: ReportSeedRecord[] = [
   {
     legacyNumericId: 1,
     unitCode: "U-02",
@@ -182,18 +233,12 @@ const reportsFromFrontend = [
   },
 ];
 
-function toDate(value) {
+function toDate(value: string | null | undefined): Date | null {
   return value ? new Date(`${value}T00:00:00.000Z`) : null;
 }
 
-function getAreaMapping(label) {
-  const mapping = areaMappings[label];
-
-  if (!mapping) {
-    throw new Error(`Unsupported area label in seed data: ${label}`);
-  }
-
-  return mapping;
+function getAreaMapping(label: AreaLabel): AreaMapping {
+  return areaMappings[label];
 }
 
 async function seedAreas() {
@@ -224,10 +269,6 @@ async function seedUnits() {
     });
 
     const mappedStatus = unitStatusMappings[unit.status];
-
-    if (!mappedStatus) {
-      throw new Error(`Unsupported unit status in seed data: ${unit.status}`);
-    }
 
     await prisma.unit.upsert({
       where: { unitCode: unit.unitCode },
@@ -262,14 +303,6 @@ async function seedReports() {
   for (const report of reportsFromFrontend) {
     const mappedStatus = reportStatusMappings[report.status];
     const mappedPriority = reportPriorityMappings[report.priority];
-
-    if (!mappedStatus) {
-      throw new Error(`Unsupported report status in seed data: ${report.status}`);
-    }
-
-    if (!mappedPriority) {
-      throw new Error(`Unsupported report priority in seed data: ${report.priority}`);
-    }
 
     const unit = await prisma.unit.findUnique({
       where: { unitCode: report.unitCode },

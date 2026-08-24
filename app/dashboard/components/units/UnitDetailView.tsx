@@ -29,7 +29,7 @@ import {
 } from "@radix-ui/react-icons";
 import {DentalUnit, UnitStatus} from "@/lib/types";
 import {useRouter} from "next/navigation";
-import {useState, useTransition} from "react";
+import {type ReactElement, useState, useTransition} from "react";
 import {UNIT_STATUSES} from "@/lib/constants";
 import {updateUnitMetadata} from "@/app/dashboard/units/actions";
 
@@ -68,7 +68,7 @@ export function UnitDetailView({unit, availableAreas}: UnitDetailViewProps) {
     const [isRefreshing, startRefreshTransition] = useTransition();
     const [editForm, setEditForm] = useState<UnitEditFormState>(() => toUnitEditForm(unit));
 
-    const statusConfig: Record<UnitStatus, { color: "green" | "orange" | "red"; icon: JSX.Element }> = {
+    const statusConfig: Record<UnitStatus, { color: "green" | "orange" | "red"; icon: ReactElement }> = {
         "Operativa": { color: "green" as const, icon: <CheckCircledIcon /> },
         "Parcialmente Operativa": { color: "orange" as const, icon: <ExclamationTriangleIcon /> },
         "Fuera de Servicio": { color: "red" as const, icon: <MinusCircledIcon /> }
@@ -140,7 +140,7 @@ export function UnitDetailView({unit, availableAreas}: UnitDetailViewProps) {
                 </Button>
                 <Flex gap="3">
                     <Dialog.Root open={isEditDialogOpen} onOpenChange={handleEditDialogOpenChange}>
-                        <Dialog.Trigger asChild>
+                        <Dialog.Trigger>
                             <Button variant="soft" color="gray">
                                 <GearIcon /> Edit Unit
                             </Button>

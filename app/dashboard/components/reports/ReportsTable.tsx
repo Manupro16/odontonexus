@@ -11,7 +11,7 @@ import {
 } from "@radix-ui/themes";
 import { ChevronDownIcon, DotsVerticalIcon } from "@radix-ui/react-icons";
 import { CommentsHoverCard } from "@/app/dashboard/components/globals/CommentsHoverCard";
-import {DataTableColumn, Report, ReportsTableProps, ReportStatus} from "@/lib/types";
+import {DataTableColumn, Report, ReportsTableProps} from "@/lib/types";
 import DataTable from "@/app/dashboard/components/globals/DataTable";
 
 
