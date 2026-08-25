@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import {DentalUnit, UnitStatus} from "@/lib/types";
+import {Suspense} from "react";
 import {UnitsPageClient} from "./UnitsPageClient";
 
 const statusMapping: Record<string, UnitStatus> = {
@@ -59,5 +60,9 @@ async function getUnitsPageData(): Promise<DentalUnit[]> {
 export default async function UnitsPage() {
     const initialUnits = await getUnitsPageData();
 
-    return <UnitsPageClient initialUnits={initialUnits} />;
+    return (
+        <Suspense fallback={null}>
+            <UnitsPageClient initialUnits={initialUnits} />
+        </Suspense>
+    );
 }
