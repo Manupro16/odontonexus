@@ -1,5 +1,5 @@
 import Link from "next/link";
-import {Badge, DropdownMenu, Flex, HoverCard, IconButton, Strong, Table, Text} from "@radix-ui/themes";
+import {Badge, DropdownMenu, HoverCard, IconButton, Strong, Table, Text} from "@radix-ui/themes";
 import {DotsVerticalIcon} from "@radix-ui/react-icons";
 import {CommentsHoverCard} from "@/app/dashboard/components/globals/CommentsHoverCard";
 import {Report} from "@/lib/types";
