@@ -13,9 +13,9 @@ interface ReportsToolbarProps {
     areaFilter: string | null;
     setAreaFilter: (area: string | null) => void;
     resetFilters: () => void;
-    hasChanges: boolean;
-    handleResetChanges: () => void;
-    handleConfirmChanges: () => void;
+    hasChanges?: boolean;
+    handleResetChanges?: () => void;
+    handleConfirmChanges?: () => void;
     isSavingChanges?: boolean;
 }
 
@@ -29,7 +29,7 @@ export function SearchToolbar({
                                    areaFilter,
                                    setAreaFilter,
                                    resetFilters,
-                                   hasChanges,
+                                   hasChanges = false,
                                    handleResetChanges,
                                    handleConfirmChanges,
                                    isSavingChanges = false
@@ -113,7 +113,7 @@ export function SearchToolbar({
                 )}
             </Flex>
 
-            {hasChanges && (
+            {hasChanges && handleResetChanges && handleConfirmChanges && (
                 <Flex gap="3" align="center"
                       className="ml-auto bg-blue-500/10 py-1 px-3 rounded-full border border-blue-500/20">
                     <Text size="2" color="blue" weight="medium">

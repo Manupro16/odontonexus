@@ -22,17 +22,10 @@ export function DashboardPageClient({unitStats, initialReports}: DashboardPageCl
         setPriorityFilter,
         areaFilter,
         setAreaFilter,
-        hasChanges,
-        tableData,
         filteredData,
-        handleToggleStatus,
-        handleUpdateStatus,
-        handleSelectAll,
-        handleConfirmChanges,
-        handleResetChanges,
         resetFilters
     } = useDashboardPageController({initialReports});
-    const hasReports = tableData.length > 0;
+    const hasReports = initialReports.length > 0;
     const hasActiveFilters = Boolean(searchQuery || statusFilter || priorityFilter || areaFilter);
 
     return (
@@ -49,17 +42,11 @@ export function DashboardPageClient({unitStats, initialReports}: DashboardPageCl
                 areaFilter={areaFilter}
                 setAreaFilter={setAreaFilter}
                 resetFilters={resetFilters}
-                hasChanges={hasChanges}
-                handleResetChanges={handleResetChanges}
-                handleConfirmChanges={handleConfirmChanges}
             />
 
             {hasReports && (
                 <RpTest
                     filteredData={filteredData}
-                    handleSelectAll={handleSelectAll}
-                    handleToggleStatus={handleToggleStatus}
-                    handleUpdateStatus={handleUpdateStatus}
                 />
             )}
 
