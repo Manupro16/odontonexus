@@ -112,6 +112,10 @@ export function MaintenanceFormDialog({
         [availableReports, selectedUnitId]
     );
 
+    const validReportId = reportId && reportsForUnit.some((item) => item.id === reportId)
+        ? reportId
+        : null;
+
     useEffect(() => {
         const becameOpen = open && !previousOpenRef.current;
         previousOpenRef.current = open;
@@ -132,15 +136,13 @@ export function MaintenanceFormDialog({
         setError(null);
     }, [open, initialValues]);
 
-    useEffect(() => {
-        if (!reportId) {
-            return;
-        }
+    const handleUnitChange = (nextUnitId: string) => {
+        setUnitId(nextUnitId);
 
-        if (!reportsForUnit.some((item) => item.id === reportId)) {
+        if (nextUnitId !== selectedUnitId) {
             setReportId(null);
         }
-    }, [reportId, reportsForUnit]);
+    };
 
     const handleOpenChange = (nextOpen: boolean) => {
         if (!nextOpen) {
@@ -186,7 +188,7 @@ export function MaintenanceFormDialog({
         try {
             const result = await onSubmit({
                 unitId: selectedUnitId,
-                reportId,
+                reportId: validReportId,
                 type,
                 priority,
                 title: title.trim(),
@@ -221,7 +223,7 @@ export function MaintenanceFormDialog({
                         <Text as="div" size="2" mb="1" weight="bold">
                             Unit*
                         </Text>
-                        <Select.Root value={selectedUnitId} onValueChange={setUnitId} disabled={!hasUnits}>
+                        <Select.Root value={selectedUnitId} onValueChange={handleUnitChange} disabled={!hasUnits}>
                             <Select.Trigger className="w-full" placeholder={hasUnits ? "Select unit" : "No units available"}/>
                             <Select.Content>
                                 {availableUnits.map((unitOption) => (
@@ -282,7 +284,7 @@ export function MaintenanceFormDialog({
                             Related Report
                         </Text>
                         <Select.Root
-                            value={reportId ?? NO_REPORT_VALUE}
+                            value={validReportId ?? NO_REPORT_VALUE}
                             onValueChange={(value) => setReportId(value === NO_REPORT_VALUE ? null : value)}
                             disabled={!hasUnits || !selectedUnitId}
                         >
