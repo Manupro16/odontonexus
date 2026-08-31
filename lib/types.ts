@@ -34,6 +34,21 @@ export interface MaintenanceRelatedReport {
     status: "Open" | "In Progress" | "Closed";
 }
 
+export interface MaintenanceUnitOption {
+    id: string;
+    unitCode: string;
+    area: string;
+}
+
+export interface MaintenanceReportOption {
+    id: string;
+    unitId: string;
+    unitCode: string;
+    issue: string;
+    status: "Open" | "In Progress" | "Closed";
+    priority: "Low" | "Medium" | "High";
+}
+
 export interface MaintenanceItem {
     id: string;
     unitId: string;

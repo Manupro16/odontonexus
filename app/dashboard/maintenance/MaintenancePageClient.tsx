@@ -2,15 +2,20 @@
 
 import {useMemo, useState} from "react";
 import {Button, Card, Flex, Heading, Separator, Text} from "@radix-ui/themes";
-import {MaintenanceItem} from "@/lib/types";
+import {MaintenanceItem, MaintenanceReportOption, MaintenanceUnitOption} from "@/lib/types";
 import {MaintenanceKpiCards} from "./components/MaintenanceKpiCards";
 import {MaintenanceFilters, MaintenanceFilterState} from "./components/MaintenanceFilters";
 import {MaintenanceCalendar} from "./components/MaintenanceCalendar";
 import {MaintenanceDetailsDialog} from "./components/MaintenanceDetailsDialog";
 import {MaintenanceUpcomingList} from "./components/MaintenanceUpcomingList";
+import {ScheduleMaintenanceDialog, ScheduleMaintenancePayload} from "./components/ScheduleMaintenanceDialog";
+import {createMaintenance} from "./actions";
+import {useRouter} from "next/navigation";
 
 interface MaintenancePageClientProps {
     initialMaintenanceItems: MaintenanceItem[];
+    availableUnits: MaintenanceUnitOption[];
+    availableReports: MaintenanceReportOption[];
 }
 
 function parseDate(value: string | null): Date | null {
@@ -63,7 +68,13 @@ function applyFilters(items: MaintenanceItem[], filters: MaintenanceFilterState)
     });
 }
 
-export function MaintenancePageClient({initialMaintenanceItems}: MaintenancePageClientProps) {
+export function MaintenancePageClient({
+    initialMaintenanceItems,
+    availableUnits,
+    availableReports
+}: MaintenancePageClientProps) {
+    const router = useRouter();
+    const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<MaintenanceItem | null>(null);
     const [filters, setFilters] = useState<MaintenanceFilterState>({
         area: "All",
@@ -99,21 +110,22 @@ export function MaintenancePageClient({initialMaintenanceItems}: MaintenancePage
                 return acc;
             }
 
-            if ((item.status === "Scheduled" || item.status === "In Progress") && scheduledStart <= endOfToday) {
-                acc.scheduled += 1;
-            }
+            const isActive = item.status === "Scheduled" || item.status === "In Progress";
 
-            if (
-                (item.status === "Scheduled" || item.status === "In Progress")
-                && isSameLocalDay(scheduledStart, now)
-            ) {
-                acc.dueToday += 1;
+            if (!isActive) {
+                return acc;
             }
 
             const overdueByEnd = scheduledEnd ? scheduledEnd < now : scheduledStart < startOfToday;
 
-            if ((item.status === "Scheduled" || item.status === "In Progress") && overdueByEnd) {
+            if (overdueByEnd) {
                 acc.overdue += 1;
+            } else {
+                acc.scheduled += 1;
+            }
+
+            if (isSameLocalDay(scheduledStart, now) && !overdueByEnd && scheduledStart <= endOfToday) {
+                acc.dueToday += 1;
             }
 
             return acc;
@@ -128,12 +140,41 @@ export function MaintenancePageClient({initialMaintenanceItems}: MaintenancePage
     const hasData = initialMaintenanceItems.length > 0;
     const hasVisibleData = filteredItems.length > 0;
 
+    const handleCreateMaintenance = async (payload: ScheduleMaintenancePayload) => {
+        const result = await createMaintenance(payload);
+
+        if (!result.ok) {
+            return result;
+        }
+
+        router.refresh();
+
+        return {
+            ok: true as const
+        };
+    };
+
     return (
         <Flex direction="column" gap="4">
-            <Heading size="8">Maintenance Planning &amp; Operations</Heading>
-            <Text size="4" color="gray">
-                Schedule, prioritize, and monitor maintenance across dental units.
-            </Text>
+            <Flex justify="between" align="end" gap="3" wrap="wrap">
+                <Flex direction="column" gap="1">
+                    <Heading size="8">Maintenance Planning &amp; Operations</Heading>
+                    <Text size="4" color="gray">
+                        Schedule, prioritize, and monitor maintenance across dental units.
+                    </Text>
+                </Flex>
+                <Button color="blue" onClick={() => setIsScheduleDialogOpen(true)}>
+                    + Schedule Maintenance
+                </Button>
+            </Flex>
+
+            <ScheduleMaintenanceDialog
+                open={isScheduleDialogOpen}
+                onOpenChange={setIsScheduleDialogOpen}
+                onCreate={handleCreateMaintenance}
+                availableUnits={availableUnits}
+                availableReports={availableReports}
+            />
 
             <MaintenanceKpiCards stats={stats}/>
             <Separator size="4"/>

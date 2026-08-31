@@ -3,10 +3,11 @@ import {
     MaintenancePriority as PrismaMaintenancePriority,
     MaintenanceStatus as PrismaMaintenanceStatus,
     MaintenanceType as PrismaMaintenanceType,
+    ReportPriority as PrismaReportPriority,
     ReportStatus as PrismaReportStatus
 } from "@/generated/prisma/enums";
 import prisma from "@/lib/prisma";
-import {MaintenanceItem} from "@/lib/types";
+import {MaintenanceItem, MaintenanceReportOption, MaintenanceUnitOption} from "@/lib/types";
 import {MaintenancePageClient} from "./MaintenancePageClient";
 
 const maintenanceTypeFromPrisma: Record<PrismaMaintenanceType, MaintenanceItem["type"]> = {
@@ -39,6 +40,12 @@ const reportStatusFromPrisma: Record<PrismaReportStatus, NonNullable<Maintenance
     OPEN: "Open",
     IN_PROGRESS: "In Progress",
     CLOSED: "Closed"
+};
+
+const reportPriorityFromPrisma: Record<PrismaReportPriority, MaintenanceReportOption["priority"]> = {
+    LOW: "Low",
+    MEDIUM: "Medium",
+    HIGH: "High"
 };
 
 function toIsoDateTime(date: Date | null): string | null {
@@ -104,8 +111,82 @@ async function getMaintenanceItems(): Promise<MaintenanceItem[]> {
     }));
 }
 
-export default async function MaintenancePage() {
-    const maintenanceItems = await getMaintenanceItems();
+async function getMaintenanceUnitOptions(): Promise<MaintenanceUnitOption[]> {
+    const units = await prisma.unit.findMany({
+        select: {
+            id: true,
+            unitCode: true,
+            area: {
+                select: {
+                    displayName: true
+                }
+            }
+        },
+        orderBy: {
+            unitCode: "asc"
+        }
+    });
 
-    return <MaintenancePageClient initialMaintenanceItems={maintenanceItems}/>;
+    return units.map((unit) => ({
+        id: unit.id,
+        unitCode: unit.unitCode,
+        area: unit.area.displayName
+    }));
+}
+
+async function getMaintenanceReportOptions(): Promise<MaintenanceReportOption[]> {
+    const reports = await prisma.report.findMany({
+        where: {
+            status: {
+                in: ["OPEN", "IN_PROGRESS"]
+            }
+        },
+        select: {
+            id: true,
+            unitId: true,
+            issueDescription: true,
+            status: true,
+            priority: true,
+            unit: {
+                select: {
+                    unitCode: true
+                }
+            }
+        },
+        orderBy: [
+            {
+                unit: {
+                    unitCode: "asc"
+                }
+            },
+            {
+                createdAt: "desc"
+            }
+        ]
+    });
+
+    return reports.map((report) => ({
+        id: report.id,
+        unitId: report.unitId,
+        unitCode: report.unit.unitCode,
+        issue: report.issueDescription,
+        status: reportStatusFromPrisma[report.status],
+        priority: reportPriorityFromPrisma[report.priority]
+    }));
+}
+
+export default async function MaintenancePage() {
+    const [maintenanceItems, availableUnits, availableReports] = await Promise.all([
+        getMaintenanceItems(),
+        getMaintenanceUnitOptions(),
+        getMaintenanceReportOptions()
+    ]);
+
+    return (
+        <MaintenancePageClient
+            initialMaintenanceItems={maintenanceItems}
+            availableUnits={availableUnits}
+            availableReports={availableReports}
+        />
+    );
 }
