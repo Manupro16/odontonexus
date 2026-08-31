@@ -1,13 +1,4 @@
 import {
-    Badge,
-    Card,
-    Flex,
-    Heading,
-    Separator,
-    Table,
-    Text
-} from "@radix-ui/themes";
-import {
     MaintenanceOutcome as PrismaMaintenanceOutcome,
     MaintenancePriority as PrismaMaintenancePriority,
     MaintenanceStatus as PrismaMaintenanceStatus,
@@ -16,6 +7,7 @@ import {
 } from "@/generated/prisma/enums";
 import prisma from "@/lib/prisma";
 import {MaintenanceItem} from "@/lib/types";
+import {MaintenancePageClient} from "./MaintenancePageClient";
 
 const maintenanceTypeFromPrisma: Record<PrismaMaintenanceType, MaintenanceItem["type"]> = {
     PREVENTIVE: "Preventive",
@@ -115,69 +107,5 @@ async function getMaintenanceItems(): Promise<MaintenanceItem[]> {
 export default async function MaintenancePage() {
     const maintenanceItems = await getMaintenanceItems();
 
-    return (
-        <Flex direction="column" gap="4">
-            <Heading size="8">Maintenance Planning &amp; Operations</Heading>
-            <Text size="4" color="gray">
-                Plan and track routine maintenance for all equipment.
-            </Text>
-            <Text size="3" color="gray">
-                {maintenanceItems.length} maintenance record{maintenanceItems.length === 1 ? "" : "s"}
-            </Text>
-            <Separator size="4"/>
-
-            {maintenanceItems.length === 0 ? (
-                <Card>
-                    <Flex direction="column" gap="2" align="center" justify="center" py="6">
-                        <Heading size="5">No maintenance scheduled</Heading>
-                        <Text color="gray">Create the first maintenance entry to start planning operations.</Text>
-                    </Flex>
-                </Card>
-            ) : (
-                <Table.Root variant="surface">
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.ColumnHeaderCell>Scheduled For</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Unit</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Type</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Priority</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Title</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Related Report</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Performed By</Table.ColumnHeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {maintenanceItems.map((item) => (
-                            <Table.Row key={item.id}>
-                                <Table.Cell>{item.scheduledFor ? item.scheduledFor.slice(0, 16).replace("T", " ") : "—"}</Table.Cell>
-                                <Table.Cell>{item.unitCode} · {item.area}</Table.Cell>
-                                <Table.Cell>{item.type}</Table.Cell>
-                                <Table.Cell>
-                                    <Badge
-                                        variant="soft"
-                                        color={
-                                            item.status === "Scheduled"
-                                                ? "blue"
-                                                : item.status === "In Progress"
-                                                    ? "orange"
-                                                    : item.status === "Completed"
-                                                        ? "green"
-                                                        : "gray"
-                                        }
-                                    >
-                                        {item.status}
-                                    </Badge>
-                                </Table.Cell>
-                                <Table.Cell>{item.priority}</Table.Cell>
-                                <Table.Cell>{item.title}</Table.Cell>
-                                <Table.Cell>{item.relatedReport ? `${item.relatedReport.id.slice(0, 8)} · ${item.relatedReport.status}` : "—"}</Table.Cell>
-                                <Table.Cell>{item.performedBy ?? "—"}</Table.Cell>
-                            </Table.Row>
-                        ))}
-                    </Table.Body>
-                </Table.Root>
-            )}
-        </Flex>
-    );
+    return <MaintenancePageClient initialMaintenanceItems={maintenanceItems}/>;
 }
