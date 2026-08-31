@@ -9,7 +9,8 @@ import {MaintenanceCalendar} from "./components/MaintenanceCalendar";
 import {MaintenanceDetailsDialog} from "./components/MaintenanceDetailsDialog";
 import {MaintenanceUpcomingList} from "./components/MaintenanceUpcomingList";
 import {ScheduleMaintenanceDialog, ScheduleMaintenancePayload} from "./components/ScheduleMaintenanceDialog";
-import {createMaintenance} from "./actions";
+import {EditMaintenanceDialog, UpdateMaintenancePayload} from "./components/EditMaintenanceDialog";
+import {createMaintenance, updateMaintenance} from "./actions";
 import {useRouter} from "next/navigation";
 
 interface MaintenancePageClientProps {
@@ -75,7 +76,9 @@ export function MaintenancePageClient({
 }: MaintenancePageClientProps) {
     const router = useRouter();
     const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<MaintenanceItem | null>(null);
+    const [editingItem, setEditingItem] = useState<MaintenanceItem | null>(null);
     const [filters, setFilters] = useState<MaintenanceFilterState>({
         area: "All",
         unit: "All",
@@ -154,6 +157,26 @@ export function MaintenancePageClient({
         };
     };
 
+    const handleUpdateMaintenance = async (payload: UpdateMaintenancePayload) => {
+        const result = await updateMaintenance(payload);
+
+        if (!result.ok) {
+            return result;
+        }
+
+        router.refresh();
+
+        return {
+            ok: true as const
+        };
+    };
+
+    const handleEditRequest = (item: MaintenanceItem) => {
+        setEditingItem(item);
+        setSelectedItem(null);
+        setIsEditDialogOpen(true);
+    };
+
     return (
         <Flex direction="column" gap="4">
             <Flex justify="between" align="end" gap="3" wrap="wrap">
@@ -172,6 +195,21 @@ export function MaintenancePageClient({
                 open={isScheduleDialogOpen}
                 onOpenChange={setIsScheduleDialogOpen}
                 onCreate={handleCreateMaintenance}
+                availableUnits={availableUnits}
+                availableReports={availableReports}
+            />
+
+            <EditMaintenanceDialog
+                item={editingItem}
+                open={isEditDialogOpen}
+                onOpenChange={(open) => {
+                    setIsEditDialogOpen(open);
+
+                    if (!open) {
+                        setEditingItem(null);
+                    }
+                }}
+                onUpdate={handleUpdateMaintenance}
                 availableUnits={availableUnits}
                 availableReports={availableReports}
             />
@@ -224,6 +262,7 @@ export function MaintenancePageClient({
                         setSelectedItem(null);
                     }
                 }}
+                onEditRequest={handleEditRequest}
             />
         </Flex>
     );

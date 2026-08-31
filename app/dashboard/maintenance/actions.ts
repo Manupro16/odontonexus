@@ -21,9 +21,24 @@ interface CreateMaintenanceInput {
     scheduledUntil?: string | null;
 }
 
-type CreateMaintenanceResult =
+interface UpdateMaintenanceInput extends CreateMaintenanceInput {
+    id: string;
+}
+
+type MaintenanceActionResult =
     | { ok: true }
     | { ok: false; error: string };
+
+interface NormalizedMaintenanceInput {
+    unitId: string;
+    reportId: string | null;
+    type: PrismaMaintenanceType;
+    priority: PrismaMaintenancePriority;
+    title: string;
+    description: string | null;
+    scheduledFor: Date;
+    scheduledUntil: Date | null;
+}
 
 const typeToPrisma: Record<CreateMaintenanceInput["type"], PrismaMaintenanceType> = {
     Preventive: "PREVENTIVE",
@@ -37,6 +52,11 @@ const priorityToPrisma: Record<CreateMaintenanceInput["priority"], PrismaMainten
     Medium: "MEDIUM",
     High: "HIGH"
 };
+
+const editableStatuses = new Set<PrismaMaintenanceStatus>([
+    PrismaMaintenanceStatus.SCHEDULED,
+    PrismaMaintenanceStatus.IN_PROGRESS
+]);
 
 function toNullableString(value?: string | null) {
     const trimmed = value?.trim();
@@ -59,7 +79,10 @@ function parseIsoDateTime(value: string, errorMessage: string) {
     };
 }
 
-export async function createMaintenance(input: CreateMaintenanceInput): Promise<CreateMaintenanceResult> {
+async function validateAndNormalizeMaintenanceInput(input: CreateMaintenanceInput): Promise<
+    | {ok: true; value: NormalizedMaintenanceInput}
+    | {ok: false; error: string}
+> {
     const unitId = input.unitId.trim();
     const reportId = input.reportId?.trim() || null;
     const title = input.title.trim();
@@ -155,19 +178,41 @@ export async function createMaintenance(input: CreateMaintenanceInput): Promise<
         }
     }
 
+    return {
+        ok: true,
+        value: {
+            unitId: unit.id,
+            reportId,
+            type,
+            priority,
+            title,
+            description,
+            scheduledFor: startDateResult.date,
+            scheduledUntil
+        }
+    };
+}
+
+export async function createMaintenance(input: CreateMaintenanceInput): Promise<MaintenanceActionResult> {
+    const normalizedResult = await validateAndNormalizeMaintenanceInput(input);
+
+    if (!normalizedResult.ok) {
+        return normalizedResult;
+    }
+
     try {
         await prisma.maintenanceRecord.create({
             data: {
-                unitId: unit.id,
-                reportId,
-                type,
-                priority,
+                unitId: normalizedResult.value.unitId,
+                reportId: normalizedResult.value.reportId,
+                type: normalizedResult.value.type,
+                priority: normalizedResult.value.priority,
                 status: PrismaMaintenanceStatus.SCHEDULED,
-                title,
-                description,
+                title: normalizedResult.value.title,
+                description: normalizedResult.value.description,
                 outcome: null,
-                scheduledFor: startDateResult.date,
-                scheduledUntil,
+                scheduledFor: normalizedResult.value.scheduledFor,
+                scheduledUntil: normalizedResult.value.scheduledUntil,
                 performedAt: null,
                 performedById: null
             }
@@ -189,6 +234,83 @@ export async function createMaintenance(input: CreateMaintenanceInput): Promise<
         return {
             ok: false,
             error: "We could not schedule maintenance right now. Please try again."
+        };
+    }
+}
+
+export async function updateMaintenance(input: UpdateMaintenanceInput): Promise<MaintenanceActionResult> {
+    const maintenanceId = input.id.trim();
+
+    if (!maintenanceId) {
+        return {
+            ok: false,
+            error: "The selected maintenance record no longer exists. Please refresh and try again."
+        };
+    }
+
+    const existingRecord = await prisma.maintenanceRecord.findUnique({
+        where: {
+            id: maintenanceId
+        },
+        select: {
+            id: true,
+            status: true
+        }
+    });
+
+    if (!existingRecord) {
+        return {
+            ok: false,
+            error: "The selected maintenance record no longer exists. Please refresh and try again."
+        };
+    }
+
+    if (!editableStatuses.has(existingRecord.status)) {
+        return {
+            ok: false,
+            error: "Completed and cancelled maintenance records are read-only and cannot be rescheduled."
+        };
+    }
+
+    const normalizedResult = await validateAndNormalizeMaintenanceInput(input);
+
+    if (!normalizedResult.ok) {
+        return normalizedResult;
+    }
+
+    try {
+        await prisma.maintenanceRecord.update({
+            where: {
+                id: existingRecord.id
+            },
+            data: {
+                unitId: normalizedResult.value.unitId,
+                reportId: normalizedResult.value.reportId,
+                type: normalizedResult.value.type,
+                priority: normalizedResult.value.priority,
+                title: normalizedResult.value.title,
+                description: normalizedResult.value.description,
+                scheduledFor: normalizedResult.value.scheduledFor,
+                scheduledUntil: normalizedResult.value.scheduledUntil
+            }
+        });
+
+        revalidatePath("/dashboard/maintenance");
+
+        return {
+            ok: true
+        };
+    } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            return {
+                ok: false,
+                error: "We could not update this maintenance due to a database constraint. Please review the data and try again."
+            };
+        }
+
+        return {
+            ok: false,
+            error: "We could not update maintenance right now. Please try again."
         };
     }
 }

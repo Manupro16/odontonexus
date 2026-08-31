@@ -1,10 +1,11 @@
-import {Badge, Dialog, Flex, Grid, Strong, Text} from "@radix-ui/themes";
+import {Badge, Button, Dialog, Flex, Grid, Strong, Text} from "@radix-ui/themes";
 import {MaintenanceItem} from "@/lib/types";
 
 interface MaintenanceDetailsDialogProps {
     item: MaintenanceItem | null;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    onEditRequest: (item: MaintenanceItem) => void;
 }
 
 const statusToColor: Record<MaintenanceItem["status"], "blue" | "orange" | "green" | "gray"> = {
@@ -28,6 +29,10 @@ function toDisplay(value: string | null) {
     return new Date(value).toLocaleString();
 }
 
+function canEditRecord(item: MaintenanceItem) {
+    return item.status === "Scheduled" || item.status === "In Progress";
+}
+
 function Row({label, value}: {label: string; value: React.ReactNode}) {
     return (
         <>
@@ -37,13 +42,13 @@ function Row({label, value}: {label: string; value: React.ReactNode}) {
     );
 }
 
-export function MaintenanceDetailsDialog({item, open, onOpenChange}: MaintenanceDetailsDialogProps) {
+export function MaintenanceDetailsDialog({item, open, onOpenChange, onEditRequest}: MaintenanceDetailsDialogProps) {
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Content maxWidth="680px">
                 <Dialog.Title>Maintenance Detail</Dialog.Title>
                 <Dialog.Description size="2" mb="4">
-                    Read-only operational details for the selected maintenance record.
+                    Operational details for the selected maintenance record.
                 </Dialog.Description>
 
                 {!item ? null : (
@@ -66,6 +71,18 @@ export function MaintenanceDetailsDialog({item, open, onOpenChange}: Maintenance
                             <Row label="Performed by" value={item.performedBy ?? "—"}/>
                             <Row label="Outcome" value={item.outcome ?? "—"}/>
                         </Grid>
+
+                        {canEditRecord(item) ? (
+                            <Flex justify="end">
+                                <Button color="blue" onClick={() => onEditRequest(item)}>
+                                    Edit / Reschedule
+                                </Button>
+                            </Flex>
+                        ) : (
+                            <Text as="p" size="1" color="gray">
+                                Completed and cancelled maintenance records are historical and read-only.
+                            </Text>
+                        )}
                     </Flex>
                 )}
             </Dialog.Content>
