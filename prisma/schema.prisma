@@ -49,11 +49,23 @@ enum MaintenanceType {
   INSPECTION
 }
 
-enum MaintenanceOutcome {
+enum MaintenanceStatus {
   SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum MaintenanceOutcome {
   COMPLETED
   PARTIAL
   FAILED
+}
+
+enum MaintenancePriority {
+  LOW
+  MEDIUM
+  HIGH
 }
 
 model User {
@@ -145,11 +157,14 @@ model MaintenanceRecord {
   reportId String?
   report   Report? @relation(fields: [reportId], references: [id], onDelete: SetNull)
 
-  type        MaintenanceType
-  title       String
-  description String?
-  outcome     MaintenanceOutcome
+  type         MaintenanceType
+  status       MaintenanceStatus   @default(SCHEDULED)
+  priority     MaintenancePriority @default(MEDIUM)
+  title        String
+  description  String?
+  outcome      MaintenanceOutcome?
   scheduledFor DateTime?
+  scheduledUntil DateTime?
   performedAt  DateTime?
 
   performedById String?
@@ -158,10 +173,12 @@ model MaintenanceRecord {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([unitId, scheduledFor])
+  @@index([unitId, status, scheduledFor])
   @@index([unitId, performedAt])
   @@index([reportId])
-  @@index([outcome, scheduledFor])
+  @@index([status, scheduledFor])
+  @@index([status, scheduledUntil])
   @@index([outcome, performedAt])
+  @@index([priority, status])
   @@index([performedById])
 }

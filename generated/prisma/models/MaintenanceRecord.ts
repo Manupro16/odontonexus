@@ -29,10 +29,13 @@ export type MaintenanceRecordMinAggregateOutputType = {
   unitId: string | null
   reportId: string | null
   type: $Enums.MaintenanceType | null
+  status: $Enums.MaintenanceStatus | null
+  priority: $Enums.MaintenancePriority | null
   title: string | null
   description: string | null
   outcome: $Enums.MaintenanceOutcome | null
   scheduledFor: Date | null
+  scheduledUntil: Date | null
   performedAt: Date | null
   performedById: string | null
   createdAt: Date | null
@@ -44,10 +47,13 @@ export type MaintenanceRecordMaxAggregateOutputType = {
   unitId: string | null
   reportId: string | null
   type: $Enums.MaintenanceType | null
+  status: $Enums.MaintenanceStatus | null
+  priority: $Enums.MaintenancePriority | null
   title: string | null
   description: string | null
   outcome: $Enums.MaintenanceOutcome | null
   scheduledFor: Date | null
+  scheduledUntil: Date | null
   performedAt: Date | null
   performedById: string | null
   createdAt: Date | null
@@ -59,10 +65,13 @@ export type MaintenanceRecordCountAggregateOutputType = {
   unitId: number
   reportId: number
   type: number
+  status: number
+  priority: number
   title: number
   description: number
   outcome: number
   scheduledFor: number
+  scheduledUntil: number
   performedAt: number
   performedById: number
   createdAt: number
@@ -76,10 +85,13 @@ export type MaintenanceRecordMinAggregateInputType = {
   unitId?: true
   reportId?: true
   type?: true
+  status?: true
+  priority?: true
   title?: true
   description?: true
   outcome?: true
   scheduledFor?: true
+  scheduledUntil?: true
   performedAt?: true
   performedById?: true
   createdAt?: true
@@ -91,10 +103,13 @@ export type MaintenanceRecordMaxAggregateInputType = {
   unitId?: true
   reportId?: true
   type?: true
+  status?: true
+  priority?: true
   title?: true
   description?: true
   outcome?: true
   scheduledFor?: true
+  scheduledUntil?: true
   performedAt?: true
   performedById?: true
   createdAt?: true
@@ -106,10 +121,13 @@ export type MaintenanceRecordCountAggregateInputType = {
   unitId?: true
   reportId?: true
   type?: true
+  status?: true
+  priority?: true
   title?: true
   description?: true
   outcome?: true
   scheduledFor?: true
+  scheduledUntil?: true
   performedAt?: true
   performedById?: true
   createdAt?: true
@@ -194,10 +212,13 @@ export type MaintenanceRecordGroupByOutputType = {
   unitId: string
   reportId: string | null
   type: $Enums.MaintenanceType
+  status: $Enums.MaintenanceStatus
+  priority: $Enums.MaintenancePriority
   title: string
   description: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome: $Enums.MaintenanceOutcome | null
   scheduledFor: Date | null
+  scheduledUntil: Date | null
   performedAt: Date | null
   performedById: string | null
   createdAt: Date
@@ -230,10 +251,13 @@ export type MaintenanceRecordWhereInput = {
   unitId?: Prisma.StringFilter<"MaintenanceRecord"> | string
   reportId?: Prisma.StringNullableFilter<"MaintenanceRecord"> | string | null
   type?: Prisma.EnumMaintenanceTypeFilter<"MaintenanceRecord"> | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFilter<"MaintenanceRecord"> | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFilter<"MaintenanceRecord"> | $Enums.MaintenancePriority
   title?: Prisma.StringFilter<"MaintenanceRecord"> | string
   description?: Prisma.StringNullableFilter<"MaintenanceRecord"> | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFilter<"MaintenanceRecord"> | $Enums.MaintenanceOutcome
+  outcome?: Prisma.EnumMaintenanceOutcomeNullableFilter<"MaintenanceRecord"> | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.DateTimeNullableFilter<"MaintenanceRecord"> | Date | string | null
+  scheduledUntil?: Prisma.DateTimeNullableFilter<"MaintenanceRecord"> | Date | string | null
   performedAt?: Prisma.DateTimeNullableFilter<"MaintenanceRecord"> | Date | string | null
   performedById?: Prisma.StringNullableFilter<"MaintenanceRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MaintenanceRecord"> | Date | string
@@ -248,10 +272,13 @@ export type MaintenanceRecordOrderByWithRelationInput = {
   unitId?: Prisma.SortOrder
   reportId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  outcome?: Prisma.SortOrder
+  outcome?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledFor?: Prisma.SortOrderInput | Prisma.SortOrder
+  scheduledUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   performedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   performedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -269,10 +296,13 @@ export type MaintenanceRecordWhereUniqueInput = Prisma.AtLeast<{
   unitId?: Prisma.StringFilter<"MaintenanceRecord"> | string
   reportId?: Prisma.StringNullableFilter<"MaintenanceRecord"> | string | null
   type?: Prisma.EnumMaintenanceTypeFilter<"MaintenanceRecord"> | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFilter<"MaintenanceRecord"> | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFilter<"MaintenanceRecord"> | $Enums.MaintenancePriority
   title?: Prisma.StringFilter<"MaintenanceRecord"> | string
   description?: Prisma.StringNullableFilter<"MaintenanceRecord"> | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFilter<"MaintenanceRecord"> | $Enums.MaintenanceOutcome
+  outcome?: Prisma.EnumMaintenanceOutcomeNullableFilter<"MaintenanceRecord"> | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.DateTimeNullableFilter<"MaintenanceRecord"> | Date | string | null
+  scheduledUntil?: Prisma.DateTimeNullableFilter<"MaintenanceRecord"> | Date | string | null
   performedAt?: Prisma.DateTimeNullableFilter<"MaintenanceRecord"> | Date | string | null
   performedById?: Prisma.StringNullableFilter<"MaintenanceRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MaintenanceRecord"> | Date | string
@@ -287,10 +317,13 @@ export type MaintenanceRecordOrderByWithAggregationInput = {
   unitId?: Prisma.SortOrder
   reportId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  outcome?: Prisma.SortOrder
+  outcome?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledFor?: Prisma.SortOrderInput | Prisma.SortOrder
+  scheduledUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   performedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   performedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -308,10 +341,13 @@ export type MaintenanceRecordScalarWhereWithAggregatesInput = {
   unitId?: Prisma.StringWithAggregatesFilter<"MaintenanceRecord"> | string
   reportId?: Prisma.StringNullableWithAggregatesFilter<"MaintenanceRecord"> | string | null
   type?: Prisma.EnumMaintenanceTypeWithAggregatesFilter<"MaintenanceRecord"> | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusWithAggregatesFilter<"MaintenanceRecord"> | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityWithAggregatesFilter<"MaintenanceRecord"> | $Enums.MaintenancePriority
   title?: Prisma.StringWithAggregatesFilter<"MaintenanceRecord"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"MaintenanceRecord"> | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeWithAggregatesFilter<"MaintenanceRecord"> | $Enums.MaintenanceOutcome
+  outcome?: Prisma.EnumMaintenanceOutcomeNullableWithAggregatesFilter<"MaintenanceRecord"> | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.DateTimeNullableWithAggregatesFilter<"MaintenanceRecord"> | Date | string | null
+  scheduledUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"MaintenanceRecord"> | Date | string | null
   performedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"MaintenanceRecord"> | Date | string | null
   performedById?: Prisma.StringNullableWithAggregatesFilter<"MaintenanceRecord"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"MaintenanceRecord"> | Date | string
@@ -321,10 +357,13 @@ export type MaintenanceRecordScalarWhereWithAggregatesInput = {
 export type MaintenanceRecordCreateInput = {
   id?: string
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -338,10 +377,13 @@ export type MaintenanceRecordUncheckedCreateInput = {
   unitId: string
   reportId?: string | null
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   performedById?: string | null
   createdAt?: Date | string
@@ -351,10 +393,13 @@ export type MaintenanceRecordUncheckedCreateInput = {
 export type MaintenanceRecordUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -368,10 +413,13 @@ export type MaintenanceRecordUncheckedUpdateInput = {
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,10 +431,13 @@ export type MaintenanceRecordCreateManyInput = {
   unitId: string
   reportId?: string | null
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   performedById?: string | null
   createdAt?: Date | string
@@ -396,10 +447,13 @@ export type MaintenanceRecordCreateManyInput = {
 export type MaintenanceRecordUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -410,10 +464,13 @@ export type MaintenanceRecordUncheckedUpdateManyInput = {
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,10 +492,13 @@ export type MaintenanceRecordCountOrderByAggregateInput = {
   unitId?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   outcome?: Prisma.SortOrder
   scheduledFor?: Prisma.SortOrder
+  scheduledUntil?: Prisma.SortOrder
   performedAt?: Prisma.SortOrder
   performedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -450,10 +510,13 @@ export type MaintenanceRecordMaxOrderByAggregateInput = {
   unitId?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   outcome?: Prisma.SortOrder
   scheduledFor?: Prisma.SortOrder
+  scheduledUntil?: Prisma.SortOrder
   performedAt?: Prisma.SortOrder
   performedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -465,10 +528,13 @@ export type MaintenanceRecordMinOrderByAggregateInput = {
   unitId?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   outcome?: Prisma.SortOrder
   scheduledFor?: Prisma.SortOrder
+  scheduledUntil?: Prisma.SortOrder
   performedAt?: Prisma.SortOrder
   performedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -605,17 +671,28 @@ export type EnumMaintenanceTypeFieldUpdateOperationsInput = {
   set?: $Enums.MaintenanceType
 }
 
-export type EnumMaintenanceOutcomeFieldUpdateOperationsInput = {
-  set?: $Enums.MaintenanceOutcome
+export type EnumMaintenanceStatusFieldUpdateOperationsInput = {
+  set?: $Enums.MaintenanceStatus
+}
+
+export type EnumMaintenancePriorityFieldUpdateOperationsInput = {
+  set?: $Enums.MaintenancePriority
+}
+
+export type NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput = {
+  set?: $Enums.MaintenanceOutcome | null
 }
 
 export type MaintenanceRecordCreateWithoutPerformedByInput = {
   id?: string
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -628,10 +705,13 @@ export type MaintenanceRecordUncheckedCreateWithoutPerformedByInput = {
   unitId: string
   reportId?: string | null
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -671,10 +751,13 @@ export type MaintenanceRecordScalarWhereInput = {
   unitId?: Prisma.StringFilter<"MaintenanceRecord"> | string
   reportId?: Prisma.StringNullableFilter<"MaintenanceRecord"> | string | null
   type?: Prisma.EnumMaintenanceTypeFilter<"MaintenanceRecord"> | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFilter<"MaintenanceRecord"> | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFilter<"MaintenanceRecord"> | $Enums.MaintenancePriority
   title?: Prisma.StringFilter<"MaintenanceRecord"> | string
   description?: Prisma.StringNullableFilter<"MaintenanceRecord"> | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFilter<"MaintenanceRecord"> | $Enums.MaintenanceOutcome
+  outcome?: Prisma.EnumMaintenanceOutcomeNullableFilter<"MaintenanceRecord"> | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.DateTimeNullableFilter<"MaintenanceRecord"> | Date | string | null
+  scheduledUntil?: Prisma.DateTimeNullableFilter<"MaintenanceRecord"> | Date | string | null
   performedAt?: Prisma.DateTimeNullableFilter<"MaintenanceRecord"> | Date | string | null
   performedById?: Prisma.StringNullableFilter<"MaintenanceRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MaintenanceRecord"> | Date | string
@@ -684,10 +767,13 @@ export type MaintenanceRecordScalarWhereInput = {
 export type MaintenanceRecordCreateWithoutUnitInput = {
   id?: string
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -699,10 +785,13 @@ export type MaintenanceRecordUncheckedCreateWithoutUnitInput = {
   id?: string
   reportId?: string | null
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   performedById?: string | null
   createdAt?: Date | string
@@ -738,10 +827,13 @@ export type MaintenanceRecordUpdateManyWithWhereWithoutUnitInput = {
 export type MaintenanceRecordCreateWithoutReportInput = {
   id?: string
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -753,10 +845,13 @@ export type MaintenanceRecordUncheckedCreateWithoutReportInput = {
   id?: string
   unitId: string
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   performedById?: string | null
   createdAt?: Date | string
@@ -794,10 +889,13 @@ export type MaintenanceRecordCreateManyPerformedByInput = {
   unitId: string
   reportId?: string | null
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -806,10 +904,13 @@ export type MaintenanceRecordCreateManyPerformedByInput = {
 export type MaintenanceRecordUpdateWithoutPerformedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -822,10 +923,13 @@ export type MaintenanceRecordUncheckedUpdateWithoutPerformedByInput = {
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -836,10 +940,13 @@ export type MaintenanceRecordUncheckedUpdateManyWithoutPerformedByInput = {
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -849,10 +956,13 @@ export type MaintenanceRecordCreateManyUnitInput = {
   id?: string
   reportId?: string | null
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   performedById?: string | null
   createdAt?: Date | string
@@ -862,10 +972,13 @@ export type MaintenanceRecordCreateManyUnitInput = {
 export type MaintenanceRecordUpdateWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -877,10 +990,13 @@ export type MaintenanceRecordUncheckedUpdateWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -891,10 +1007,13 @@ export type MaintenanceRecordUncheckedUpdateManyWithoutUnitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -905,10 +1024,13 @@ export type MaintenanceRecordCreateManyReportInput = {
   id?: string
   unitId: string
   type: $Enums.MaintenanceType
+  status?: $Enums.MaintenanceStatus
+  priority?: $Enums.MaintenancePriority
   title: string
   description?: string | null
-  outcome: $Enums.MaintenanceOutcome
+  outcome?: $Enums.MaintenanceOutcome | null
   scheduledFor?: Date | string | null
+  scheduledUntil?: Date | string | null
   performedAt?: Date | string | null
   performedById?: string | null
   createdAt?: Date | string
@@ -918,10 +1040,13 @@ export type MaintenanceRecordCreateManyReportInput = {
 export type MaintenanceRecordUpdateWithoutReportInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -933,10 +1058,13 @@ export type MaintenanceRecordUncheckedUpdateWithoutReportInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -947,10 +1075,13 @@ export type MaintenanceRecordUncheckedUpdateManyWithoutReportInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   unitId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumMaintenanceTypeFieldUpdateOperationsInput | $Enums.MaintenanceType
+  status?: Prisma.EnumMaintenanceStatusFieldUpdateOperationsInput | $Enums.MaintenanceStatus
+  priority?: Prisma.EnumMaintenancePriorityFieldUpdateOperationsInput | $Enums.MaintenancePriority
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  outcome?: Prisma.EnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome
+  outcome?: Prisma.NullableEnumMaintenanceOutcomeFieldUpdateOperationsInput | $Enums.MaintenanceOutcome | null
   scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   performedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -964,10 +1095,13 @@ export type MaintenanceRecordSelect<ExtArgs extends runtime.Types.Extensions.Int
   unitId?: boolean
   reportId?: boolean
   type?: boolean
+  status?: boolean
+  priority?: boolean
   title?: boolean
   description?: boolean
   outcome?: boolean
   scheduledFor?: boolean
+  scheduledUntil?: boolean
   performedAt?: boolean
   performedById?: boolean
   createdAt?: boolean
@@ -982,10 +1116,13 @@ export type MaintenanceRecordSelectCreateManyAndReturn<ExtArgs extends runtime.T
   unitId?: boolean
   reportId?: boolean
   type?: boolean
+  status?: boolean
+  priority?: boolean
   title?: boolean
   description?: boolean
   outcome?: boolean
   scheduledFor?: boolean
+  scheduledUntil?: boolean
   performedAt?: boolean
   performedById?: boolean
   createdAt?: boolean
@@ -1000,10 +1137,13 @@ export type MaintenanceRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   unitId?: boolean
   reportId?: boolean
   type?: boolean
+  status?: boolean
+  priority?: boolean
   title?: boolean
   description?: boolean
   outcome?: boolean
   scheduledFor?: boolean
+  scheduledUntil?: boolean
   performedAt?: boolean
   performedById?: boolean
   createdAt?: boolean
@@ -1018,17 +1158,20 @@ export type MaintenanceRecordSelectScalar = {
   unitId?: boolean
   reportId?: boolean
   type?: boolean
+  status?: boolean
+  priority?: boolean
   title?: boolean
   description?: boolean
   outcome?: boolean
   scheduledFor?: boolean
+  scheduledUntil?: boolean
   performedAt?: boolean
   performedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MaintenanceRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "unitId" | "reportId" | "type" | "title" | "description" | "outcome" | "scheduledFor" | "performedAt" | "performedById" | "createdAt" | "updatedAt", ExtArgs["result"]["maintenanceRecord"]>
+export type MaintenanceRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "unitId" | "reportId" | "type" | "status" | "priority" | "title" | "description" | "outcome" | "scheduledFor" | "scheduledUntil" | "performedAt" | "performedById" | "createdAt" | "updatedAt", ExtArgs["result"]["maintenanceRecord"]>
 export type MaintenanceRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   unit?: boolean | Prisma.UnitDefaultArgs<ExtArgs>
   report?: boolean | Prisma.MaintenanceRecord$reportArgs<ExtArgs>
@@ -1057,10 +1200,13 @@ export type $MaintenanceRecordPayload<ExtArgs extends runtime.Types.Extensions.I
     unitId: string
     reportId: string | null
     type: $Enums.MaintenanceType
+    status: $Enums.MaintenanceStatus
+    priority: $Enums.MaintenancePriority
     title: string
     description: string | null
-    outcome: $Enums.MaintenanceOutcome
+    outcome: $Enums.MaintenanceOutcome | null
     scheduledFor: Date | null
+    scheduledUntil: Date | null
     performedAt: Date | null
     performedById: string | null
     createdAt: Date
@@ -1495,10 +1641,13 @@ export interface MaintenanceRecordFieldRefs {
   readonly unitId: Prisma.FieldRef<"MaintenanceRecord", 'String'>
   readonly reportId: Prisma.FieldRef<"MaintenanceRecord", 'String'>
   readonly type: Prisma.FieldRef<"MaintenanceRecord", 'MaintenanceType'>
+  readonly status: Prisma.FieldRef<"MaintenanceRecord", 'MaintenanceStatus'>
+  readonly priority: Prisma.FieldRef<"MaintenanceRecord", 'MaintenancePriority'>
   readonly title: Prisma.FieldRef<"MaintenanceRecord", 'String'>
   readonly description: Prisma.FieldRef<"MaintenanceRecord", 'String'>
   readonly outcome: Prisma.FieldRef<"MaintenanceRecord", 'MaintenanceOutcome'>
   readonly scheduledFor: Prisma.FieldRef<"MaintenanceRecord", 'DateTime'>
+  readonly scheduledUntil: Prisma.FieldRef<"MaintenanceRecord", 'DateTime'>
   readonly performedAt: Prisma.FieldRef<"MaintenanceRecord", 'DateTime'>
   readonly performedById: Prisma.FieldRef<"MaintenanceRecord", 'String'>
   readonly createdAt: Prisma.FieldRef<"MaintenanceRecord", 'DateTime'>

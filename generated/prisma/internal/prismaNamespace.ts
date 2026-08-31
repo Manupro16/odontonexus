@@ -895,10 +895,13 @@ export const MaintenanceRecordScalarFieldEnum = {
   unitId: 'unitId',
   reportId: 'reportId',
   type: 'type',
+  status: 'status',
+  priority: 'priority',
   title: 'title',
   description: 'description',
   outcome: 'outcome',
   scheduledFor: 'scheduledFor',
+  scheduledUntil: 'scheduledUntil',
   performedAt: 'performedAt',
   performedById: 'performedById',
   createdAt: 'createdAt',
@@ -1068,6 +1071,34 @@ export type EnumMaintenanceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
  * Reference to a field of type 'MaintenanceType[]'
  */
 export type ListEnumMaintenanceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MaintenanceStatus'
+ */
+export type EnumMaintenanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MaintenanceStatus[]'
+ */
+export type ListEnumMaintenanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MaintenancePriority'
+ */
+export type EnumMaintenancePriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenancePriority'>
+    
+
+
+/**
+ * Reference to a field of type 'MaintenancePriority[]'
+ */
+export type ListEnumMaintenancePriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenancePriority[]'>
     
 
 

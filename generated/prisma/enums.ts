@@ -68,11 +68,29 @@ export const MaintenanceType = {
 export type MaintenanceType = (typeof MaintenanceType)[keyof typeof MaintenanceType]
 
 
-export const MaintenanceOutcome = {
+export const MaintenanceStatus = {
   SCHEDULED: 'SCHEDULED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type MaintenanceStatus = (typeof MaintenanceStatus)[keyof typeof MaintenanceStatus]
+
+
+export const MaintenanceOutcome = {
   COMPLETED: 'COMPLETED',
   PARTIAL: 'PARTIAL',
   FAILED: 'FAILED'
 } as const
 
 export type MaintenanceOutcome = (typeof MaintenanceOutcome)[keyof typeof MaintenanceOutcome]
+
+
+export const MaintenancePriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+} as const
+
+export type MaintenancePriority = (typeof MaintenancePriority)[keyof typeof MaintenancePriority]
