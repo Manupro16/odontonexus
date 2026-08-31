@@ -28,6 +28,30 @@ export interface ReportUnitOption {
     area: string;
 }
 
+export interface MaintenanceRelatedReport {
+    id: string;
+    issue: string;
+    status: "Open" | "In Progress" | "Closed";
+}
+
+export interface MaintenanceItem {
+    id: string;
+    unitId: string;
+    unitCode: string;
+    area: string;
+    type: "Preventive" | "Corrective" | "Installation" | "Inspection";
+    status: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
+    priority: "Low" | "Medium" | "High";
+    outcome: "Completed" | "Partial" | "Failed" | null;
+    title: string;
+    description: string | null;
+    scheduledFor: string | null;
+    scheduledUntil: string | null;
+    performedAt: string | null;
+    performedBy: string | null;
+    relatedReport: MaintenanceRelatedReport | null;
+}
+
 export type UnitStatus = "Operativa" | "Parcialmente Operativa" | "Fuera de Servicio";
 
 export interface DentalUnit {
