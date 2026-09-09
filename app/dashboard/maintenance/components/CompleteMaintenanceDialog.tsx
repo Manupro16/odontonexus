@@ -1,6 +1,6 @@
 import {Button, Dialog, Flex, Grid, Select, Strong, Text} from "@radix-ui/themes";
 import {MaintenanceItem} from "@/lib/types";
-import {useEffect, useMemo, useState} from "react";
+import {useMemo, useState} from "react";
 
 export interface CompleteMaintenancePayload {
     id: string;
@@ -46,14 +46,6 @@ export function CompleteMaintenanceDialog({item, open, onOpenChange, onSubmit}: 
 
         return "Completed" as const;
     }, [outcome]);
-
-    useEffect(() => {
-        if (!open) {
-            setOutcome("Completed");
-            setError(null);
-            setIsSubmitting(false);
-        }
-    }, [open]);
 
     const handleOpenChange = (nextOpen: boolean) => {
         if (!nextOpen && isSubmitting) {
