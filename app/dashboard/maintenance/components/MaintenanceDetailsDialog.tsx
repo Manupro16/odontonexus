@@ -6,6 +6,7 @@ interface MaintenanceDetailsDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onEditRequest: (item: MaintenanceItem) => void;
+    onCompleteRequest: (item: MaintenanceItem) => void;
 }
 
 const statusToColor: Record<MaintenanceItem["status"], "blue" | "orange" | "green" | "gray"> = {
@@ -42,7 +43,13 @@ function Row({label, value}: {label: string; value: React.ReactNode}) {
     );
 }
 
-export function MaintenanceDetailsDialog({item, open, onOpenChange, onEditRequest}: MaintenanceDetailsDialogProps) {
+export function MaintenanceDetailsDialog({
+    item,
+    open,
+    onOpenChange,
+    onEditRequest,
+    onCompleteRequest
+}: MaintenanceDetailsDialogProps) {
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Content maxWidth="680px">
@@ -73,9 +80,12 @@ export function MaintenanceDetailsDialog({item, open, onOpenChange, onEditReques
                         </Grid>
 
                         {canEditRecord(item) ? (
-                            <Flex justify="end">
+                            <Flex justify="end" gap="2">
                                 <Button color="blue" onClick={() => onEditRequest(item)}>
                                     Edit / Reschedule
+                                </Button>
+                                <Button color="green" onClick={() => onCompleteRequest(item)}>
+                                    Complete Maintenance
                                 </Button>
                             </Flex>
                         ) : (

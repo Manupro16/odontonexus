@@ -2,6 +2,7 @@
 
 import {Prisma} from "@/generated/prisma/client";
 import {
+    MaintenanceOutcome as PrismaMaintenanceOutcome,
     MaintenancePriority as PrismaMaintenancePriority,
     MaintenanceStatus as PrismaMaintenanceStatus,
     MaintenanceType as PrismaMaintenanceType
@@ -23,6 +24,11 @@ interface CreateMaintenanceInput {
 
 interface UpdateMaintenanceInput extends CreateMaintenanceInput {
     id: string;
+}
+
+interface CompleteMaintenanceInput {
+    id: string;
+    outcome: Exclude<MaintenanceItem["outcome"], null>;
 }
 
 type MaintenanceActionResult =
@@ -51,6 +57,12 @@ const priorityToPrisma: Record<CreateMaintenanceInput["priority"], PrismaMainten
     Low: "LOW",
     Medium: "MEDIUM",
     High: "HIGH"
+};
+
+const completionOutcomeToPrisma: Record<CompleteMaintenanceInput["outcome"], PrismaMaintenanceOutcome> = {
+    Completed: PrismaMaintenanceOutcome.COMPLETED,
+    Partial: PrismaMaintenanceOutcome.PARTIAL,
+    Failed: PrismaMaintenanceOutcome.FAILED
 };
 
 const editableStatuses = new Set<PrismaMaintenanceStatus>([
@@ -311,6 +323,94 @@ export async function updateMaintenance(input: UpdateMaintenanceInput): Promise<
         return {
             ok: false,
             error: "We could not update maintenance right now. Please try again."
+        };
+    }
+}
+
+export async function completeMaintenance(input: CompleteMaintenanceInput): Promise<MaintenanceActionResult> {
+    const maintenanceId = input.id.trim();
+
+    if (!maintenanceId) {
+        return {
+            ok: false,
+            error: "The selected maintenance record no longer exists. Please refresh and try again."
+        };
+    }
+
+    const outcome = completionOutcomeToPrisma[input.outcome];
+    if (!outcome) {
+        return {
+            ok: false,
+            error: "Please choose a valid completion outcome."
+        };
+    }
+
+    const existingRecord = await prisma.maintenanceRecord.findUnique({
+        where: {
+            id: maintenanceId
+        },
+        select: {
+            id: true,
+            status: true
+        }
+    });
+
+    if (!existingRecord) {
+        return {
+            ok: false,
+            error: "The selected maintenance record no longer exists. Please refresh and try again."
+        };
+    }
+
+    if (existingRecord.status === PrismaMaintenanceStatus.COMPLETED) {
+        return {
+            ok: false,
+            error: "This maintenance record is already completed."
+        };
+    }
+
+    if (existingRecord.status === PrismaMaintenanceStatus.CANCELLED) {
+        return {
+            ok: false,
+            error: "Cancelled maintenance records cannot be completed."
+        };
+    }
+
+    if (!editableStatuses.has(existingRecord.status)) {
+        return {
+            ok: false,
+            error: "Only scheduled or in-progress maintenance records can be completed."
+        };
+    }
+
+    try {
+        await prisma.maintenanceRecord.update({
+            where: {
+                id: existingRecord.id
+            },
+            data: {
+                status: PrismaMaintenanceStatus.COMPLETED,
+                outcome,
+                performedAt: new Date()
+            }
+        });
+
+        revalidatePath("/dashboard/maintenance");
+
+        return {
+            ok: true
+        };
+    } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            return {
+                ok: false,
+                error: "We could not complete this maintenance due to a database constraint. Please review the data and try again."
+            };
+        }
+
+        return {
+            ok: false,
+            error: "We could not complete maintenance right now. Please try again."
         };
     }
 }

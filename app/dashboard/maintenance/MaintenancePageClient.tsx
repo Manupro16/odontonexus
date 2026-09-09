@@ -10,7 +10,8 @@ import {MaintenanceDetailsDialog} from "./components/MaintenanceDetailsDialog";
 import {MaintenanceUpcomingList} from "./components/MaintenanceUpcomingList";
 import {ScheduleMaintenanceDialog, ScheduleMaintenancePayload} from "./components/ScheduleMaintenanceDialog";
 import {EditMaintenanceDialog, UpdateMaintenancePayload} from "./components/EditMaintenanceDialog";
-import {createMaintenance, updateMaintenance} from "./actions";
+import {CompleteMaintenanceDialog, CompleteMaintenancePayload} from "./components/CompleteMaintenanceDialog";
+import {completeMaintenance, createMaintenance, updateMaintenance} from "./actions";
 import {useRouter} from "next/navigation";
 
 interface MaintenancePageClientProps {
@@ -77,8 +78,10 @@ export function MaintenancePageClient({
     const router = useRouter();
     const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isCompleteDialogOpen, setIsCompleteDialogOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<MaintenanceItem | null>(null);
     const [editingItem, setEditingItem] = useState<MaintenanceItem | null>(null);
+    const [completingItem, setCompletingItem] = useState<MaintenanceItem | null>(null);
     const [filters, setFilters] = useState<MaintenanceFilterState>({
         area: "All",
         unit: "All",
@@ -94,6 +97,11 @@ export function MaintenancePageClient({
 
     const visibleScheduledItems = useMemo(
         () => filteredItems.filter((item) => item.scheduledFor),
+        [filteredItems]
+    );
+
+    const activeUpcomingItems = useMemo(
+        () => filteredItems.filter((item) => item.status === "Scheduled" || item.status === "In Progress"),
         [filteredItems]
     );
 
@@ -177,6 +185,28 @@ export function MaintenancePageClient({
         setIsEditDialogOpen(true);
     };
 
+    const handleCompleteRequest = (item: MaintenanceItem) => {
+        setCompletingItem(item);
+        setIsCompleteDialogOpen(true);
+    };
+
+    const handleCompleteMaintenance = async (payload: CompleteMaintenancePayload) => {
+        const result = await completeMaintenance(payload);
+
+        if (!result.ok) {
+            return result;
+        }
+
+        router.refresh();
+        setSelectedItem(null);
+        setCompletingItem(null);
+        setIsCompleteDialogOpen(false);
+
+        return {
+            ok: true as const
+        };
+    };
+
     return (
         <Flex direction="column" gap="4">
             <Flex justify="between" align="end" gap="3" wrap="wrap">
@@ -214,6 +244,19 @@ export function MaintenancePageClient({
                 availableReports={availableReports}
             />
 
+            <CompleteMaintenanceDialog
+                item={completingItem}
+                open={isCompleteDialogOpen}
+                onOpenChange={(open) => {
+                    setIsCompleteDialogOpen(open);
+
+                    if (!open) {
+                        setCompletingItem(null);
+                    }
+                }}
+                onSubmit={handleCompleteMaintenance}
+            />
+
             <MaintenanceKpiCards stats={stats}/>
             <Separator size="4"/>
 
@@ -227,7 +270,7 @@ export function MaintenancePageClient({
                 items={visibleScheduledItems}
                 onSelectItem={setSelectedItem}
             />
-            <MaintenanceUpcomingList items={filteredItems}/>
+            <MaintenanceUpcomingList items={activeUpcomingItems}/>
 
             {!hasData ? (
                 <Card>
@@ -263,6 +306,7 @@ export function MaintenancePageClient({
                     }
                 }}
                 onEditRequest={handleEditRequest}
+                onCompleteRequest={handleCompleteRequest}
             />
         </Flex>
     );

@@ -17,6 +17,13 @@ const priorityToColor: Record<MaintenanceItem["priority"], "gray" | "orange" | "
     High: "red"
 };
 
+const statusToColor: Record<MaintenanceItem["status"], "blue" | "orange" | "green" | "gray"> = {
+    Scheduled: "blue",
+    "In Progress": "orange",
+    Completed: "green",
+    Cancelled: "gray"
+};
+
 function buildEventTitle(item: MaintenanceItem) {
     return `${item.unitCode} · ${item.type}`;
 }
@@ -24,6 +31,7 @@ function buildEventTitle(item: MaintenanceItem) {
 function renderEventContent(content: EventContentArg) {
     const event = content.event;
     const priority = event.extendedProps.priority as MaintenanceItem["priority"];
+    const status = event.extendedProps.status as MaintenanceItem["status"];
     const title = event.extendedProps.maintenanceTitle as string;
 
     return (
@@ -34,9 +42,14 @@ function renderEventContent(content: EventContentArg) {
             <Text size="1" className="truncate">
                 {title}
             </Text>
-            <Badge variant="soft" color={priorityToColor[priority]} size="1">
-                {priority}
-            </Badge>
+            <Flex gap="1" wrap="wrap">
+                <Badge variant="soft" color={statusToColor[status]} size="1">
+                    {status}
+                </Badge>
+                <Badge variant="soft" color={priorityToColor[priority]} size="1">
+                    {priority}
+                </Badge>
+            </Flex>
         </Flex>
     );
 }
@@ -51,6 +64,7 @@ export function MaintenanceCalendar({items, onSelectItem}: MaintenanceCalendarPr
         extendedProps: {
             maintenanceTitle: item.title,
             priority: item.priority,
+            status: item.status,
             item
         }
     }));
